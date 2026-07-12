@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { DesignLabShell } from "@/components/design-lab/DesignLabShell";
+import { DesignLabStudio } from "@/components/design-lab/studio/DesignLabStudio";
 import { Tag } from "@/components/ui/Tag";
 import { getPiece } from "@/data/portfolio";
 
 export const metadata: Metadata = {
   title: "Design Lab",
   description:
-    "Start a custom sneaker commission: pick a vibe, preview the concept, send your idea. The AI + 3D design lab is on the roadmap — this is its first room.",
+    "Spin the concept shoe, paint every panel, and send the colour story as a real commission request. Design Lab v2 — the interactive 3D studio.",
 };
 
 const roadmap = [
   {
-    phase: "Phase 1 — now",
+    phase: "Phase 1",
     title: "Creative identity site",
     items: ["Studio homepage", "Projects & process", "Commission intake", "Caps as emerging service"],
     status: "live",
@@ -24,10 +24,10 @@ const roadmap = [
     status: "next",
   },
   {
-    phase: "Phase 3",
-    title: "Design Lab v2",
-    items: ["Moodboard uploads", "Save & share concepts", "Palette extraction", "Richer starters"],
-    status: "planned",
+    phase: "Phase 3 — now",
+    title: "Design Lab v2 — 3D studio",
+    items: ["Interactive 3D concept shoe", "Per-part colour stories", "Concept → commission handoff", "Saved in your browser as you play"],
+    status: "live",
   },
   {
     phase: "Phase 4",
@@ -37,8 +37,8 @@ const roadmap = [
   },
   {
     phase: "Phase 5",
-    title: "AI + 3D",
-    items: ["AI-assisted concepts", "Zone-aware mockups", "3D customizer", "Deposits & dashboard"],
+    title: "AI + deeper lab",
+    items: ["AI-assisted concepts", "Moodboard & palette extraction", "Textures, decals & artwork placement", "Deposits & dashboard"],
     status: "dreaming",
   },
 ];
@@ -58,20 +58,23 @@ export default async function DesignLabPage({
     <div className="mx-auto max-w-[90rem] px-5 pt-36 pb-20 sm:px-6 lg:px-12 xl:px-20">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading
-          eyebrow="The Design Lab · v1"
+          eyebrow="The Design Lab · v2"
           title={
             <>
-              Design your{" "}
-              <span className="display-italic text-rose-2">custom pair.</span>
+              Paint the pair{" "}
+              <span className="display-italic text-rose-2">before it exists.</span>
             </>
           }
-          lede="Pick a vibe, set the mood, watch the concept repaint itself — then send the real request. This is the first small room of a much bigger lab."
+          lede="Turn the shoe in your hands, click a part, build a colour story. A concept first — a hand-painted commission next."
         />
-        <Tag tone="gold">AI design lab — coming soon</Tag>
+        <div className="flex flex-wrap gap-2">
+          <Tag tone="lilac">new · interactive 3D</Tag>
+          <Tag tone="gold">AI concepts — next phase</Tag>
+        </div>
       </div>
 
       <div className="mt-12">
-        <DesignLabShell initialIdea={initialIdea} />
+        <DesignLabStudio initialIdea={initialIdea} />
       </div>
 
       {/* Roadmap */}

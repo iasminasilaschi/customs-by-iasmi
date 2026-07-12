@@ -21,11 +21,17 @@ The site is built so each phase adds on top of the last without a redesign.
 - Real inbox: API route + Resend (or a form service) replacing the mailto handoff
 - Media storage: Cloudinary or `/public` + next/image
 
-## Phase 3 — Design Lab v2
-- Moodboard uploads (needs storage — Cloudinary/Supabase)
-- Save & share concepts (needs DB — Supabase/Postgres)
-- Palette extraction from uploaded images (client-side canvas is enough)
-- Richer starters, zone-level colour choices on the SVG sneaker
+## Phase 3 — Design Lab v2 ✅ (3D studio, shipped early)
+- Interactive 3D concept shoe ("Studio Low 01" — procedural, unbranded,
+  built from per-part meshes in `components/design-lab/studio/`)
+- Rotate/zoom, preset camera angles, click-to-select parts
+- Per-part colour: curated swatches, custom picker, preset colourways
+- Concept summary + inspiration note → flows into the commission form
+- Colours persist in localStorage; SVG sketch fallback without WebGL
+- Still ahead in this phase:
+  - Moodboard uploads (needs storage — Cloudinary/Supabase)
+  - Save & share concepts (needs DB — Supabase/Postgres)
+  - Palette extraction from uploaded images (client-side canvas is enough)
 
 ## Phase 4 — More services
 - `/custom-caps` dedicated route (archive category + contact type already exist)
@@ -36,12 +42,14 @@ The site is built so each phase adds on top of the last without a redesign.
 ## Phase 5 — Advanced AI/3D
 - AI-assisted concept generation (Vercel AI SDK + image APIs)
 - Zone-aware sneaker mockups
-- 3D customizer (React Three Fiber + Drei), AR preview
+- Textures/decals/artwork placement on the 3D shoe; swap the procedural
+  model for a scanned GLTF (keep the same part keys); AR preview
 - Customer dashboard, drops
 
 ## Integration seams already in place
 - `data/site.ts` — single place for contact details, slots, lead time
 - `lib/validation.ts` — inquiry schema ready to POST to an API route
 - `InquiryForm.deliver` comment marks where the real submission goes
-- `SneakerPreview` zones map 1:1 to future interactive zone controls
+- `data/shoe.ts` part keys are the contract between the 3D model, the UI
+  and the summary — a future GLTF shoe only maps mesh names onto them
 - All mock data typed and isolated in `/data`

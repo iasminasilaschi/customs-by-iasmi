@@ -15,7 +15,7 @@ export function DesignLabTeaser() {
               className="glow-gold pointer-events-none absolute -top-16 -right-10 h-64 w-64"
             />
             <span className="relative inline-flex items-center rounded-full border border-champagne/30 px-3 py-1 text-[0.8rem] tracking-wide text-champagne">
-              design lab · coming soon
+              design lab · now in 3D
             </span>
             <SneakerPreview
               palette={["#c3ccb4", "#8f9b82", "#d8c69a", "#7a5c45"]}
@@ -38,16 +38,16 @@ export function DesignLabTeaser() {
                   <span className="display-italic text-rose-2">on a shoe.</span>
                 </>
               }
-              lede="Upload a moodboard, request a concept, and preview the direction before we begin. A fuller AI and 3D design lab is slowly on its way — this is the first quiet room."
+              lede="Spin the concept shoe, paint every panel, and send the colour story as a real request. The AI side of the lab is still on its way — but the 3D room is open."
             />
             <div className="mt-7 flex flex-wrap gap-2">
-              <Tag tone="lilac">moodboard upload</Tag>
-              <Tag tone="lilac">concept request</Tag>
-              <Tag tone="gold">3D preview — later</Tag>
+              <Tag tone="lilac">3D shoe — live</Tag>
+              <Tag tone="lilac">per-part colours</Tag>
+              <Tag tone="gold">AI concepts — later</Tag>
             </div>
             <div className="mt-9">
               <Button href="/design-lab" size="lg">
-                Request a concept
+                Open the Design Lab
               </Button>
             </div>
           </div>
