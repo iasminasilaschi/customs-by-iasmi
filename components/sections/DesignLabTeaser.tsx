@@ -38,7 +38,7 @@ export function DesignLabTeaser() {
                   <span className="display-italic text-rose-2">on a shoe.</span>
                 </>
               }
-              lede="Spin the concept shoe, paint every panel, and send the colour story as a real request. The AI side of the lab is still on its way — but the 3D room is open."
+              lede="Spin a real 3D sneaker, paint every panel, put your photos and initials on it, and send it as a real request. The AI side of the lab is still on its way — but the 3D room is open."
             />
             <div className="mt-7 flex flex-wrap gap-2">
               <Tag tone="lilac">3D shoe — live</Tag>

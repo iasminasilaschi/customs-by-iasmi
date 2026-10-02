@@ -1,25 +1,23 @@
 /**
- * Design Lab v2 — the concept shoe.
+ * Design Lab v3 — the concept shoe.
  *
- * Part keys, curated paint swatches and preset colourways for the 3D
- * customizer. The 3D model is a generic low-top silhouette ("Studio
- * Low 01") built in-house — deliberately not a branded shoe, same as the
- * 2D concept sketch. Part keys are stable: a future scanned/GLTF model
- * only needs its mesh names mapped onto these keys.
+ * Part keys, curated paint swatches, finishes and preset colourways for
+ * the 3D customizer. The model is a licensed, unbranded white court
+ * low-top (assets/3d/CREDITS.md), prepared by scripts/prepare-model.mjs —
+ * every mesh in public/models/sneaker.glb carries `extras.part` set to one
+ * of these keys, so the keys are the contract between model and UI.
  */
 
 export type ShoePartKey =
-  | "toeBox"
-  | "mudguard"
-  | "vamp"
-  | "eyestay"
-  | "quarter"
-  | "sideMark"
-  | "heelTab"
+  | "toeCap"
+  | "sideOuter"
+  | "sideInner"
+  | "heel"
   | "tongue"
   | "laces"
-  | "midsole"
-  | "outsole";
+  | "eyelets"
+  | "lining"
+  | "sole";
 
 export interface ShoePartDef {
   key: ShoePartKey;
@@ -29,37 +27,60 @@ export interface ShoePartDef {
 
 /** Ordered toe → heel → sole, the way you'd read the shoe. */
 export const shoeParts: ShoePartDef[] = [
-  { key: "toeBox", label: "Toe box", blurb: "The front cap — first thing anyone sees." },
-  { key: "mudguard", label: "Mudguard", blurb: "The low wrap that takes the weather." },
-  { key: "vamp", label: "Vamp", blurb: "The body of the upper, under the laces." },
-  { key: "eyestay", label: "Lace panel", blurb: "The band the laces run through." },
-  { key: "quarter", label: "Quarter panel", blurb: "The big side canvas — murals live here." },
-  { key: "sideMark", label: "Side mark", blurb: "The twin bars — our stand-in for a logo." },
-  { key: "heelTab", label: "Heel tab", blurb: "The back counter — initials go here a lot." },
+  { key: "toeCap", label: "Toe cap", blurb: "The rounded front — the first thing anyone sees." },
+  { key: "sideOuter", label: "Outer side", blurb: "The big canvas facing the world — made for artwork." },
+  { key: "sideInner", label: "Inner side", blurb: "The quieter twin — match it, or keep a secret." },
+  { key: "heel", label: "Heel & trim", blurb: "Heel counter plus the trim around the collar and laces." },
   { key: "tongue", label: "Tongue", blurb: "Soft real estate for a small motif." },
   { key: "laces", label: "Laces", blurb: "An easy accent — swap-friendly in real life." },
-  { key: "midsole", label: "Midsole", blurb: "The thick line that carries the whole look." },
-  { key: "outsole", label: "Outsole", blurb: "Underfoot — gum or colour, your call." },
+  { key: "eyelets", label: "Eyelets", blurb: "Tiny metal rings — a whisper of shine." },
+  { key: "lining", label: "Lining", blurb: "The inside of the collar and the insole." },
+  { key: "sole", label: "Sole", blurb: "The cupsole — clean white, gum, or something bolder." },
 ];
 
 export const baseShoe = {
-  name: "Studio Low 01",
-  description: "A generic low-top silhouette — the classic court shape, unbranded on purpose.",
+  name: "Court Low",
+  description: "A clean leather court low-top — real panels, unbranded on purpose.",
 };
 
-/** The clean white pair everyone starts from (warm whites, soft gum sole). */
+/** The crisp white pair everyone starts from (soft warm whites). */
 export const defaultColorway: Record<ShoePartKey, string> = {
-  toeBox: "#f6f2e7",
-  mudguard: "#f0ebde",
-  vamp: "#f6f2e7",
-  eyestay: "#f0ebde",
-  quarter: "#f6f2e7",
-  sideMark: "#e7e0cf",
-  heelTab: "#ece6d7",
-  tongue: "#ece5d4",
-  laces: "#f9f6ee",
-  midsole: "#f9f6ee",
-  outsole: "#d9be93",
+  toeCap: "#f7f4ec",
+  sideOuter: "#f7f4ec",
+  sideInner: "#f7f4ec",
+  heel: "#f3efe5",
+  tongue: "#f3efe5",
+  laces: "#fbfaf5",
+  eyelets: "#d9d6cf",
+  lining: "#efeadf",
+  sole: "#f8f7f2",
+};
+
+export type FinishKey = "matte" | "satin" | "gloss" | "metallic";
+
+export const finishes: Record<
+  FinishKey,
+  { label: string; roughness: number; clearcoat: number; metalness: number }
+> = {
+  matte: { label: "matte", roughness: 0.85, clearcoat: 0, metalness: 0 },
+  satin: { label: "satin", roughness: 0.5, clearcoat: 0.25, metalness: 0 },
+  gloss: { label: "gloss", roughness: 0.22, clearcoat: 1, metalness: 0 },
+  metallic: { label: "metallic", roughness: 0.3, clearcoat: 0.4, metalness: 0.85 },
+};
+
+export const finishOrder: FinishKey[] = ["matte", "satin", "gloss", "metallic"];
+
+/** How each part comes out of the box. */
+export const defaultFinish: Record<ShoePartKey, FinishKey> = {
+  toeCap: "satin",
+  sideOuter: "satin",
+  sideInner: "satin",
+  heel: "satin",
+  tongue: "matte",
+  laces: "matte",
+  eyelets: "metallic",
+  lining: "matte",
+  sole: "satin",
 };
 
 export interface PaintSwatch {
@@ -104,19 +125,62 @@ export function swatchName(hex: string): string {
   return s ? s.name : hex.toLowerCase();
 }
 
+/** Lettering styles for text on the shoe — the site's own three voices. */
+export const letteringFonts = [
+  { id: "serif", label: "serif", cssVar: "--font-fraunces", fallback: "Georgia, serif", weight: 600 },
+  { id: "hand", label: "handwritten", cssVar: "--font-caveat", fallback: "cursive", weight: 700 },
+  { id: "clean", label: "clean", cssVar: "--font-grotesk", fallback: "system-ui, sans-serif", weight: 600 },
+] as const;
+
+export type LetteringFontId = (typeof letteringFonts)[number]["id"];
+
+/** Max photos + text pieces on one shoe. */
+export const MAX_ARTWORK = 4;
+
+/** The minimum a summary needs to know about placed artwork. */
+export interface ArtworkSummary {
+  kind: "photo" | "text";
+  part: ShoePartKey;
+  text?: string;
+}
+
 /**
  * One human-readable line describing a configuration — used by the design
  * summary, the "copy concept" button and the commission form context.
  */
-export function conceptSummary(colors: Record<ShoePartKey, string>): string {
+export function conceptSummary(
+  colors: Record<ShoePartKey, string>,
+  finish: Record<ShoePartKey, FinishKey> = defaultFinish,
+  artwork: ArtworkSummary[] = [],
+): string {
   const changed = shoeParts.filter(
-    (p) => colors[p.key].toLowerCase() !== defaultColorway[p.key].toLowerCase(),
+    (p) =>
+      colors[p.key].toLowerCase() !== defaultColorway[p.key].toLowerCase() ||
+      finish[p.key] !== defaultFinish[p.key],
   );
-  if (changed.length === 0) return `${baseShoe.name} — clean white base, untouched`;
-  const painted = changed
-    .map((p) => `${p.label.toLowerCase()}: ${swatchName(colors[p.key])}`)
-    .join(" · ");
-  return `${baseShoe.name} — ${painted}`;
+  const bits: string[] = [];
+  if (changed.length > 0) {
+    bits.push(
+      changed
+        .map((p) => {
+          const f = finish[p.key] !== defaultFinish[p.key] ? ` (${finish[p.key]})` : "";
+          return `${p.label.toLowerCase()}: ${swatchName(colors[p.key])}${f}`;
+        })
+        .join(" · "),
+    );
+  }
+  const label = (k: ShoePartKey) => shoeParts.find((p) => p.key === k)!.label.toLowerCase();
+  const photos = artwork.filter((a) => a.kind === "photo");
+  if (photos.length > 0) {
+    bits.push(
+      `${photos.length} photo${photos.length > 1 ? "s" : ""} placed (${photos.map((p) => label(p.part)).join(", ")})`,
+    );
+  }
+  for (const t of artwork.filter((a) => a.kind === "text")) {
+    bits.push(`text "${t.text}" on ${label(t.part)}`);
+  }
+  if (bits.length === 0) return `${baseShoe.name} — clean white base, untouched`;
+  return `${baseShoe.name} — ${bits.join(" · ")}`;
 }
 
 export interface PresetColorway {
@@ -139,17 +203,15 @@ export const presetColorways: PresetColorway[] = [
     name: "Tokyo Bloom",
     vibe: "soft, romantic",
     colors: {
-      toeBox: "#f6c9d4",
-      mudguard: "#f2ecdf",
-      vamp: "#f9f6ee",
-      eyestay: "#f6c9d4",
-      quarter: "#f9f6ee",
-      sideMark: "#e2745f",
-      heelTab: "#d98ba0",
-      tongue: "#f2ecdf",
+      toeCap: "#f6c9d4",
+      sideOuter: "#f9f6ee",
+      sideInner: "#f9f6ee",
+      heel: "#d98ba0",
+      tongue: "#f6c9d4",
       laces: "#f9f6ee",
-      midsole: "#f9f6ee",
-      outsole: "#d8c69a",
+      eyelets: "#c9a35c",
+      lining: "#f6c9d4",
+      sole: "#f8f7f2",
     },
   },
   {
@@ -157,17 +219,15 @@ export const presetColorways: PresetColorway[] = [
     name: "Botanical Study",
     vibe: "earthy, museum-ish",
     colors: {
-      toeBox: "#cad0be",
-      mudguard: "#5f6f52",
-      vamp: "#e5dccb",
-      eyestay: "#5f6f52",
-      quarter: "#e5dccb",
-      sideMark: "#c9a35c",
-      heelTab: "#2f3a2f",
+      toeCap: "#5f6f52",
+      sideOuter: "#e5dccb",
+      sideInner: "#e5dccb",
+      heel: "#2f3a2f",
       tongue: "#cad0be",
       laces: "#f2ecdf",
-      midsole: "#f2ecdf",
-      outsole: "#d9be93",
+      eyelets: "#c9a35c",
+      lining: "#cad0be",
+      sole: "#d9be93",
     },
   },
   {
@@ -175,17 +235,15 @@ export const presetColorways: PresetColorway[] = [
     name: "Midnight Ink",
     vibe: "dark, calm",
     colors: {
-      toeBox: "#141a2e",
-      mudguard: "#2b3a67",
-      vamp: "#141a2e",
-      eyestay: "#2b3a67",
-      quarter: "#141a2e",
-      sideMark: "#c9a35c",
-      heelTab: "#c9a35c",
+      toeCap: "#141a2e",
+      sideOuter: "#2b3a67",
+      sideInner: "#2b3a67",
+      heel: "#141a2e",
       tongue: "#2b3a67",
       laces: "#f2ecdf",
-      midsole: "#f2ecdf",
-      outsole: "#17150f",
+      eyelets: "#c9a35c",
+      lining: "#c9a35c",
+      sole: "#f2ecdf",
     },
   },
   {
@@ -193,17 +251,15 @@ export const presetColorways: PresetColorway[] = [
     name: "Terracotta Court",
     vibe: "warm, seventies",
     colors: {
-      toeBox: "#e2745f",
-      mudguard: "#a14e32",
-      vamp: "#f2ecdf",
-      eyestay: "#e5dccb",
-      quarter: "#f2ecdf",
-      sideMark: "#7a5c45",
-      heelTab: "#a14e32",
+      toeCap: "#e2745f",
+      sideOuter: "#f2ecdf",
+      sideInner: "#f2ecdf",
+      heel: "#a14e32",
       tongue: "#e5dccb",
       laces: "#f9f6ee",
-      midsole: "#f9f6ee",
-      outsole: "#d9be93",
+      eyelets: "#d9d6cf",
+      lining: "#e5dccb",
+      sole: "#d9be93",
     },
   },
 ];

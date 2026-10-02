@@ -1,13 +1,22 @@
 "use client";
 
 /**
- * Left panel — pick a part, paint it, or apply a whole colour story.
- * Hovering a row highlights the part on the 3D shoe (shared store).
+ * Left panel — pick a part, paint it (colour + finish), add photos and
+ * lettering, or apply a whole colour story. Hovering a row highlights the
+ * part on the 3D shoe (shared store).
  */
 
-import { paintSwatches, presetColorways, shoeParts, swatchName } from "@/data/shoe";
+import {
+  finishes,
+  finishOrder,
+  paintSwatches,
+  presetColorways,
+  shoeParts,
+  swatchName,
+} from "@/data/shoe";
 import { cn } from "@/lib/utils";
 import { useStudio } from "./store";
+import { ArtPanel } from "./ArtPanel";
 
 export function PartsPanel() {
   const colors = useStudio((s) => s.colors);
@@ -15,6 +24,8 @@ export function PartsPanel() {
   const select = useStudio((s) => s.select);
   const hover = useStudio((s) => s.hover);
   const paint = useStudio((s) => s.paint);
+  const finish = useStudio((s) => s.finish);
+  const setFinish = useStudio((s) => s.setFinish);
   const resetPart = useStudio((s) => s.resetPart);
   const resetAll = useStudio((s) => s.resetAll);
   const applyPreset = useStudio((s) => s.applyPreset);
@@ -86,6 +97,28 @@ export function PartsPanel() {
               })}
             </div>
 
+            <div className="mt-4" role="group" aria-label={`Finish for ${active.label}`}>
+              <p className="mb-1.5 text-sm text-muted">finish</p>
+              <div className="flex flex-wrap gap-1.5">
+                {finishOrder.map((f) => (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => setFinish(active.key, f)}
+                    aria-pressed={finish[active.key] === f}
+                    className={cn(
+                      "rounded-full border px-3 py-1 text-sm transition-colors",
+                      finish[active.key] === f
+                        ? "border-olive/50 bg-sage/15 text-cream"
+                        : "border-line text-muted hover:bg-cream-soft/60 hover:text-cream",
+                    )}
+                  >
+                    {finishes[f].label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="mt-4 flex items-center justify-between gap-3">
               <label className="flex cursor-pointer items-center gap-2 text-sm text-muted">
                 <span className="relative inline-block h-8 w-8 overflow-hidden rounded-full border border-line">
@@ -116,9 +149,12 @@ export function PartsPanel() {
         )}
       </section>
 
-      {/* 03 — colour stories */}
+      {/* 03 — photos & words */}
+      <ArtPanel />
+
+      {/* 04 — colour stories */}
       <section aria-label="Preset colourways" className="rounded-blob border border-line bg-coal p-5">
-        <p className="eyebrow mb-1">03 · colour stories</p>
+        <p className="eyebrow mb-1">04 · colour stories</p>
         <p className="text-sm text-muted">Whole-shoe starting points — then make them yours.</p>
         <div className="mt-3 space-y-1.5">
           {presetColorways.map((preset) => (
@@ -133,7 +169,7 @@ export function PartsPanel() {
                 <span className="block truncate text-sm text-muted">{preset.vibe}</span>
               </span>
               <span className="flex shrink-0 -space-x-1.5">
-                {[preset.colors.toeBox, preset.colors.quarter, preset.colors.sideMark, preset.colors.outsole].map(
+                {[preset.colors.toeCap, preset.colors.sideOuter, preset.colors.heel, preset.colors.sole].map(
                   (c, i) => (
                     <span
                       key={i}

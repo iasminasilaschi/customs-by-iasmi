@@ -7,7 +7,7 @@ import { getPiece } from "@/data/portfolio";
 export const metadata: Metadata = {
   title: "Design Lab",
   description:
-    "Spin the concept shoe, paint every panel, and send the colour story as a real commission request. Design Lab v2 — the interactive 3D studio.",
+    "Spin a real 3D sneaker, paint every panel, add your photos and initials, and send the concept as a real commission request — the interactive Design Lab studio.",
 };
 
 const roadmap = [
@@ -25,8 +25,8 @@ const roadmap = [
   },
   {
     phase: "Phase 3 — now",
-    title: "Design Lab v2 — 3D studio",
-    items: ["Interactive 3D concept shoe", "Per-part colour stories", "Concept → commission handoff", "Saved in your browser as you play"],
+    title: "Design Lab — 3D studio",
+    items: ["Real 3D sneaker, nine paintable parts", "Photos, initials & finishes on the shoe", "Concept image → commission handoff", "Saved in your browser as you play"],
     status: "live",
   },
   {
@@ -38,7 +38,7 @@ const roadmap = [
   {
     phase: "Phase 5",
     title: "AI + deeper lab",
-    items: ["AI-assisted concepts", "Moodboard & palette extraction", "Textures, decals & artwork placement", "Deposits & dashboard"],
+    items: ["AI-assisted concepts", "Moodboard & palette extraction", "Leather textures & artwork tools", "Deposits & dashboard"],
     status: "dreaming",
   },
 ];
@@ -58,7 +58,7 @@ export default async function DesignLabPage({
     <div className="mx-auto max-w-[90rem] px-5 pt-36 pb-20 sm:px-6 lg:px-12 xl:px-20">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading
-          eyebrow="The Design Lab · v2"
+          eyebrow="The Design Lab · v3"
           title={
             <>
               Paint the pair{" "}

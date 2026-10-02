@@ -18,7 +18,7 @@ import { InquiryForm } from "@/components/forms/InquiryForm";
 import { conceptSummary } from "@/data/shoe";
 import { PartsPanel } from "./PartsPanel";
 import { SummaryPanel } from "./SummaryPanel";
-import { useStudio } from "./store";
+import { artworkSummary, useStudio } from "./store";
 
 const ShoeViewer = dynamic(() => import("./ShoeViewer"), {
   ssr: false,
@@ -37,6 +37,8 @@ const ShoeViewer = dynamic(() => import("./ShoeViewer"), {
 
 export function DesignLabStudio({ initialIdea = "" }: { initialIdea?: string }) {
   const colors = useStudio((s) => s.colors);
+  const finish = useStudio((s) => s.finish);
+  const artwork = useStudio((s) => s.artwork);
   const note = useStudio((s) => s.note);
 
   // Colours + note persist per-browser; rehydrate after mount (SSR-safe).
@@ -46,8 +48,9 @@ export function DesignLabStudio({ initialIdea = "" }: { initialIdea?: string }) 
 
   const context = useMemo(() => {
     const trimmed = note.trim();
-    return `3D concept · ${conceptSummary(colors)}${trimmed ? ` · inspiration: ${trimmed}` : ""}`;
-  }, [colors, note]);
+    const summary = conceptSummary(colors, finish, artworkSummary(artwork));
+    return `3D concept · ${summary}${trimmed ? ` · inspiration: ${trimmed}` : ""}`;
+  }, [colors, finish, artwork, note]);
 
   return (
     <div className="space-y-6">
@@ -87,15 +90,15 @@ export function DesignLabStudio({ initialIdea = "" }: { initialIdea?: string }) 
         className="grain scroll-mt-28 rounded-blob border border-line bg-coal p-6 sm:p-10"
       >
         <div className="mb-8 max-w-xl">
-          <p className="eyebrow mb-2">04 · make it real</p>
+          <p className="eyebrow mb-2">05 · make it real</p>
           <h2 className="display text-3xl text-cream">
             A concept first. A{" "}
             <span className="display-italic text-rose-2">hand-painted pair</span> next.
           </h2>
           <p className="mt-3 text-sm text-muted">
-            Your colour story comes with the request automatically. I&apos;ll
-            reply with thoughts, a rough quote and next steps — no commitment
-            yet.
+            Your colour story comes with the request automatically — attach
+            the saved design image if you added photos. I&apos;ll reply with
+            thoughts, a rough quote and next steps — no commitment yet.
           </p>
         </div>
         <InquiryForm defaultType="sneakers" initialIdea={initialIdea} context={context} />

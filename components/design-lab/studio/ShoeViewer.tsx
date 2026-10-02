@@ -2,39 +2,41 @@
 
 /**
  * The 3D stage: canvas, warm studio lighting, orbit controls, preset
- * camera angles and the paintable shoe. Loaded client-only (dynamic,
+ * camera angles and the paintable sneaker. Loaded client-only (dynamic,
  * ssr:false) from DesignLabStudio.
  *
- * No external assets — lighting is procedural (Lightformers), the shoe is
- * generated, so the stage appears instantly and works offline.
+ * Lighting is procedural (Lightformers); the only asset is the ~1.5 MB
+ * sneaker GLB, shown with a progress ring while it streams in.
  */
 
-import { useEffect, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   OrbitControls,
   ContactShadows,
   Environment,
   Lightformer,
+  useProgress,
 } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import { damp3 } from "maath/easing";
 import { cn } from "@/lib/utils";
-import { shoeParts } from "@/data/shoe";
+import { baseShoe, shoeParts } from "@/data/shoe";
 import { useStudio, type ViewKey } from "./store";
 import { ShoeModel } from "./ShoeModel";
+import { SHOE_HEIGHT } from "./model-parts";
 import { SneakerPreview } from "@/components/design-lab/SneakerPreview";
 
-const TARGET: [number, number, number] = [0, 0.42, 0];
+const TARGET: [number, number, number] = [0, SHOE_HEIGHT * 0.42, 0];
 
 const VIEWS: Record<ViewKey, [number, number, number]> = {
   threeQuarter: [3.35, 1.65, 3.45],
   lateral: [0.15, 0.75, 5.0],
   medial: [0.15, 0.75, -5.0],
-  front: [4.9, 0.75, 0.8],
-  back: [-4.85, 1.0, 0.7],
-  top: [0.35, 5.0, 0.4],
+  front: [4.9, 0.85, 0.8],
+  back: [-4.85, 1.1, 0.7],
+  top: [0.35, 6.2, 0.4],
 };
 
 const VIEW_BUTTONS: Array<{ view: ViewKey; label: string }> = [
@@ -98,13 +100,61 @@ function FloatIn({ children }: { children: React.ReactNode }) {
   );
 }
 
+const nextFrame = () =>
+  new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+
+/**
+ * Registers `snapshot()` in the store: a clean render (no hover/selection
+ * glow) composed onto the studio's cream ground with a small caption.
+ */
+function SnapshotBridge() {
+  const gl = useThree((s) => s.gl);
+  const scene = useThree((s) => s.scene);
+  const camera = useThree((s) => s.camera);
+  const setSnapshot = useStudio((s) => s.setSnapshot);
+
+  useEffect(() => {
+    setSnapshot(async () => {
+      const { selected, hovered } = useStudio.getState();
+      useStudio.setState({ selected: null, hovered: null });
+      await nextFrame();
+      gl.render(scene, camera);
+      const src = gl.domElement;
+      const out = document.createElement("canvas");
+      out.width = src.width;
+      out.height = src.height;
+      const ctx = out.getContext("2d");
+      if (!ctx) return null;
+      ctx.fillStyle = "#ece2d1";
+      ctx.fillRect(0, 0, out.width, out.height);
+      const glow = ctx.createRadialGradient(
+        out.width / 2, out.height * 0.42, 0,
+        out.width / 2, out.height * 0.42, out.width * 0.6,
+      );
+      glow.addColorStop(0, "rgba(143,155,130,0.22)");
+      glow.addColorStop(1, "rgba(143,155,130,0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, out.width, out.height);
+      ctx.drawImage(src, 0, 0);
+      const px = Math.round(out.width / 60);
+      ctx.fillStyle = "#7a7060";
+      ctx.font = `${px}px system-ui, sans-serif`;
+      ctx.fillText(`${baseShoe.name} concept · customs by iasmi · iasmi.ro`, px * 1.5, out.height - px * 1.5);
+      useStudio.setState({ selected, hovered });
+      return out.toDataURL("image/png");
+    });
+    return () => setSnapshot(null);
+  }, [gl, scene, camera, setSnapshot]);
+  return null;
+}
+
 /** Flat fallback if WebGL is unavailable — the 2D concept sketch instead. */
 function FlatFallback() {
   const colors = useStudio((s) => s.colors);
   return (
     <div className="flex h-full flex-col items-center justify-center gap-4 p-8">
       <SneakerPreview
-        palette={[colors.toeBox, colors.sideMark, colors.heelTab, colors.vamp]}
+        palette={[colors.toeCap, colors.heel, colors.sole, colors.sideOuter]}
         className="w-full max-w-md"
       />
       <p className="max-w-sm text-center text-sm text-muted">
@@ -115,15 +165,48 @@ function FlatFallback() {
   );
 }
 
+/** Progress ring while the sneaker model streams in. */
+function LoadingVeil() {
+  const { active, progress } = useProgress();
+  const [shown, setShown] = useState(true);
+  useEffect(() => {
+    if (!active && progress === 100) {
+      const t = setTimeout(() => setShown(false), 250);
+      return () => clearTimeout(t);
+    }
+  }, [active, progress]);
+  return (
+    <div
+      className={cn(
+        "pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-500",
+        shown ? "opacity-100" : "opacity-0",
+      )}
+      aria-hidden={!shown}
+    >
+      <div className="text-center">
+        <div
+          aria-hidden
+          className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-sage border-t-transparent"
+        />
+        <p className="text-sm text-muted">warming up the studio… {Math.round(progress)}%</p>
+      </div>
+    </div>
+  );
+}
+
 export default function ShoeViewer() {
   const selected = useStudio((s) => s.selected);
   const hovered = useStudio((s) => s.hovered);
   const autoSpin = useStudio((s) => s.autoSpin);
   const colors = useStudio((s) => s.colors);
   const view = useStudio((s) => s.view);
+  const placing = useStudio((s) => s.placing);
+  const placingArt = useStudio((s) => s.artwork.find((a) => a.id === s.placing));
   const requestView = useStudio((s) => s.requestView);
   const stopSpin = useStudio((s) => s.stopSpin);
   const select = useStudio((s) => s.select);
+  const startPlacing = useStudio((s) => s.startPlacing);
+  const removeArtwork = useStudio((s) => s.removeArtwork);
   const [ready, setReady] = useState(false);
 
   // Respect prefers-reduced-motion: no idle auto-spin.
@@ -137,17 +220,50 @@ export default function ShoeViewer() {
     if (v && v in VIEWS) requestView(v as ViewKey);
   }, [requestView]);
 
+  const cancelPlacing = () => {
+    // a brand-new piece that never landed is dropped; a "move" just stops
+    if (placingArt && placingArt.mesh === null) removeArtwork(placingArt.id);
+    else startPlacing(null);
+  };
+
+  // On stacked (mobile) layouts the panels sit below the stage — bring
+  // the shoe back into view when it's waiting for a click.
+  const root = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (placing && window.innerWidth < 1024) {
+      root.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [placing]);
+
+  // Esc cancels placing
+  useEffect(() => {
+    if (!placing) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") cancelPlacing();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
   const activePart = shoeParts.find((p) => p.key === (hovered ?? selected));
 
   return (
-    <div className="relative h-full w-full">
+    <div ref={root} className="relative h-full w-full">
+      <LoadingVeil />
       <Canvas
         dpr={[1, 1.8]}
         camera={{ position: VIEWS.threeQuarter, fov: 30, near: 0.1, far: 40 }}
-        gl={{ antialias: true, alpha: true }}
+        gl={{
+          antialias: true,
+          alpha: true,
+          // Neutral keeps white leather white (ACES greys it out)
+          toneMapping: THREE.NeutralToneMapping,
+        }}
         fallback={<FlatFallback />}
         onCreated={() => setReady(true)}
-        onPointerMissed={() => select(null)}
+        onPointerMissed={() => {
+          if (!useStudio.getState().placing) select(null);
+        }}
         className="!touch-none"
       >
         {/* warm, calm studio light — no harsh contrast */}
@@ -160,9 +276,11 @@ export default function ShoeViewer() {
           <Lightformer intensity={0.4} rotation-y={-Math.PI / 2} position={[4, 1, -1]} scale={[4, 2, 1]} color="#e9edda" />
         </Environment>
 
-        <FloatIn>
-          <ShoeModel />
-        </FloatIn>
+        <Suspense fallback={null}>
+          <FloatIn>
+            <ShoeModel />
+          </FloatIn>
+        </Suspense>
 
         <ContactShadows
           position={[0, 0.001, 0]}
@@ -187,13 +305,14 @@ export default function ShoeViewer() {
           onStart={stopSpin}
         />
         <CameraRig />
+        <SnapshotBridge />
       </Canvas>
 
       {/* active part chip */}
       <div
         className={cn(
           "pointer-events-none absolute left-4 top-4 flex items-center gap-2 rounded-full border border-line bg-cream-soft/85 px-4 py-1.5 backdrop-blur-sm transition-opacity duration-300",
-          activePart ? "opacity-100" : "opacity-0",
+          activePart && !placing ? "opacity-100" : "opacity-0",
         )}
         aria-live="polite"
       >
@@ -207,6 +326,25 @@ export default function ShoeViewer() {
           </>
         )}
       </div>
+
+      {/* placing hint */}
+      {placing && (
+        <div
+          className="absolute left-1/2 top-4 flex -translate-x-1/2 items-center gap-3 whitespace-nowrap rounded-full border border-olive/40 bg-cream-soft/90 py-1.5 pl-4 pr-1.5 text-sm text-cream shadow-soft backdrop-blur-sm"
+          role="status"
+        >
+          <span>
+            click the shoe where your {placingArt?.kind === "text" ? "text" : "photo"} should go
+          </span>
+          <button
+            type="button"
+            onClick={cancelPlacing}
+            className="rounded-full px-3 py-1 text-muted transition-colors hover:bg-sage/15 hover:text-cream"
+          >
+            cancel
+          </button>
+        </div>
+      )}
 
       {/* rotate hint — fades once the visitor takes over */}
       <p
