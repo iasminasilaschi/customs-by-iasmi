@@ -112,8 +112,8 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectProps>(
 );
 
 /**
- * Upload placeholder — real media uploads arrive with backend/storage in a
- * later phase. Kept visible so the flow is honest about what's coming.
+ * Moodboard images aren't uploaded through the form (no backend yet) — say so
+ * plainly and point to the channels that work.
  */
 export function UploadPlaceholder({ label = "Inspiration images" }: { label?: string }) {
   return (
@@ -122,14 +122,10 @@ export function UploadPlaceholder({ label = "Inspiration images" }: { label?: st
         <span>{label}</span>
         <span className="text-sm text-muted">optional</span>
       </p>
-      <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line bg-ink/40 px-4 py-8 text-center">
-        <span aria-hidden className="text-2xl">🖼</span>
-        <p className="text-base text-cream/70">Drag & drop moodboard uploads</p>
-        <p className="text-sm text-muted">
-          coming soon — for now, paste links in your message or send images by
-          email / Instagram after submitting
-        </p>
-      </div>
+      <p className="rounded-xl border border-line bg-ink/40 px-4 py-4 text-base text-cream/70">
+        Got a moodboard or reference photos? Paste links in your message, or
+        send the images by email / Instagram after submitting.
+      </p>
     </div>
   );
 }

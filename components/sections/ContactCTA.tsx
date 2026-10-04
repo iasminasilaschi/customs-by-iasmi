@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
-import { site } from "@/data/site";
 
 export function ContactCTA() {
   return (
@@ -19,8 +18,7 @@ export function ContactCTA() {
             <span className="display-italic text-rose-2">I&apos;ll help shape it.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-md text-lg text-muted">
-            {site.monthlySlots} commissions a month, so every pair gets the time
-            it deserves. Tell me what refuses to leave your brain.
+            Tell me what refuses to leave your brain.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Button href="/design-lab" size="lg">

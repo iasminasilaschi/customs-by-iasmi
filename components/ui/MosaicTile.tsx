@@ -1,17 +1,18 @@
-import { ArtPlaceholder } from "@/components/mosaic/ArtPlaceholder";
+import { Photo } from "@/components/ui/Photo";
 import { cn } from "@/lib/utils";
+import type { PhotoData } from "@/data/media";
 
 /**
- * A single curated tile in the life mosaic — a soft framed colour field with
- * a small quiet caption. Calm and even, never a chaotic collage.
+ * A single curated tile in the life mosaic — a real photo in a soft frame
+ * with an optional quiet caption.
  */
 export function MosaicTile({
-  colors,
+  photo,
   label,
   className,
 }: {
-  colors: string[];
-  label: string;
+  photo: PhotoData;
+  label?: string;
   className?: string;
 }) {
   return (
@@ -21,14 +22,16 @@ export function MosaicTile({
         className,
       )}
     >
-      <ArtPlaceholder
-        colors={colors}
-        showLabel={false}
-        className="h-full w-full transition-transform duration-700 group-hover:scale-[1.05]"
+      <Photo
+        photo={photo}
+        sizes="(min-width: 1024px) 20vw, 45vw"
+        className="transition-transform duration-700 group-hover:scale-[1.05]"
       />
-      <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-deep/70 to-transparent px-4 pb-3 pt-8 text-[0.78rem] font-medium tracking-wide text-paper">
-        {label}
-      </figcaption>
+      {label && (
+        <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-deep/70 to-transparent px-4 pb-3 pt-8 text-[0.78rem] font-medium tracking-wide text-paper">
+          {label}
+        </figcaption>
+      )}
     </figure>
   );
 }

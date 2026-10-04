@@ -9,11 +9,12 @@ import {
   type PortfolioCategory,
 } from "@/data/portfolio";
 
+// Only offer filters for categories that actually have a piece.
 const filters: Array<{ value: PortfolioCategory | "all"; label: string }> = [
   { value: "all", label: "Everything" },
-  ...(
-    Object.entries(categoryLabels) as Array<[PortfolioCategory, string]>
-  ).map(([value, label]) => ({ value, label })),
+  ...(Object.entries(categoryLabels) as Array<[PortfolioCategory, string]>)
+    .filter(([value]) => portfolio.some((p) => p.category === value))
+    .map(([value, label]) => ({ value, label })),
 ];
 
 export function ProjectsGrid() {
@@ -49,14 +50,14 @@ export function ProjectsGrid() {
         <div className="glass grain mt-12 rounded-blob p-12 text-center">
           <p className="hand text-2xl text-lilac">nothing here yet…</p>
           <p className="mt-3 text-sm text-muted">
-            This corner of the studio is still being painted. Check back soon —
-            or be the reason it fills up.
+            The first projects are being photographed and written up. In the
+            meantime, you can see everything I post on Instagram.
           </p>
         </div>
       ) : (
         <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
           {pieces.map((piece) => (
-            <ProjectCard key={piece.id} piece={piece} />
+            <ProjectCard key={piece.slug} piece={piece} />
           ))}
         </div>
       )}

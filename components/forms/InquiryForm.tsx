@@ -192,56 +192,11 @@ export function InquiryForm({
         </fieldset>
       )}
 
-      {type === "web" && (
-        <fieldset className="space-y-5 rounded-2xl border border-gold/25 bg-gold/5 p-5">
-          <legend className="eyebrow px-2">website / digital details</legend>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <TextField
-              label="Business / project name"
-              optional
-              placeholder="what's it called?"
-              {...register("projectName")}
-              error={errors.projectName?.message}
-            />
-            <TextField
-              label="Type of website / app"
-              optional
-              placeholder="portfolio, landing page, tiny app…"
-              {...register("siteType")}
-              error={errors.siteType?.message}
-            />
-          </div>
-          <TextField
-            label="Main goal"
-            optional
-            placeholder="what should it do for you?"
-            {...register("goal")}
-            error={errors.goal?.message}
-          />
-          <SelectField
-            label="Do you already have content (text, photos, logo)?"
-            options={[
-              { value: "yes", label: "Yes, mostly ready" },
-              { value: "partly", label: "Some of it" },
-              { value: "no", label: "Starting from zero" },
-            ]}
-            placeholder="Choose one"
-            {...register("hasContent")}
-            error={errors.hasContent?.message}
-          />
-          <p className="text-sm leading-relaxed text-muted">
-            Honest note: this side of the studio is young — small, personal
-            projects built in collaboration, not agency work. If that sounds
-            right, I&apos;d love to hear the idea.
-          </p>
-        </fieldset>
-      )}
-
       <div className="grid gap-5 sm:grid-cols-2">
         <TextField
           label="Budget range"
           optional
-          placeholder="e.g. €150–250"
+          placeholder="a rough number or range"
           hint="Rough ranges are fine — it helps me suggest the right scope."
           {...register("budget")}
           error={errors.budget?.message}

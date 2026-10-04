@@ -13,8 +13,7 @@ export function Footer() {
             </p>
             <p className="mt-4 text-base leading-relaxed text-paper/70">
               A personal creative studio for hand-painted sneakers and wearable
-              art — with graduation caps and small digital experiments growing
-              slowly alongside. {site.location}.
+              art, and graduation caps. {site.location}.
             </p>
             <p className="hand mt-5 rotate-[-1.5deg] text-xl text-champagne">
               send the mood, wear the artwork

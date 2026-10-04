@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s · Customs by Iasmi",
   },
   description:
-    "A personal creative studio for hand-painted sneakers and wearable art. One-of-one commissions painted by hand — plus graduation caps and small digital experiments, growing slowly from a mosaic of obsessions.",
+    "A personal creative studio for hand-painted sneakers and wearable art. One-of-one commissions painted by hand, plus custom graduation caps.",
   keywords: [
     "custom sneakers",
     "hand-painted sneakers",
@@ -46,6 +46,7 @@ export const metadata: Metadata = {
     url: "https://iasmi.ro",
     siteName: "Customs by Iasmi",
     type: "website",
+    images: ["/work/graduation-caps/both-caps.jpg"],
   },
 };
 

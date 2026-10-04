@@ -9,8 +9,6 @@ import { z } from "zod";
 export const projectTypes = [
   { value: "sneakers", label: "Custom sneakers" },
   { value: "cap", label: "Custom graduation cap" },
-  { value: "nails", label: "Custom nail art / press-ons" },
-  { value: "web", label: "Website / digital project" },
   { value: "collab", label: "Collaboration" },
   { value: "other", label: "Other creative idea" },
 ] as const;
@@ -23,7 +21,7 @@ export const inquirySchema = z
     email: z.email("I need a real email to reply to."),
     phone: z.string().optional(),
     instagram: z.string().optional(),
-    projectType: z.enum(["sneakers", "cap", "nails", "web", "collab", "other"]),
+    projectType: z.enum(["sneakers", "cap", "collab", "other"]),
 
     // sneakers
     baseShoe: z.string().optional(),
@@ -36,12 +34,6 @@ export const inquirySchema = z
     schoolColors: z.string().optional(),
     capNameYear: z.string().optional(),
     hasCap: z.enum(["yes", "no"]).optional(),
-
-    // web / digital
-    projectName: z.string().optional(),
-    siteType: z.string().optional(),
-    goal: z.string().optional(),
-    hasContent: z.enum(["yes", "partly", "no"]).optional(),
 
     // shared
     budget: z.string().optional(),

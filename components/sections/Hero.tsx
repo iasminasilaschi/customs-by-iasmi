@@ -2,7 +2,8 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
-import { ArtPlaceholder } from "@/components/mosaic/ArtPlaceholder";
+import { Photo } from "@/components/ui/Photo";
+import { heroPhoto } from "@/data/media";
 import { site } from "@/data/site";
 
 export function Hero() {
@@ -24,7 +25,7 @@ export function Hero() {
         className="glow-sage pointer-events-none absolute -top-32 right-[-10%] h-[36rem] w-[36rem]"
       />
 
-      <div className="mx-auto grid max-w-[90rem] items-center gap-14 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20 lg:px-12 xl:px-20">
+      <div className={`mx-auto grid max-w-[90rem] items-center gap-14 px-4 sm:px-6 ${heroPhoto ? "lg:grid-cols-[1.1fr_0.9fr] lg:gap-20" : ""} lg:px-12 xl:px-20`}>
         {/* Copy */}
         <div className="relative z-10 max-w-2xl">
           <motion.p {...enter(0)} className="hand mb-4 text-3xl text-sage">
@@ -61,28 +62,23 @@ export function Hero() {
             {...enter(0.32)}
             className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-2 text-base text-muted"
           >
-            <span>{site.monthlySlots} commissions each month</span>
-            <span aria-hidden className="text-gold">✦</span>
             <span>{site.location}</span>
           </motion.div>
         </div>
 
-        {/* One large editorial visual */}
-        <motion.div
-          {...enter(0.2)}
-          className="relative mx-auto w-full max-w-md lg:max-w-none"
-        >
-          <div className="overflow-hidden rounded-[2rem] border border-line bg-cream-soft p-3 shadow-lift">
-            <ArtPlaceholder
-              colors={["#c3ccb4", "#8f9b82", "#d8c69a", "#7a5c45"]}
-              label="Sakura Drift — one-of-one commission"
-              className="aspect-[4/5] rounded-[1.4rem]"
-            />
-          </div>
-          <span className="hand absolute -bottom-4 -left-3 rotate-[-4deg] rounded-xl border border-line bg-cream-soft px-4 py-1.5 text-lg text-brown shadow-soft">
-            one-of-one, always
-          </span>
-        </motion.div>
+        {/* One large editorial visual — only when a real photo is set */}
+        {heroPhoto && (
+          <motion.div
+            {...enter(0.2)}
+            className="relative mx-auto w-full max-w-md lg:max-w-none"
+          >
+            <div className="overflow-hidden rounded-[2rem] border border-line bg-cream-soft p-3 shadow-lift">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.4rem]">
+                <Photo photo={heroPhoto} priority sizes="(min-width: 1024px) 40vw, 90vw" />
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );

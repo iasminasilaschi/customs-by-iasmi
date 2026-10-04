@@ -5,7 +5,7 @@ import { ProjectsGrid } from "@/components/projects/ProjectsGrid";
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Custom hand-painted sneakers, graduation caps, nail art, sketches, process logs and digital experiments — the growing body of projects from Customs by Iasmi.",
+    "Custom hand-painted sneakers and graduation caps — the projects from Customs by Iasmi.",
 };
 
 export default function ArchivePage() {
@@ -20,7 +20,7 @@ export default function ArchivePage() {
             <span className="display-italic text-rose-2">and counting.</span>
           </>
         }
-        lede="Sneakers, caps, nail art, sketches and experiments. Currently filled with placeholder case studies that show how real projects will be documented: before/after, process, story."
+        lede="Sneakers and graduation caps — everything I've actually made, with the process behind it."
       />
       <div className="mt-16 lg:mt-20">
         <ProjectsGrid />

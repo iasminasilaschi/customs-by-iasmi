@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
-import { VideoPlaceholder } from "@/components/mosaic/VideoPlaceholder";
+import { VideoPlayer } from "@/components/ui/VideoPlayer";
 import { Tag } from "@/components/ui/Tag";
-import { site } from "@/data/site";
+import { processVideo } from "@/data/media";
 
 export const metadata: Metadata = {
   title: "Process",
@@ -70,7 +70,7 @@ export default function ProcessPage() {
             <span className="display-italic text-rose-2">yours forever.</span>
           </>
         }
-        lede={`Every commission follows the same honest path. Current lead time: ${site.leadTimeWeeks} weeks (placeholder — confirmed per project), with ${site.monthlySlots} slots per month.`}
+        lede="Every commission follows the same honest path, from first message to the last coat of sealer."
       />
 
       {/* Steps */}
@@ -114,12 +114,11 @@ export default function ProcessPage() {
               shoe brands.
             </p>
           </div>
-          <VideoPlaceholder
-            colors={["#40405c", "#e2745f", "#a89f92"]}
-            label="Materials & sealing — full walkthrough"
-            duration="1:24"
-            className="aspect-[4/3]"
-          />
+          {processVideo && (
+            <div className="aspect-[4/3]">
+              <VideoPlayer video={processVideo} label="Materials and sealing walkthrough" />
+            </div>
+          )}
         </section>
       </Reveal>
 

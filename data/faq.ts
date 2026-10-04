@@ -30,12 +30,6 @@ export const faqItems: FAQItem[] = [
     category: "ordering",
   },
   {
-    question: "How long does a commission take?",
-    answer:
-      "Typically 3–5 weeks from deposit, depending on complexity and the current queue (this is a placeholder estimate and will be confirmed per project). I take a limited number of commissions per month so each pair gets real attention.",
-    category: "ordering",
-  },
-  {
     question: "Can I pay a deposit instead of the full price?",
     answer:
       "Yes — commissions are deposit-based. A deposit confirms your slot and covers materials; the remainder is due before shipping. Exact split is agreed per project.",

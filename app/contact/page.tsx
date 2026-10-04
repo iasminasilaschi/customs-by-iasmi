@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { InquiryForm } from "@/components/forms/InquiryForm";
-import { Tag } from "@/components/ui/Tag";
 import { site } from "@/data/site";
 import type { ProjectType } from "@/lib/validation";
 
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Start a custom sneaker commission, ask about graduation caps or a tiny website — or just say hi. Email, Instagram, TikTok, or the form.",
+    "Start a custom sneaker commission, ask about a graduation cap — or just say hi. Email, Instagram, TikTok, or the form.",
 };
 
-const validTypes: ProjectType[] = ["sneakers", "cap", "nails", "web", "collab", "other"];
+const validTypes: ProjectType[] = ["sneakers", "cap", "collab", "other"];
 
 const channels = [
   {
@@ -75,23 +74,6 @@ export default async function ContactPage({
               <p className="mt-1 text-sm text-muted">{c.note}</p>
             </a>
           ))}
-
-          <div className="glass grain rounded-blob p-6">
-            <div className="flex items-center gap-2">
-              <span aria-hidden className="h-2 w-2 animate-pulse rounded-full bg-rose" />
-              <p className="text-sm font-medium text-cream">Availability</p>
-            </div>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              {site.monthlySlots} commission slots per month. Current lead
-              time: {site.leadTimeWeeks} weeks (placeholder). Graduation caps
-              for September are almost booked.
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Tag tone="rose">sneakers — open</Tag>
-              <Tag tone="lilac">caps — 2 slots reserved</Tag>
-              <Tag tone="gold">web — by conversation</Tag>
-            </div>
-          </div>
         </div>
 
         {/* Form */}

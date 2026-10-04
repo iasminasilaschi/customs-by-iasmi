@@ -4,6 +4,7 @@ import { HowItWorks } from "@/components/sections/HowItWorks";
 import { DesignLabTeaser } from "@/components/sections/DesignLabTeaser";
 import { BeyondSneakers } from "@/components/sections/BeyondSneakers";
 import { AboutTeaser } from "@/components/sections/AboutTeaser";
+import { InstagramGrid } from "@/components/sections/InstagramGrid";
 import { ContactCTA } from "@/components/sections/ContactCTA";
 
 export default function HomePage() {
@@ -14,6 +15,7 @@ export default function HomePage() {
       <HowItWorks />
       <DesignLabTeaser />
       <BeyondSneakers />
+      <InstagramGrid />
       <AboutTeaser />
       <ContactCTA />
     </>

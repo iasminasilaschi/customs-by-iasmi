@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "model:prepare": "node scripts/prepare-model.mjs"
+    "model:prepare": "node scripts/prepare-model.mjs",
+    "media:prepare": "node scripts/prepare-media.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",

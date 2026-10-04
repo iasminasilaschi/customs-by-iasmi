@@ -1,6 +1,5 @@
 /**
- * Central site config — swap placeholders here before launch.
- * All contact details below are PLACEHOLDERS.
+ * Central site config. Contact details here still need confirming.
  */
 export const site = {
   name: "iasmi.ro",
@@ -11,8 +10,6 @@ export const site = {
   tiktok: "https://tiktok.com/@iasminasilaschi",
   tiktokHandle: "@iasminasilaschi",
   location: "Romania · ships worldwide",
-  monthlySlots: 3, // placeholder — commissions per month
-  leadTimeWeeks: "3–5", // placeholder lead time
 };
 
 export const navLinks = [
