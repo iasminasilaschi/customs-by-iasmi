@@ -33,7 +33,7 @@ export interface PortfolioPiece {
   before?: PhotoData;
   after?: PhotoData;
   instagramUrl?: string; // link to the real post, if it was posted
-  reelUrl?: string; // link to a making-of reel
+  reelUrl?: string; // link to a reel
   tags?: string[];
   baseShoe?: string;
   story?: string; // her own words
@@ -55,7 +55,7 @@ export const portfolio: PortfolioPiece[] = [
     tags: ["hand-painted", "graduation cap", "medicine", "florals"],
     cover: {
       src: "/work/doctor-cu-suflet-si-ratiune/cover.jpg",
-      alt: "Finished graduation cap with pink flowers, green leaves, a gold and pink stethoscope and the words “doctor cu suflet și rațiune 2026”.",
+      alt: "Close-up of the finished graduation cap, held out to the camera: pink flowers, green leaves, a gold and pink stethoscope and the words “doctor cu suflet și rațiune 2026”.",
     },
     story:
       "Patri found an inspiration picture online and used ChatGPT to make it hers, with her own words already in place: “doctor cu suflet și rațiune”, a doctor with soul and reason. That picture was the whole brief, and honestly, it's a lovely way to use AI: take something you love and personalise it. AI pictures aren't always realistic to paint, but this time it was the happy, useful kind. My part was turning AI into reality, 1:1, with my own two hands, and I think the real cap turned out even better than the reference: accurate, but real and cute, and very her.\n\nThe stethoscope is the part I'm proudest of. I spent ages on its shadows so it pops almost 3D instead of looking flat, and the tiny white dots all over the cap gave it so much life. I fussed over the leaves way too much, mixing Angelus Avocado and Olive until the green felt right, then giving them differently coloured edges and details. The flowers took so many shades of pink and darker burgundy before the palette matched. And the year got its own little custom touch at the bottom of the cap.",
@@ -107,6 +107,7 @@ export const portfolio: PortfolioPiece[] = [
       { src: "/work/doctor-cu-suflet-si-ratiune/making-10.jpg", alt: "The cap with some flowers detailed and others still flat.", caption: "Flower details, one by one." },
       { src: "/work/doctor-cu-suflet-si-ratiune/making-11.jpg", alt: "The cap with all flowers detailed.", caption: "All the flowers done." },
       { src: "/work/doctor-cu-suflet-si-ratiune/making-12.jpg", alt: "The cap with tiny white dot details on part of the design.", caption: "Halfway through the tiny white dots." },
+      { src: "/work/doctor-cu-suflet-si-ratiune/making-13.jpg", alt: "The finished cap against a white wall.", caption: "Finished." },
     ],
   },
   {
@@ -167,6 +168,7 @@ export const portfolio: PortfolioPiece[] = [
       { src: "/work/superpower-called-empathy/making-09.jpg", alt: "The cap with all base colours down.", caption: "All the colours down." },
       { src: "/work/superpower-called-empathy/making-10.jpg", alt: "The heart with shading and veins detailed.", caption: "Heart details: veins, shadows and highlights." },
       { src: "/work/superpower-called-empathy/making-11.jpg", alt: "The cap with detailed flowers around the heart.", caption: "Flower details, pink edges blended into white centres." },
+      { src: "/work/superpower-called-empathy/making-12.jpg", alt: "The finished cap against a light background.", caption: "Finished." },
     ],
   },
 ];

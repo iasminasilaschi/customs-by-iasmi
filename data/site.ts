@@ -9,7 +9,7 @@ export const site = {
   instagramHandle: "@customsbyiasmi",
   tiktok: "https://tiktok.com/@iasminasilaschi",
   tiktokHandle: "@iasminasilaschi",
-  location: "Romania · ships worldwide",
+  location: "Romania",
 };
 
 export const navLinks = [

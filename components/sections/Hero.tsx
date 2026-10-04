@@ -44,7 +44,7 @@ export function Hero() {
             className="mt-7 max-w-lg text-xl leading-relaxed text-muted"
           >
             Wearable art created from your moodboard, story, colours, and
-            obsessions. Send me the mood — I&apos;ll turn it into something you
+            obsessions. Send me the mood and I&apos;ll turn it into something you
             can wear.
           </motion.p>
           <motion.div

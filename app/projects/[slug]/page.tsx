@@ -129,7 +129,7 @@ export default async function ProjectPage({
                   rel="noopener noreferrer"
                   className="font-medium text-olive hover:underline"
                 >
-                  Watch the making-of reel →
+                  Watch the reel →
                 </a>
               )}
             </p>
