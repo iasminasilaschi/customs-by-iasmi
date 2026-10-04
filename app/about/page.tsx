@@ -74,7 +74,6 @@ export default function AboutPage() {
         <p className="hand text-2xl text-lilac">come say hi where I actually live:</p>
         <div className="mt-5 flex flex-wrap justify-center gap-4">
           <Button href={site.instagram} variant="outline">Instagram</Button>
-          <Button href={site.tiktok} variant="outline">TikTok</Button>
           <Button href="/contact">Contact me</Button>
         </div>
       </div>

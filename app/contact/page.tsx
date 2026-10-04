@@ -7,29 +7,23 @@ import type { ProjectType } from "@/lib/validation";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Start a custom sneaker commission, ask about a graduation cap — or just say hi. Email, Instagram, TikTok, or the form.",
+    "Start a custom sneaker or graduation cap commission, or just say hi. Send me a DM on Instagram, write an email, or use the short form.",
 };
 
 const validTypes: ProjectType[] = ["sneakers", "cap", "collab", "other"];
 
 const channels = [
   {
-    label: "Email",
-    value: site.email,
-    href: `mailto:${site.email}`,
-    note: "best for commissions & moodboards",
-  },
-  {
     label: "Instagram",
     value: site.instagramHandle,
     href: site.instagram,
-    note: "DMs open, process reels live here",
+    note: "DMs open, you can order here too",
   },
   {
-    label: "TikTok",
-    value: site.tiktokHandle,
-    href: site.tiktok,
-    note: "process clips & behind the scenes",
+    label: "Email",
+    value: site.email,
+    href: `mailto:${site.email}`,
+    note: "for longer ideas and moodboards",
   },
 ];
 
@@ -53,7 +47,7 @@ export default async function ContactPage({
             <span className="display-italic text-rose-2">leave your brain.</span>
           </>
         }
-        lede="A commission, a question, a collaboration, a hello — all welcome. I read everything myself and reply as fast as paint-drying allows."
+        lede="The easiest way to order is to send me a DM on Instagram or write an email. Prefer something guided? The short form here asks one small thing at a time."
       />
 
       <div className="mt-12 grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
@@ -80,10 +74,10 @@ export default async function ContactPage({
         <div className="grain rounded-blob border border-line bg-coal p-6 sm:p-8">
           <h2 className="display text-2xl text-cream">Or start right here</h2>
           <p className="mt-2 mb-7 text-sm text-muted">
-            The same smart form as the Design Lab — it adapts to what you&apos;re
-            asking for.
+            Four quick steps. Your answers are saved on this device, so you can
+            come back and finish later.
           </p>
-          <InquiryForm defaultType={defaultType} compact />
+          <InquiryForm defaultType={defaultType} typeFromLink={validTypes.includes(type as ProjectType)} compact />
         </div>
       </div>
     </div>

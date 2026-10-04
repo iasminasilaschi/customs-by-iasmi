@@ -17,8 +17,8 @@ export type ProjectType = (typeof projectTypes)[number]["value"];
 
 export const inquirySchema = z
   .object({
-    name: z.string().min(2, "Tell me your name — even just a first name."),
-    email: z.email("I need a real email to reply to."),
+    name: z.string().min(2, "Tell me your name, even just a first name."),
+    email: z.union([z.literal(""), z.email("That email doesn't look right.")]).optional(),
     phone: z.string().optional(),
     instagram: z.string().optional(),
     projectType: z.enum(["sneakers", "cap", "collab", "other"]),
@@ -26,14 +26,14 @@ export const inquirySchema = z
     // sneakers
     baseShoe: z.string().optional(),
     shoeSize: z.string().optional(),
-    hasShoes: z.enum(["yes", "no", "unsure"]).optional(),
+    hasShoes: z.enum(["yes", "no", "unsure", ""]).optional(),
 
     // graduation cap
     graduationDate: z.string().optional(),
     capTheme: z.string().optional(),
     schoolColors: z.string().optional(),
     capNameYear: z.string().optional(),
-    hasCap: z.enum(["yes", "no"]).optional(),
+    hasCap: z.enum(["yes", "no", ""]).optional(),
 
     // shared
     budget: z.string().optional(),
@@ -43,6 +43,13 @@ export const inquirySchema = z
       .min(10, "Give me a little more — even two sentences about the vibe help."),
   })
   .superRefine((data, ctx) => {
+    if (!data.email?.trim() && !data.phone?.trim() && !data.instagram?.trim()) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["email"],
+        message: "Add at least one way to reach you: email, Instagram or phone.",
+      });
+    }
     if (data.projectType === "sneakers" && !data.shoeSize?.trim()) {
       ctx.addIssue({
         code: "custom",
@@ -54,7 +61,7 @@ export const inquirySchema = z
       ctx.addIssue({
         code: "custom",
         path: ["graduationDate"],
-        message: "The big day matters — caps are painted around deadlines.",
+        message: "The big day matters, caps are painted around deadlines.",
       });
     }
   });
