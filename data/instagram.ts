@@ -42,7 +42,7 @@ export const instagramPosts: InstagramPost[] = [
   {
     url: "https://www.instagram.com/p/Dd2CVFTjbWe/",
     kind: "post",
-    caption: "Custom grad caps: both of them, finished, in the studio.",
+    caption: "Custom grad caps: both of them, finished, in the studio (aka my apartment, lol).",
     image: {
       src: "/work/graduation-caps/both-caps-holding.jpg",
       alt: "Both finished caps photographed together, one held in hand.",

@@ -1,7 +1,6 @@
 import { Hero } from "@/components/sections/Hero";
 import { FeaturedWork } from "@/components/sections/FeaturedWork";
 import { HowItWorks } from "@/components/sections/HowItWorks";
-import { DesignLabTeaser } from "@/components/sections/DesignLabTeaser";
 import { BeyondSneakers } from "@/components/sections/BeyondSneakers";
 import { AboutTeaser } from "@/components/sections/AboutTeaser";
 import { InstagramGrid } from "@/components/sections/InstagramGrid";
@@ -13,7 +12,6 @@ export default function HomePage() {
       <Hero />
       <FeaturedWork />
       <HowItWorks />
-      <DesignLabTeaser />
       <BeyondSneakers />
       <InstagramGrid />
       <AboutTeaser />
