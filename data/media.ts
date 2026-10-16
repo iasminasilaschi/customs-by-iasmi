@@ -11,6 +11,7 @@ export interface PhotoData {
   src: string;
   alt: string; // one plain sentence describing what's in the photo
   caption?: string; // optional visible caption (e.g. a making-of stage)
+  cutout?: boolean; // transparent background: shown whole, floating, never cropped
 }
 
 export interface VideoData {
@@ -18,8 +19,14 @@ export interface VideoData {
   poster?: string; // still frame shown before play
 }
 
-/** Big photo next to the homepage headline. */
-export const heroPhoto: PhotoData | null = null;
+/** Big photo next to the homepage headline (links to its project page). */
+export const heroPhoto: (PhotoData & { href: string }) | null = {
+  src: "/work/one-piece-sneakers/cover.webp",
+  alt: "A pair of hand-painted One Piece sneakers stacked on each other: Zoro with three swords on one shoe, Luffy in his straw hat on the other.",
+  caption: "the One Piece pair, after a year of daily wear",
+  cutout: true,
+  href: "/projects/one-piece-sneakers",
+};
 
 /** Photo for the graduation caps card on the homepage. */
 export const beyondPhotos: { caps: PhotoData | null } = {

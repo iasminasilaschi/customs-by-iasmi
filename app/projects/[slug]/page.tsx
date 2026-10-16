@@ -20,10 +20,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const piece = getPiece(slug);
   if (!piece) return { title: "Not found" };
+  // link previews flatten transparency to black, so prefer a normal photo
+  const preview = piece.cover.cutout
+    ? (piece.gallery?.find((p) => !p.cutout) ?? piece.cover)
+    : piece.cover;
   return {
     title: piece.title,
     description: piece.subtitle,
-    openGraph: { images: [piece.cover.src] },
+    openGraph: { images: [preview.src] },
   };
 }
 
@@ -51,17 +55,22 @@ export default async function ProjectPage({
         </p>
         <h1 className="display mt-3 text-[clamp(2.75rem,1.65rem+3.6vw,4.5rem)]">{piece.title}</h1>
         <p className="mt-4 max-w-xl text-lg text-muted">{piece.subtitle}</p>
-        {piece.tags && piece.tags.length > 0 && (
+        {(piece.themes?.length || piece.tags?.length) ? (
           <div className="mt-5 flex flex-wrap gap-2">
-            {piece.tags.map((t) => (
+            {piece.themes?.map((t) => (
+              <Link key={t} href={`/projects?theme=${encodeURIComponent(t)}`}>
+                <Tag tone="gold" keepCase className="transition-colors hover:border-gold/70">{t}</Tag>
+              </Link>
+            ))}
+            {piece.tags?.map((t) => (
               <Tag key={t} tone="rose">{t}</Tag>
             ))}
           </div>
-        )}
+        ) : null}
       </header>
 
       {/* Hero visual — portrait, so the whole piece stays in frame */}
-      <div className="relative aspect-[4/5] overflow-hidden rounded-blob border border-line shadow-soft">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-blob border border-line bg-cream-soft shadow-soft">
         <Photo photo={piece.cover} priority sizes="(min-width: 768px) 40vw, 100vw" />
       </div>
       </div>
@@ -217,7 +226,7 @@ function PhotoGrid({ title, photos }: { title: string; photos: PhotoData[] }) {
       <div className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3">
         {photos.map((photo) => (
           <figure key={photo.src}>
-            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-line">
+            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-line bg-cream-soft">
               <Photo photo={photo} sizes="(min-width: 768px) 33vw, 50vw" />
             </div>
             {photo.caption && (

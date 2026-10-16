@@ -34,6 +34,7 @@ export interface PortfolioPiece {
   after?: PhotoData;
   instagramUrl?: string; // link to the real post, if it was posted
   reelUrl?: string; // link to a reel
+  themes?: string[]; // reusable labels, e.g. "Anime", "One Piece": each becomes a filter on /projects
   tags?: string[];
   baseShoe?: string;
   story?: string; // her own words
@@ -45,6 +46,55 @@ export interface PortfolioPiece {
 }
 
 export const portfolio: PortfolioPiece[] = [
+  {
+    slug: "one-piece-sneakers",
+    title: "One Piece, made personal",
+    subtitle: "Zoro, Luffy and custom initials in One Piece style: a hand-painted gift, worn hard for a whole year.",
+    category: "sneakers",
+    year: 2025,
+    featured: true,
+    baseShoe: "Zara",
+    themes: ["Anime", "One Piece"],
+    tags: ["hand-painted", "fan art", "custom initials", "gift"],
+    cover: {
+      src: "/work/one-piece-sneakers/cover.webp",
+      alt: "The hand-painted One Piece pair stacked on each other: Zoro with three swords on the right shoe, Luffy in his straw hat with a dragon on the left.",
+      cutout: true,
+    },
+    story:
+      "These were a gift for a One Piece lover, and they took a long time: about a month, working on them on and off. He chose the scenes himself. Only the outer side of each shoe is painted, plus the heels: Zoro on the right shoe, and Luffy with a dragon on the left.\n\nI started with the heels. The right one carries the One Piece logo. For the left one I had my favourite idea of the whole project: his initials, R·M·A, designed in the same style as the logo. The little details around the letters are in One Piece spirit, but they're my own ideas, picked to suit the name. I love how matchy and cute the two heels look together, and how personal it made the pair.\n\nThen came the real test. He has worn them for a year now: rain, sunshine, day and night, driving, long walks, no mercy at all. His logic was “if I ruin them, I know who'll fix them.” He brushes them clean often, and a year later the paint still looks impeccable. I'd say they passed with flying colours.",
+    processSteps: [
+      "Deglazing the whole shoes with acetone and cotton balls",
+      "Buffing with sandpaper in several grits, so the paint grips well",
+      "Brushing the surface clean",
+      "Sketching the designs onto the leather",
+      "Heels first: the One Piece logo on the right, the R·M·A initials on the left",
+      "Outer panels: Zoro on the right shoe, Luffy and a dragon on the left",
+      "Angelus paints in very thin layers, drying in between",
+      "Sealing with Angelus flat finisher, plus a coat of sofa leather finisher for extra protection",
+    ],
+    materials: [
+      "Acetone + cotton balls, for deglazing",
+      "Sandpaper in several grits",
+      "Angelus leather paints",
+      "Angelus flat finisher",
+      "Leather finisher for sofas, as an extra layer",
+    ],
+    time: "About a month, working on and off",
+    gallery: [
+      { src: "/work/one-piece-sneakers/01.webp", alt: "The left shoe being worn, freshly painted: Luffy in his straw hat with a blue dragon near the heel.", caption: "Freshly painted: Luffy and the dragon on the left shoe.", cutout: true },
+      { src: "/work/one-piece-sneakers/02.webp", alt: "The right shoe being worn, freshly painted: Zoro with his swords and a wanted poster near the heel.", caption: "Freshly painted: Zoro on the right shoe.", cutout: true },
+      { src: "/work/one-piece-sneakers/03.webp", alt: "The backs of both shoes, freshly painted: the initials R·M·A on the left heel and the One Piece logo on the right.", caption: "The heels: R·M·A in One Piece style, next to the real logo.", cutout: true },
+      { src: "/work/one-piece-sneakers/04.jpg", alt: "The pair a year later, stacked in a studio shot, with the Zoro and Luffy panels still bright.", caption: "A year of daily wear later." },
+      { src: "/work/one-piece-sneakers/05.jpg", alt: "The backs of both shoes a year later: worn soles, but the painted initials and logo still intact.", caption: "The heels a year later. The soles show the miles; the paint doesn't." },
+    ],
+    processPhotos: [
+      { src: "/work/one-piece-sneakers/making-01.jpg", alt: "The right shoe with a pencil sketch of Zoro and a painted wanted poster, masking tape along the edge, and the left shoe's flat base colours behind it.", caption: "Zoro still a pencil sketch; the wanted poster and logo already painted." },
+      { src: "/work/one-piece-sneakers/making-02.jpg", alt: "Side view of the right shoe's Zoro sketch, with masking tape protecting the upper.", caption: "The sketch on the leather, with tape keeping the edges clean." },
+      { src: "/work/one-piece-sneakers/making-03.jpg", alt: "The Luffy shoe in the background with flat yellow, red and blue base colours.", caption: "Luffy in flat base colours, before any shading." },
+      { src: "/work/one-piece-sneakers/making-04.jpg", alt: "Close-up of the painted wanted poster and the One Piece logo on the heel.", caption: "The wanted poster, painted in thin layers." },
+    ],
+  },
   {
     slug: "doctor-cu-suflet-si-ratiune",
     title: "Doctor cu suflet și rațiune",
@@ -185,3 +235,6 @@ export function requestHref(piece: PortfolioPiece): string {
 }
 
 export const featuredPieces = portfolio.filter((p) => p.featured);
+
+/** Every theme used by at least one piece, in first-seen order. */
+export const allThemes = [...new Set(portfolio.flatMap((p) => p.themes ?? []))];

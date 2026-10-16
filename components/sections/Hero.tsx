@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { Photo } from "@/components/ui/Photo";
@@ -72,11 +73,25 @@ export function Hero() {
             {...enter(0.2)}
             className="relative mx-auto w-full max-w-md lg:max-w-none"
           >
-            <div className="overflow-hidden rounded-[2rem] border border-line bg-cream-soft p-3 shadow-lift">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.4rem]">
-                <Photo photo={heroPhoto} priority sizes="(min-width: 1024px) 40vw, 90vw" />
-              </div>
-            </div>
+            {heroPhoto.cutout ? (
+              // a cutout floats on the page — no frame, nothing cropped
+              <Link href={heroPhoto.href} className="group block">
+                <div className="relative aspect-[3/2] transition-transform duration-700 group-hover:-translate-y-1 lg:scale-110">
+                  <Photo photo={heroPhoto} priority sizes="(min-width: 1024px) 45vw, 90vw" />
+                </div>
+                {heroPhoto.caption && (
+                  <p className="hand mt-2 text-center text-2xl text-sage transition-colors group-hover:text-rose-2 lg:mt-6">
+                    {heroPhoto.caption} →
+                  </p>
+                )}
+              </Link>
+            ) : (
+              <Link href={heroPhoto.href} className="block overflow-hidden rounded-[2rem] border border-line bg-cream-soft p-3 shadow-lift">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[1.4rem]">
+                  <Photo photo={heroPhoto} priority sizes="(min-width: 1024px) 40vw, 90vw" />
+                </div>
+              </Link>
+            )}
           </motion.div>
         )}
       </div>

@@ -5,6 +5,7 @@ import type { PhotoData } from "@/data/media";
 /**
  * A real photo that fills its parent (which sets the shape, e.g. an
  * `aspect-[4/5]` box). Optimized by next/image from files in /public.
+ * Cutouts (transparent PNG/WebP) are fitted whole instead of cropped.
  */
 export function Photo({
   photo,
@@ -24,7 +25,12 @@ export function Photo({
       fill
       sizes={sizes}
       priority={priority}
-      className={cn("object-cover", className)}
+      className={cn(
+        photo.cutout
+          ? "object-contain p-[6%] drop-shadow-[0_22px_22px_rgba(74,58,34,0.22)]"
+          : "object-cover",
+        className,
+      )}
     />
   );
 }

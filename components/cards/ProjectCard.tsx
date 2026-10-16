@@ -27,13 +27,16 @@ export function ProjectCard({ piece }: { piece: PortfolioPiece }) {
           {piece.title}
         </h3>
         <p className="mt-2.5 line-clamp-2 text-[0.98rem] leading-relaxed text-muted">{piece.subtitle}</p>
-        {piece.tags && piece.tags.length > 0 && (
+        {(piece.themes?.length || piece.tags?.length) ? (
           <div className="mt-4 flex flex-wrap gap-1.5">
-            {piece.tags.slice(0, 3).map((t) => (
+            {piece.themes?.map((t) => (
+              <Tag key={t} tone="gold" keepCase>{t}</Tag>
+            ))}
+            {piece.tags?.slice(0, Math.max(1, 3 - (piece.themes?.length ?? 0))).map((t) => (
               <Tag key={t}>{t}</Tag>
             ))}
           </div>
-        )}
+        ) : null}
         <span className="relative z-20 mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-olive">
           <Link href={requestHref(piece)} className="hover:underline">
             Request something like this

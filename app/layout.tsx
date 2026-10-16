@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     url: "https://iasmi.ro",
     siteName: "Customs by Iasmi",
     type: "website",
-    images: ["/work/graduation-caps/both-caps.jpg"],
+    images: ["/work/one-piece-sneakers/04.jpg"],
   },
 };
 
