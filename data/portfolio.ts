@@ -108,18 +108,19 @@ export const portfolio: PortfolioPiece[] = [
       cutout: true,
     },
     story:
-      "These were a birthday gift for one of my best friends. All she asked for was a pair of black Air Force 1s: she can walk 10,000 steps in them and they're still comfy, and black doesn't get dirty as easily as white. So I got my first real challenge: can I paint on black sneakers? Spoiler alert: oh yes, I can.\n\nThe design was all mine; she had no say in it. I only knew that she loves sushi and she loves cats, so I combined the two: sushi drawn as cats. An orange cat plays the salmon, fluffy white rice gives a great contrast on the black leather, and a black nori sheet in some of them completes the sushi vibe. I found inspiration in cute sushi-cat artwork online, but sadly I don't remember the artist.\n\nMy first idea was a different cat altogether, holding a fork and a knife. I drew it on tape and tried it on the shoe, and didn't like the vibe. It was too portrait for the side of a sneaker, which needs something more landscape. And who eats sushi with a fork and knife, anyway?\n\nThe roll and the maki were givens: the most basic sushi, the ones everyone adores. For the other two sides I needed wider shapes, and the only landscape sushi is nigiri. So I made two: a classic nigiri, with the cat lying on its bed of rice, and a nori nigiri, where the cat is tucked in, ready to sleep, with the nori sheet as its blanket. A gunkan was too tall for the shoes, so it ended up on the Nike box instead, as a little extra.\n\nI started on 22 April 2022 and finished on 27 April, at 4:37 in the morning, to be exact. Not the healthiest way to work: I used to leave everything to the last minute, and her birthday was already overdue.",
+      "These were a birthday gift for one of my best friends. All she asked for was a pair of black Air Force 1s: she can walk 10,000 steps in them and they're still comfy, and black doesn't get dirty as easily as white. So I got my first real challenge: can I paint on black sneakers? Spoiler alert: oh yes, I can.\n\nThe design was all mine; she had no say in it. I only knew that she loves sushi and she loves cats, so I combined the two: sushi drawn as cats. An orange cat plays the salmon, fluffy white rice gives a great contrast on the black leather, and a black nori sheet in some of them completes the sushi vibe. I found inspiration in cute sushi-cat artwork online, but sadly I don't remember the artist.\n\nMy first idea was a different cat altogether, holding a fork and a knife. I drew it on tape and tried it on the shoe, and didn't like the vibe. It was too portrait-y for the side of a sneaker, which needs something more landscape-y. And who eats sushi with a fork and knife, anyway?\n\nThe roll and the maki were givens: the most basic sushi, the ones everyone adores. For the other two sides I needed wider shapes, and the only landscape sushi is nigiri. So I made two: a classic nigiri, with the cat lying on its bed of rice, and a nori nigiri, where the cat is tucked in, ready to sleep, with the nori sheet as its blanket. A gunkan was too tall for the shoes, so it ended up on the Nike box instead, as a little extra.\n\nI started on 22 April 2022 and finished on 27 April, at 4:37 in the morning, to be exact. Not the healthiest way to work: I used to leave everything to the last minute, and her birthday was already overdue.",
     processSteps: [
       "Trying a first idea, a cat with a fork and knife, drawn on tape, then dropping it",
       "Deglazing only where the cats would go, so the black finish stays untouched",
       "Outlining each cat with tape and painting the base colours inside, in thin layers",
       "Peeling the tape off",
-      "Line details: faces, stripes and paws",
+      "Line details with a black Posca liner: faces, stripes and paws",
       "Sealing",
       "A gunkan cat on the shoe box, as a finishing touch",
     ],
     materials: [
       "Leather paints (not Angelus back then, and I can't remember the brand)",
+      "Posca black liner, for the details",
       "Tape, for the cat outlines",
       "A sealer",
     ],
