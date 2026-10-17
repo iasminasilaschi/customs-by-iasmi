@@ -21,7 +21,7 @@ export function Nav() {
           <span className="hand text-lg leading-none text-sage transition-colors group-hover:text-olive">
             customs by
           </span>
-          <span className="display text-xl leading-none tracking-tight">Iasmi</span>
+          <span className="hand text-[1.4rem] leading-none">Iasmi</span>
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-2.5 md:flex">

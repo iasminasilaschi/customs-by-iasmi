@@ -9,7 +9,7 @@ export function Footer() {
           <div className="max-w-sm">
             <p className="leading-none">
               <span className="hand block text-xl text-champagne">customs by</span>
-              <span className="display text-3xl text-paper">Iasmi</span>
+              <span className="hand text-4xl text-paper">Iasmi</span>
             </p>
             <p className="mt-4 text-base leading-relaxed text-paper/70">
               Custom sneakers and graduation caps, painted by hand, one at a
