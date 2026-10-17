@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/Button";
 import { Tag } from "@/components/ui/Tag";
 import { Photo } from "@/components/ui/Photo";
 import { VideoPlayer } from "@/components/ui/VideoPlayer";
+import { PhotoGrid } from "@/components/projects/PhotoGrid";
 import { categoryLabels, getPiece, portfolio, requestHref } from "@/data/portfolio";
-import type { PhotoData } from "@/data/media";
 
 export function generateStaticParams() {
   return portfolio.map((p) => ({ slug: p.slug }));
@@ -55,18 +55,13 @@ export default async function ProjectPage({
         </p>
         <h1 className="display mt-3 text-[clamp(2.75rem,1.65rem+3.6vw,4.5rem)]">{piece.title}</h1>
         <p className="mt-4 max-w-xl text-lg text-muted">{piece.subtitle}</p>
-        {(piece.themes?.length || piece.tags?.length) ? (
+        {piece.tags && piece.tags.length > 0 && (
           <div className="mt-5 flex flex-wrap gap-2">
-            {piece.themes?.map((t) => (
-              <Link key={t} href={`/projects?theme=${encodeURIComponent(t)}`}>
-                <Tag tone="gold" keepCase className="transition-colors hover:border-gold/70">{t}</Tag>
-              </Link>
-            ))}
-            {piece.tags?.map((t) => (
+            {piece.tags.map((t) => (
               <Tag key={t} tone="rose">{t}</Tag>
             ))}
           </div>
-        ) : null}
+        )}
       </header>
 
       {/* Hero visual — portrait, so the whole piece stays in frame */}
@@ -194,7 +189,7 @@ export default async function ProjectPage({
       {/* Galleries */}
       {piece.gallery && piece.gallery.length > 0 && <PhotoGrid title="Gallery" photos={piece.gallery} />}
       {piece.processPhotos && piece.processPhotos.length > 0 && (
-        <PhotoGrid title="Making of" photos={piece.processPhotos} />
+        <PhotoGrid title="Making of" note={piece.processNote} photos={piece.processPhotos} />
       )}
 
       {/* CTA */}
@@ -216,25 +211,5 @@ export default async function ProjectPage({
         </div>
       </div>
     </article>
-  );
-}
-
-function PhotoGrid({ title, photos }: { title: string; photos: PhotoData[] }) {
-  return (
-    <section className="mt-14">
-      <h2 className="display text-2xl text-cream">{title}</h2>
-      <div className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3">
-        {photos.map((photo) => (
-          <figure key={photo.src}>
-            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-line bg-cream-soft">
-              <Photo photo={photo} sizes="(min-width: 768px) 33vw, 50vw" />
-            </div>
-            {photo.caption && (
-              <figcaption className="mt-2 text-sm leading-snug text-muted">{photo.caption}</figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
-    </section>
   );
 }

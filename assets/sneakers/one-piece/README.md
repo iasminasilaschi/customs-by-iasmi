@@ -12,16 +12,22 @@ and saved as transparent `.webp`.
 | Site file | Original |
 | --- | --- |
 | `cover.webp` (homepage hero + project cover) | `worn-after-1-year-nice-full-studio-picture.jpeg`, cut out |
-| `01.webp` | `newly-painted-wearing-them-no-background-left-shoe.jpeg`, cut out |
-| `02.webp` | `newly-painted-wearing-them-no-background-right-shoe.jpeg`, cut out |
-| `03.webp` | `newly-painted-back-of-shoes-no-background.jpeg`, cut out |
+| `01.jpg` | `left-shoe-luffy-ai-background.jpeg` |
+| `02.jpg` | `right-shoe-zoro-ai-background.jpeg` |
+| `03.jpg` | `back-of-shoes-ai-background.jpeg` |
 | `04.jpg` | `worn-after-1-year-nice-full-studio-picture.jpeg` |
 | `05.jpg` | `back-of-shoes-worn-dirty-full-studio-pic.jpeg` |
-| `making-01…04.jpg` | `process-picture-1…4.jpeg` |
+| `making-01.jpg`, `making-04.jpg` | `process-picture-1.jpeg`, `process-picture-4.jpeg` |
 
-Labels on the site: themes "Anime" + "One Piece" (filters on /projects). Base shoe: Zara.
+The three `*-ai-background.jpeg` photos are the `newly-painted-*-no-background`
+originals with a new background made in ChatGPT (the painted shoes are meant to
+stay unchanged). They replaced the cutouts, which looked off on the page.
 
-Not used on the site: `sticker.webp` (only 512px, too small for the hero) and
+Tags on the site include "anime" and "one piece" (plain tags, not filters). Base shoe: Zara.
+
+Not used on the site: `process-picture-2/3.jpeg` (near-duplicates of 1 and 4;
+the making-of says a video is coming once it's edited), `newly-painted-*-no-background.jpeg`
+(replaced by the AI-background versions), `sticker.webp` (only 512px, too small for the hero) and
 `*-worn-dirty-no-background.jpeg` / `worn-after-1-year-…-no-background.jpeg`
 (the full studio versions are used instead).
 

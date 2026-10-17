@@ -29,12 +29,12 @@ export interface PortfolioPiece {
   cover: PhotoData; // card + page hero
   gallery?: PhotoData[]; // finished-piece photos
   processPhotos?: PhotoData[]; // making-of photos
+  processNote?: string; // short line above the making-of photos, e.g. "video coming soon"
   video?: VideoData; // making-of video
   before?: PhotoData;
   after?: PhotoData;
   instagramUrl?: string; // link to the real post, if it was posted
   reelUrl?: string; // link to a reel
-  themes?: string[]; // reusable labels, e.g. "Anime", "One Piece": each becomes a filter on /projects
   tags?: string[];
   baseShoe?: string;
   story?: string; // her own words
@@ -54,8 +54,7 @@ export const portfolio: PortfolioPiece[] = [
     year: 2025,
     featured: true,
     baseShoe: "Zara",
-    themes: ["Anime", "One Piece"],
-    tags: ["hand-painted", "fan art", "custom initials", "gift"],
+    tags: ["hand-painted", "anime", "one piece", "fan art", "custom initials", "gift"],
     cover: {
       src: "/work/one-piece-sneakers/cover.webp",
       alt: "The hand-painted One Piece pair stacked on each other: Zoro with three swords on the right shoe, Luffy in his straw hat with a dragon on the left.",
@@ -82,17 +81,16 @@ export const portfolio: PortfolioPiece[] = [
     ],
     time: "About a month, working on and off",
     gallery: [
-      { src: "/work/one-piece-sneakers/01.webp", alt: "The left shoe being worn, freshly painted: Luffy in his straw hat with a blue dragon near the heel.", caption: "Freshly painted: Luffy and the dragon on the left shoe.", cutout: true },
-      { src: "/work/one-piece-sneakers/02.webp", alt: "The right shoe being worn, freshly painted: Zoro with his swords and a wanted poster near the heel.", caption: "Freshly painted: Zoro on the right shoe.", cutout: true },
-      { src: "/work/one-piece-sneakers/03.webp", alt: "The backs of both shoes, freshly painted: the initials R·M·A on the left heel and the One Piece logo on the right.", caption: "The heels: R·M·A in One Piece style, next to the real logo.", cutout: true },
+      { src: "/work/one-piece-sneakers/01.jpg", alt: "The left shoe being worn, freshly painted: Luffy in his straw hat with a blue dragon near the heel.", caption: "Freshly painted: Luffy and the dragon on the left shoe." },
+      { src: "/work/one-piece-sneakers/02.jpg", alt: "The right shoe being worn, freshly painted: Zoro with his swords and a wanted poster near the heel.", caption: "Freshly painted: Zoro on the right shoe." },
+      { src: "/work/one-piece-sneakers/03.jpg", alt: "The backs of both shoes, freshly painted: the initials R·M·A on the left heel and the One Piece logo on the right.", caption: "The heels: R·M·A in One Piece style, next to the real logo." },
       { src: "/work/one-piece-sneakers/04.jpg", alt: "The pair a year later, stacked in a studio shot, with the Zoro and Luffy panels still bright.", caption: "A year of daily wear later." },
       { src: "/work/one-piece-sneakers/05.jpg", alt: "The backs of both shoes a year later: worn soles, but the painted initials and logo still intact.", caption: "The heels a year later. The soles show the miles; the paint doesn't." },
     ],
+    processNote: "Video coming soon, once I edit it! For now, two snapshots from the middle of it.",
     processPhotos: [
-      { src: "/work/one-piece-sneakers/making-01.jpg", alt: "The right shoe with a pencil sketch of Zoro and a painted wanted poster, masking tape along the edge, and the left shoe's flat base colours behind it.", caption: "Zoro still a pencil sketch; the wanted poster and logo already painted." },
-      { src: "/work/one-piece-sneakers/making-02.jpg", alt: "Side view of the right shoe's Zoro sketch, with masking tape protecting the upper.", caption: "The sketch on the leather, with tape keeping the edges clean." },
-      { src: "/work/one-piece-sneakers/making-03.jpg", alt: "The Luffy shoe in the background with flat yellow, red and blue base colours.", caption: "Luffy in flat base colours, before any shading." },
-      { src: "/work/one-piece-sneakers/making-04.jpg", alt: "Close-up of the painted wanted poster and the One Piece logo on the heel.", caption: "The wanted poster, painted in thin layers." },
+      { src: "/work/one-piece-sneakers/making-01.jpg", alt: "The right shoe with a pencil sketch of Zoro and a painted wanted poster, masking tape along the edge, and the left shoe's flat base colours behind it.", caption: "Zoro still a pencil sketch, Luffy in flat base colours behind him." },
+      { src: "/work/one-piece-sneakers/making-04.jpg", alt: "Close-up of the painted wanted poster and the One Piece logo on the heel.", caption: "The wanted poster and logo, painted in thin layers." },
     ],
   },
   {
@@ -235,6 +233,3 @@ export function requestHref(piece: PortfolioPiece): string {
 }
 
 export const featuredPieces = portfolio.filter((p) => p.featured);
-
-/** Every theme used by at least one piece, in first-seen order. */
-export const allThemes = [...new Set(portfolio.flatMap((p) => p.themes ?? []))];

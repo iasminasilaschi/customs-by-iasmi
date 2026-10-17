@@ -4,12 +4,10 @@ import { cn } from "@/lib/utils";
 export function Tag({
   children,
   tone = "neutral",
-  keepCase,
   className,
 }: {
   children: React.ReactNode;
   tone?: "neutral" | "rose" | "lilac" | "gold";
-  keepCase?: boolean; // names like "One Piece" keep their capitals
   className?: string;
 }) {
   const tones = {
@@ -21,8 +19,7 @@ export function Tag({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-3 py-1 text-[0.8rem] tracking-wide",
-        !keepCase && "lowercase",
+        "inline-flex items-center rounded-full border px-3 py-1 text-[0.8rem] tracking-wide lowercase",
         tones[tone],
         className,
       )}
