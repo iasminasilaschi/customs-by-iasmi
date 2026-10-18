@@ -12,7 +12,7 @@ This folder is the **archive of originals**.
 
 | Site file | Original |
 | --- | --- |
-| `cover-side.webp` (project cover + hero) | `finished-right-outer.jpeg`, cut out (rembg, BiRefNet; her hand on the heel is removed); the shoe behind, where it runs out of the top of the frame, fades out softly. (An earlier cover was cut from `finished-both-from-heels.jpeg`.) |
+| `cover-side-2.webp` (project cover + hero) | `finished-right-outer.jpeg`, cut out (rembg, BiRefNet). Her thumb covered the sole's heel corner: only that spot was filled in with AI inpainting (LaMa) and colour-matched to the sole, nothing else on the shoe was changed; the shoe behind, where it runs out of the top of the frame, fades out softly. (An earlier cover was cut from `finished-both-from-heels.jpeg`.) |
 | `01.jpg` | `finished-right-outer.jpeg` |
 | `02.jpg` | `finished-left-inner.jpeg` |
 | `03.jpg` | `finished-left-outer.jpeg` |

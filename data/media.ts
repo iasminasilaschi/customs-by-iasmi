@@ -114,7 +114,7 @@ export const heroShowcase: ShowcaseSlide[] = [
     slug: "tattoo-cats",
     name: "Tattoo cats",
     photo: {
-      src: "/work/tattoo-cats/cover-side.webp",
+      src: "/work/tattoo-cats/cover-side-2.webp",
       alt: "The right shoe from the side: a cat asleep inside a heart with a crescent moon near the heel and a cat reaching up for a butterfly near the toe, with the left shoe and its moon cat behind it.",
       cutout: true,
     },
