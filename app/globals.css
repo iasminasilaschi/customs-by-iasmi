@@ -60,6 +60,8 @@
 
 :root {
   color-scheme: light;
+  /* designed light: tell browsers not to auto-darken it (Chrome/Samsung "dark websites") */
+  color-scheme: only light;
 }
 
 html {
@@ -185,46 +187,53 @@ body {
 
 /*
   Vibes — the homepage hero hands each pair's palette to these properties
-  (on the hero, and on <html> for the nav and page accents). They're
-  registered as <color>, so the browser fades the whole palette instead of
-  snapping. Initial values = the regular nav look, used on every other page.
-  See heroShowcase in data/media.ts.
-*/
-@property --vibe-bg { syntax: "<color>"; inherits: true; initial-value: #f5f0e6; }
-@property --vibe-glow { syntax: "<color>"; inherits: true; initial-value: #fbf8f0; }
-@property --vibe-word { syntax: "<color>"; inherits: true; initial-value: #ece2d1; }
-@property --vibe-ink { syntax: "<color>"; inherits: true; initial-value: #2c2a20; }
-@property --vibe-muted { syntax: "<color>"; inherits: true; initial-value: #8f9b82; }
-@property --vibe-accent { syntax: "<color>"; inherits: true; initial-value: #5f6f52; }
-@property --vibe-accent-ink { syntax: "<color>"; inherits: true; initial-value: #f5f0e6; }
-@property --vibe-glass { syntax: "<color>"; inherits: true; initial-value: rgb(251 248 240 / 0.72); }
-@property --vibe-line { syntax: "<color>"; inherits: true; initial-value: rgb(58 50 34 / 0.14); }
-@property --vibe-tint { syntax: "<color>"; inherits: true; initial-value: rgb(95 111 82 / 0.12); }
-@property --vibe-shade { syntax: "<color>"; inherits: true; initial-value: rgb(47 58 47 / 0.6); }
-@property --color-rose-2 { syntax: "<color>"; inherits: true; initial-value: #bb8355; }
+  (on the hero section, and on <html> for the nav and page accents). The
+  values below are the regular nav look, used on every other page. See
+  heroShowcase in data/media.ts and components/sections/hero/wash.ts.
 
-:root,
-.vibe-scope {
-  --vibe-wash: 900ms;
-  transition-property: --vibe-bg, --vibe-glow, --vibe-word, --vibe-ink, --vibe-muted,
-    --vibe-accent, --vibe-accent-ink, --vibe-glass, --vibe-line, --vibe-tint, --vibe-shade,
-    --color-rose-2;
-  transition-duration: var(--vibe-wash);
-  transition-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
+  The palette itself switches instantly; nothing here interpolates it page-
+  wide (that restyles every element every frame and stutters on slower
+  machines). Instead the hero fades in a new background layer (.vibe-layer,
+  an opacity fade the GPU handles in every browser), and everything that
+  *uses* a vibe colour flips it briefly at that fade's midpoint, below.
+*/
+:root {
+  --vibe-bg: #f5f0e6;
+  --vibe-glow: #fbf8f0;
+  --vibe-ink: #2c2a20;
+  --vibe-muted: #8f9b82;
+  --vibe-accent: #5f6f52;
+  --vibe-accent-ink: #f5f0e6;
+  --vibe-pop: #6f7d60;
+  --vibe-glass: rgb(251 248 240 / 0.72);
+  --vibe-line: rgb(58 50 34 / 0.14);
+  --vibe-tint: rgb(95 111 82 / 0.12);
+  --vibe-shade: rgb(47 58 47 / 0.6);
+  /* a clean snap at the background fade's midpoint (WASH / 2 = 300ms):
+     a fade here would pass through the background's own tone and vanish */
+  --vibe-flip-delay: 300ms;
+  --vibe-flip: 0ms;
+}
+
+/*
+  During a swap, only elements that set a vibe colour themselves "transition"
+  it — a 0ms transition after a delay, i.e. the change waits for the
+  midpoint (matched by their class names); everything else inherits it.
+  A blanket `*` rule would make nested text re-start its transition every
+  frame and lag behind. !important also keeps the flip for reduced motion
+  (it's a colour change, not movement).
+*/
+html[data-vibe-wash] :is(.vibe-scope, .vibe-glass, [class*="--vibe-"], [class*="rose-2"]) {
+  transition-property: color, background-color, border-color, outline-color,
+    text-decoration-color, fill, stroke, box-shadow !important;
+  transition-duration: var(--vibe-flip) !important;
+  transition-delay: var(--vibe-flip-delay) !important;
+  transition-timing-function: linear !important;
 }
 
 .vibe-scope {
   color: var(--vibe-ink);
-  background:
-    radial-gradient(70% 45% at 50% 24%, var(--vibe-glow), transparent 72%),
-    var(--vibe-bg);
-}
-@media (min-width: 64rem) {
-  .vibe-scope {
-    background:
-      radial-gradient(55% 65% at 72% 48%, var(--vibe-glow), transparent 72%),
-      var(--vibe-bg);
-  }
+  background-color: var(--vibe-bg);
 }
 .vibe-scope ::selection {
   background: var(--vibe-accent);
@@ -232,6 +241,45 @@ body {
 }
 .vibe-scope :focus-visible {
   outline-color: var(--vibe-ink);
+}
+
+/* One pair's backdrop; the newest fades in on top of the previous one */
+.vibe-layer {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(70% 45% at 50% 24%, var(--layer-glow), transparent 72%),
+    var(--layer-bg);
+}
+@media (min-width: 64rem) {
+  .vibe-layer {
+    background:
+      radial-gradient(55% 65% at 72% 48%, var(--layer-glow), transparent 72%),
+      var(--layer-bg);
+  }
+}
+
+/* A project page in its pair's colours (lib/vibe.ts pageTokens) */
+.vibe-page {
+  /* the glow sits behind the cover cutout: below the title on phones, beside it from md up */
+  background:
+    radial-gradient(80% 22rem at 50% 36rem, var(--color-cream-soft), transparent 70%),
+    var(--color-ink);
+}
+@media (min-width: 48rem) {
+  .vibe-page {
+    background:
+      radial-gradient(55% 38% at 76% 16rem, var(--color-cream-soft), transparent 70%),
+      var(--color-ink);
+  }
+}
+.vibe-page .glass {
+  background: color-mix(in oklab, var(--color-cream-soft) 78%, transparent);
+}
+/* the photo viewer keeps its own light-on-dark colours */
+.vibe-page dialog {
+  --color-paper: #f5f0e6;
+  --color-deep: #2f3a2f;
 }
 
 /* The nav's pills — the same glass, tinted by the current vibe */
@@ -246,14 +294,14 @@ body {
   outline-color: var(--vibe-ink);
 }
 
-/* Giant word behind the shoe; SneakerStage sizes it to fit, then shows it */
+/* Giant word behind the shoe (colour comes from its own pair); SneakerStage
+   sizes it to fit, then shows it */
 .vibe-word {
   font-family: var(--font-display);
   font-weight: 900;
   font-variation-settings: "SOFT" 100, "WONK" 0, "opsz" 144;
   letter-spacing: -0.03em;
   line-height: 0.8;
-  color: var(--vibe-word);
   white-space: nowrap;
   text-align: center;
   user-select: none;
@@ -300,12 +348,7 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  /* colour washes carry meaning, not movement — keep them */
-  :root,
-  .vibe-scope {
-    transition-duration: var(--vibe-wash) !important;
-  }
-  /* the timer has to keep real time (autoplay only runs if asked for) */
+  /* the timer has to keep real time */
   .vibe-bar {
     animation-duration: var(--vibe-interval, 6s) !important;
   }

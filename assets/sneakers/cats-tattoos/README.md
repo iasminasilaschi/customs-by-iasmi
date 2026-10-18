@@ -12,7 +12,7 @@ This folder is the **archive of originals**.
 
 | Site file | Original |
 | --- | --- |
-| `cover.webp` (project cover + hero) | `finished-both-from-heels.jpeg`, cut out (rembg, BiRefNet); the top and bottom of the right shoe, where it runs out of frame, fade out softly |
+| `cover-side.webp` (project cover + hero) | `finished-right-outer.jpeg`, cut out (rembg, BiRefNet; her hand on the heel is removed); the shoe behind, where it runs out of the top of the frame, fades out softly. (An earlier cover was cut from `finished-both-from-heels.jpeg`.) |
 | `01.jpg` | `finished-right-outer.jpeg` |
 | `02.jpg` | `finished-left-inner.jpeg` |
 | `03.jpg` | `finished-left-outer.jpeg` |

@@ -12,6 +12,7 @@ import {
 } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import type { ShowcaseSlide } from "@/data/media";
+import { WASH } from "@/components/sections/hero/wash";
 import { cn } from "@/lib/utils";
 
 /** Seconds each pair stays on stage. */
@@ -35,93 +36,104 @@ const useReducedMotion = () =>
 /** What every animated piece gets as `custom`. */
 type Ctx = { slide: ShowcaseSlide; reduce: boolean };
 
-const pose = ({ pose: p }: ShowcaseSlide) => ({ x: p.x, y: p.y, rotate: p.rotate, scale: p.scale });
+/*
+  Movement is always written as one `transform` string (never x / y /
+  rotate / scale), so framer hands it to the browser's compositor: the
+  flight stays smooth even while the page is busy, in every browser.
+*/
+const pose = ({ pose: p }: ShowcaseSlide) =>
+  `translate(${p.x}, ${p.y}) rotate(${p.rotate}deg) scale(${p.scale})`;
+const ENTER_FROM = "translate(58%, -82%) rotate(18deg) scale(0.86)";
+const LEAVE_TO = "translate(-62%, -78%) rotate(-24deg) scale(1.18)";
+
+// Fades are staged around the background's midpoint (WASH / 2): the old
+// piece is gone before the new colours take over, the new one arrives after,
+// so nothing ever sits half-visible on the other pair's colours.
+const FADE_OUT = { duration: WASH * 0.45, ease: "easeOut" } as const;
+const FADE_IN = { duration: WASH * 0.75, delay: WASH * 0.5, ease: "easeOut" } as const;
 
 /*
   The swap: the pair on stage is thrown off to the upper left, tipping and
   growing as it goes, while the next one drops in from the upper right and
-  settles. With reduced motion they simply crossfade in place.
-  Rest states never depend on `reduce`, so server and client markup match.
+  settles. With reduced motion they crossfade in place, in step with the
+  background. Rest states never depend on `reduce`, so server and client
+  markup match.
 */
 const shoe: Variants = {
-  enter: ({ slide, reduce }: Ctx) =>
-    reduce
-      ? { ...pose(slide), opacity: 0, filter: "blur(0px)" }
-      : { x: "58%", y: "-82%", rotate: 18, scale: 0.86, opacity: 0, filter: "blur(6px)" },
+  enter: ({ slide, reduce }: Ctx) => ({
+    transform: reduce ? pose(slide) : ENTER_FROM,
+    opacity: 0,
+  }),
   rest: ({ slide, reduce }: Ctx) => ({
-    ...pose(slide),
+    transform: pose(slide),
     opacity: 1,
-    filter: "blur(0px)",
     transition: reduce
-      ? { duration: 0.45 }
+      ? FADE_IN
       : {
-          default: { duration: 0.98, delay: 0.15, ease: EASE_OUT },
+          transform: { duration: 0.98, delay: 0.15, ease: EASE_OUT },
           opacity: { duration: 0.3, delay: 0.15, ease: "linear" },
-          filter: { duration: 0.4, delay: 0.15, ease: "linear" },
         },
   }),
   leave: ({ reduce }: Ctx) =>
     reduce
-      ? { opacity: 0, transition: { duration: 0.35 } }
-      : {
-          x: "-62%",
-          y: "-78%",
-          rotate: -24,
-          scale: 1.18,
-          opacity: 0,
-          filter: "blur(6px)",
-          transition: { duration: 0.64, ease: EASE_IN },
-        },
+      ? { opacity: 0, transition: FADE_OUT }
+      : { transform: LEAVE_TO, opacity: 0, transition: { duration: 0.64, ease: EASE_IN } },
 };
 
 /** The ground shadow empties as a pair leaves and catches the next landing. */
 const ground: Variants = {
-  enter: ({ reduce }: Ctx) => ({ opacity: 0, scaleX: reduce ? 1 : 0.5 }),
+  enter: ({ reduce }: Ctx) => ({ opacity: 0, transform: reduce ? "scaleX(1)" : "scaleX(0.5)" }),
   rest: ({ reduce }: Ctx) => ({
     opacity: 1,
-    scaleX: 1,
-    transition: reduce ? { duration: 0.45 } : { duration: 0.9, delay: 0.45, ease: EASE_OUT },
+    transform: "scaleX(1)",
+    transition: reduce ? FADE_IN : { duration: 0.9, delay: 0.45, ease: EASE_OUT },
   }),
   leave: ({ reduce }: Ctx) => ({
     opacity: 0,
-    scaleX: reduce ? 1 : 0.6,
-    transition: { duration: 0.35, ease: EASE_IN },
+    transition: reduce ? FADE_OUT : { duration: 0.35, ease: EASE_IN },
   }),
 };
 
-/** Giant word: old letters lift away, new ones rise in, left to right. */
+/*
+  Giant word: drawn in its own pair's colour, so it's only shown while that
+  pair's background dominates (out early, in late — see FADE_OUT / FADE_IN).
+  On top of that the new letters rise in, left to right.
+*/
 const word: Variants = {
-  enter: {},
+  enter: { opacity: 0 },
   rest: ({ reduce }: Ctx) => ({
-    transition: reduce ? {} : { staggerChildren: 0.038, delayChildren: 0.22 },
+    opacity: 1,
+    transition: reduce ? FADE_IN : { ...FADE_IN, delayChildren: WASH * 0.5, staggerChildren: 0.035 },
   }),
-  leave: ({ reduce }: Ctx) => ({ transition: reduce ? {} : { staggerChildren: 0.018 } }),
+  leave: { opacity: 0, transition: FADE_OUT },
 };
 const letter: Variants = {
-  enter: ({ reduce }: Ctx) => ({ y: reduce ? "0%" : "38%", opacity: 0 }),
+  enter: ({ reduce }: Ctx) => ({ transform: reduce ? "translateY(0%)" : "translateY(38%)" }),
   rest: ({ reduce }: Ctx) => ({
-    y: "0%",
-    opacity: 1,
-    transition: reduce ? { duration: 0.45 } : { duration: 0.82, ease: EASE_OUT },
+    transform: "translateY(0%)",
+    transition: reduce ? { duration: 0 } : { duration: 0.75, ease: EASE_OUT },
   }),
   leave: ({ reduce }: Ctx) => ({
-    y: reduce ? "0%" : "-22%",
-    opacity: 0,
-    transition: { duration: reduce ? 0.35 : 0.36, ease: EASE_IN },
+    transform: reduce ? "translateY(0%)" : "translateY(-14%)",
+    transition: { duration: 0.45, ease: EASE_IN },
   }),
 };
 
 const caption: Variants = {
-  enter: ({ reduce }: Ctx) => ({ opacity: 0, y: reduce ? 0 : 8 }),
-  rest: { opacity: 1, y: 0, transition: { duration: 0.42, delay: 0.2, ease: EASE_OUT } },
-  leave: ({ reduce }: Ctx) => ({ opacity: 0, y: reduce ? 0 : -6, transition: { duration: 0.2, ease: EASE_IN } }),
+  enter: ({ reduce }: Ctx) => ({ opacity: 0, transform: reduce ? "translateY(0px)" : "translateY(8px)" }),
+  rest: { opacity: 1, transform: "translateY(0px)", transition: { duration: 0.42, delay: 0.2, ease: EASE_OUT } },
+  leave: ({ reduce }: Ctx) => ({
+    opacity: 0,
+    transform: reduce ? "translateY(0px)" : "translateY(-6px)",
+    transition: { duration: 0.2, ease: EASE_IN },
+  }),
 };
 
 /**
  * The homepage hero's stage: one pair at a time, swapping every few
- * seconds. Autoplay pauses on hover, keyboard focus, when scrolled away or
- * the tab is hidden, and whenever the visitor presses pause. With reduced
- * motion it doesn't start until asked to.
+ * seconds. Autoplay always starts on its own; it pauses while the pointer is
+ * on the switcher, on keyboard focus, when scrolled away or the tab is
+ * hidden, and whenever the visitor presses pause.
  */
 export function SneakerStage({
   slides,
@@ -139,12 +151,11 @@ export function SneakerStage({
   const ctx: Ctx = { slide, reduce };
   const rotating = slides.length > 1;
 
-  const [userStopped, setUserStopped] = useState<boolean | null>(null);
+  const [stopped, setStopped] = useState(false);
   const [hovering, setHovering] = useState(false);
   const [focused, setFocused] = useState(false);
   const [offscreen, setOffscreen] = useState(false);
   const [tabHidden, setTabHidden] = useState(false);
-  const stopped = userStopped ?? reduce; // reduced motion: no autoplay unless asked
   const paused = stopped || hovering || focused || offscreen || tabHidden;
 
   const ref = useRef<HTMLDivElement>(null);
@@ -171,8 +182,6 @@ export function SneakerStage({
       aria-label="Sneakers I've painted"
       className={cn("relative min-w-0", className)}
       style={{ "--vibe-interval": `${SWAP_EVERY}s` } as CSSProperties}
-      onPointerEnter={(e) => e.pointerType === "mouse" && setHovering(true)}
-      onPointerLeave={(e) => e.pointerType === "mouse" && setHovering(false)}
       onFocus={(e) => e.target.matches(":focus-visible") && setFocused(true)}
       onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setFocused(false)}
     >
@@ -198,6 +207,7 @@ export function SneakerStage({
             exit="leave"
             aria-hidden
             className="absolute inset-x-[16%] bottom-[2%] h-[10%]"
+            style={{ "--vibe-shade": slide.vibe.shade } as CSSProperties}
           >
             <div className="vibe-ground h-full w-full rounded-[50%]" />
           </motion.div>
@@ -213,6 +223,7 @@ export function SneakerStage({
               animate="rest"
               exit="leave"
               className="absolute inset-0"
+              style={{ "--vibe-shade": slide.vibe.shade, willChange: "transform, opacity" } as CSSProperties}
             >
               <Image
                 src={slide.photo.src}
@@ -271,6 +282,8 @@ export function SneakerStage({
             role="group"
             aria-label="Choose a pair"
             className="vibe-glass relative z-10 flex max-w-full items-center gap-1 overflow-x-auto rounded-full p-1 [scrollbar-width:none]"
+            onPointerEnter={(e) => e.pointerType === "mouse" && setHovering(true)}
+            onPointerLeave={(e) => e.pointerType === "mouse" && setHovering(false)}
           >
             {slides.map((s, i) => {
               const on = i === active;
@@ -300,7 +313,7 @@ export function SneakerStage({
             })}
             <button
               type="button"
-              onClick={() => setUserStopped(!stopped)}
+              onClick={() => setStopped(!stopped)}
               aria-label={stopped ? "Play the slideshow" : "Pause the slideshow"}
               className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-(--vibe-ink) transition-colors hover:bg-(--vibe-tint)"
             >
@@ -358,7 +371,7 @@ function GiantWord({ ctx }: { ctx: Ctx }) {
       exit="leave"
       className="col-start-1 row-start-1"
     >
-      <div ref={ref} className="vibe-word">
+      <div ref={ref} className="vibe-word" style={{ color: ctx.slide.vibe.word }}>
         {lines.map((line) => (
           <span key={line} className="block">
             {[...line].map((ch, i) => (

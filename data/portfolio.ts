@@ -152,11 +152,12 @@ export const portfolio: PortfolioPiece[] = [
     subtitle: "Eight fine-line cat tattoos and two tiny paws on white Air Force 1s, a birthday gift for a best friend.",
     category: "sneakers",
     year: 2023,
+    featured: true,
     baseShoe: "Nike Air Force 1",
     tags: ["hand-painted", "cats", "tattoo inspo", "fine line", "minimalist", "white sneakers", "gift"],
     cover: {
-      src: "/work/tattoo-cats/cover.webp",
-      alt: "The pair seen from the heels: a cat sitting on a crescent moon with a red flower on the left shoe, a cat on a looping heart on the right one, and a small black cat paw on each heel under the upside-down Nike Air logo.",
+      src: "/work/tattoo-cats/cover-side.webp",
+      alt: "The right shoe from the side: a cat asleep inside a heart with a crescent moon near the heel and a cat reaching up for a butterfly near the toe, with the left shoe and its moon cat behind it.",
       cutout: true,
     },
     story:
@@ -205,7 +206,6 @@ export const portfolio: PortfolioPiece[] = [
     subtitle: "Flowers, a stethoscope and her own words: a delicate pink cap, painted by hand for Patri.",
     category: "graduation-caps",
     year: 2026,
-    featured: true,
     tags: ["hand-painted", "graduation cap", "medicine", "florals"],
     cover: {
       src: "/work/doctor-cu-suflet-si-ratiune/cover.jpg",

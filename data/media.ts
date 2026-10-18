@@ -33,6 +33,7 @@ export interface VibePalette {
   accent: string; // italic headline, main button, progress line
   accentInk: string; // text on the accent button
   accentOnCream: string; // italics + links in the cream sections below (must read on cream)
+  pop: string; // a complementary colour from the artwork, for small details (must read on bg)
   glass: string; // nav pill background
   line: string; // hairlines and hover tints
   shade: string; // shoe and button shadows
@@ -66,19 +67,20 @@ export const heroShowcase: ShowcaseSlide[] = [
     caption: "the One Piece pair, after a year of daily wear",
     word: ["ONE", "PIECE"],
     pose: { x: "0%", y: "-2%", rotate: -3, scale: 0.98 },
-    // straw-hat gold, Luffy's red hat band
+    // straw-hat yellow, Luffy's red, the sea-dragon's blue
     vibe: {
-      bg: "#ecd49b",
-      glow: "#f8e9c3",
-      word: "#faeccb",
-      ink: "#2b1f14",
-      muted: "#5e4a2e",
-      accent: "#a3342a",
-      accentInk: "#fbf1dd",
-      accentOnCream: "#a3342a",
-      glass: "rgb(251 244 226 / 0.62)",
-      line: "rgb(43 31 20 / 0.16)",
-      shade: "rgb(92 62 20 / 0.42)",
+      bg: "#f3c95a",
+      glow: "#fde7a3",
+      word: "#feedbb",
+      ink: "#2a1a0c",
+      muted: "#5c3d17",
+      accent: "#a8221a",
+      accentInk: "#fff6e0",
+      accentOnCream: "#a8221a",
+      pop: "#1b538f",
+      glass: "rgb(255 246 222 / 0.6)",
+      line: "rgb(42 26 12 / 0.16)",
+      shade: "rgb(110 70 10 / 0.42)",
     },
   },
   {
@@ -92,17 +94,18 @@ export const heroShowcase: ShowcaseSlide[] = [
     caption: "sushi cats, a birthday gift for a best friend",
     word: ["SUSHI", "CATS"],
     pose: { x: "4%", y: "0%", rotate: 4, scale: 1 },
-    // nori night, tangerine cats, rice-white text
+    // nori green-black, ginger cats, rice-white text, a touch of salmon
     vibe: {
-      bg: "#1c1f1b",
-      glow: "#30352d",
-      word: "#30352d",
-      ink: "#f3eee2",
-      muted: "#bdb5a3",
-      accent: "#e8913f",
-      accentInk: "#1c1f1b",
+      bg: "#15201a",
+      glow: "#26352b",
+      word: "#2f4034",
+      ink: "#f7f1e3",
+      muted: "#c2bba8",
+      accent: "#f7943a",
+      accentInk: "#15201a",
       accentOnCream: "#b0521a",
-      glass: "rgb(42 46 39 / 0.66)",
+      pop: "#ff9f8a",
+      glass: "rgb(38 50 42 / 0.66)",
       line: "rgb(243 238 226 / 0.16)",
       shade: "rgb(0 0 0 / 0.6)",
     },
@@ -111,29 +114,35 @@ export const heroShowcase: ShowcaseSlide[] = [
     slug: "tattoo-cats",
     name: "Tattoo cats",
     photo: {
-      src: "/work/tattoo-cats/cover.webp",
-      alt: "The pair seen from the heels: a cat sitting on a crescent moon with a red flower on the left shoe, a cat on a looping heart on the right one, and a small black cat paw on each heel under the upside-down Nike Air logo.",
+      src: "/work/tattoo-cats/cover-side.webp",
+      alt: "The right shoe from the side: a cat asleep inside a heart with a crescent moon near the heel and a cat reaching up for a butterfly near the toe, with the left shoe and its moon cat behind it.",
       cutout: true,
     },
     caption: "tattoo cats, still there after two machine washes",
     word: ["TATTOO", "CATS"],
-    pose: { x: "0%", y: "-1%", rotate: -2, scale: 0.97 },
-    // soft warm black, white leather, the little red flowers
+    pose: { x: "0%", y: "-1%", rotate: -2, scale: 0.98 },
+    // warm ink black, white leather, rose-red flowers, the iridescent Swoosh's lilac
     vibe: {
-      bg: "#2b2828",
-      glow: "#383333",
-      word: "#4a4443",
-      ink: "#f4efea",
-      muted: "#c4bab4",
-      accent: "#e5706a",
-      accentInk: "#221e1e",
+      bg: "#262123",
+      glow: "#3a3236",
+      word: "#4a4045",
+      ink: "#f8f2ee",
+      muted: "#c9bdb9",
+      accent: "#f0716a",
+      accentInk: "#1f1a1c",
       accentOnCream: "#b23a33",
-      glass: "rgb(52 48 48 / 0.66)",
-      line: "rgb(244 239 234 / 0.16)",
+      pop: "#c9b6f5",
+      glass: "rgb(52 45 48 / 0.66)",
+      line: "rgb(248 242 238 / 0.16)",
       shade: "rgb(0 0 0 / 0.5)",
     },
   },
 ];
+
+/** The palette of a pair in the rotation, also used to theme its project page. */
+export function vibeFor(slug: string): VibePalette | undefined {
+  return heroShowcase.find((s) => s.slug === slug)?.vibe;
+}
 
 /** Photo for the graduation caps card on the homepage. */
 export const beyondPhotos: { caps: PhotoData | null } = {

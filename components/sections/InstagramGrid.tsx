@@ -13,7 +13,16 @@ export function InstagramGrid() {
         <div className="flex flex-wrap items-end justify-between gap-8">
           <SectionHeading
             eyebrow="On Instagram"
-            title={site.instagramHandle}
+            title={
+              <a
+                href={site.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-1 decoration-transparent underline-offset-[0.18em] transition-colors hover:text-olive hover:decoration-current"
+              >
+                {site.instagramHandle}
+              </a>
+            }
             lede="Finished pieces, graduation days and the whole process, from sketch to sealed."
           />
           <a

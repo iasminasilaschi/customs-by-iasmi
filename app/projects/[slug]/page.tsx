@@ -6,6 +6,9 @@ import { Tag } from "@/components/ui/Tag";
 import { Photo } from "@/components/ui/Photo";
 import { VideoPlayer } from "@/components/ui/VideoPlayer";
 import { PhotoGrid } from "@/components/projects/PhotoGrid";
+import { PageVibe } from "@/components/projects/PageVibe";
+import { vibeFor } from "@/data/media";
+import { pageTokens } from "@/lib/vibe";
 import { categoryLabels, getPiece, portfolio, requestHref } from "@/data/portfolio";
 
 export function generateStaticParams() {
@@ -40,8 +43,12 @@ export default async function ProjectPage({
   const piece = getPiece(slug);
   if (!piece) notFound();
   const isCap = piece.category === "graduation-caps";
+  // pairs from the homepage rotation keep their colours here too
+  const vibe = vibeFor(piece.slug);
 
   return (
+    <div className={vibe ? "vibe-page text-cream" : undefined} style={vibe ? pageTokens(vibe) : undefined}>
+    {vibe && <PageVibe vibe={vibe} />}
     <article className="mx-auto max-w-6xl px-5 pt-36 pb-20 sm:px-6 lg:px-8">
       {/* Header */}
       <Link href="/projects" className="text-base text-muted transition-colors hover:text-rose-2">
@@ -58,16 +65,22 @@ export default async function ProjectPage({
         {piece.tags && piece.tags.length > 0 && (
           <div className="mt-5 flex flex-wrap gap-2">
             {piece.tags.map((t) => (
-              <Tag key={t} tone="rose">{t}</Tag>
+              <Tag key={t} tone={vibe ? "gold" : "rose"}>{t}</Tag>
             ))}
           </div>
         )}
       </header>
 
-      {/* Hero visual — portrait, so the whole piece stays in frame */}
-      <div className="relative aspect-[4/5] overflow-hidden rounded-blob border border-line bg-cream-soft shadow-soft">
-        <Photo photo={piece.cover} priority sizes="(min-width: 768px) 40vw, 100vw" />
-      </div>
+      {/* Hero visual: a cutout floats on the pair's colours; a photo gets a portrait frame */}
+      {piece.cover.cutout ? (
+        <div className="relative aspect-[5/4] md:scale-110">
+          <Photo photo={piece.cover} priority sizes="(min-width: 768px) 45vw, 100vw" />
+        </div>
+      ) : (
+        <div className="relative aspect-[4/5] overflow-hidden rounded-blob border border-line bg-cream-soft shadow-soft">
+          <Photo photo={piece.cover} priority sizes="(min-width: 768px) 40vw, 100vw" />
+        </div>
+      )}
       </div>
 
       {/* Story + facts */}
@@ -211,5 +224,6 @@ export default async function ProjectPage({
         </div>
       </div>
     </article>
+    </div>
   );
 }
