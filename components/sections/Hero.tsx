@@ -1,100 +1,138 @@
 "use client";
 
-import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState, type CSSProperties } from "react";
+import { MotionConfig, motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
-import { Photo } from "@/components/ui/Photo";
-import { heroPhoto } from "@/data/media";
+import { SneakerStage } from "@/components/sections/hero/SneakerStage";
+import { heroShowcase, type VibePalette } from "@/data/media";
 import { site } from "@/data/site";
+import { cn } from "@/lib/utils";
+
+/** The atelier's own colours, for when no pair is on stage. */
+const atelier: VibePalette = {
+  bg: "#f5f0e6",
+  glow: "#fbf8f0",
+  word: "#ece2d1",
+  ink: "#2c2a20",
+  muted: "#7a7060",
+  accent: "#5f6f52",
+  accentInk: "#f5f0e6",
+  accentOnCream: "#bb8355",
+  glass: "rgb(251 248 240 / 0.72)",
+  line: "rgb(58 50 34 / 0.14)",
+  shade: "rgb(47 58 47 / 0.6)",
+};
+
+/** A palette as the vibe properties registered in globals.css. */
+function vibeVars(v: VibePalette): Record<string, string> {
+  return {
+    "--vibe-bg": v.bg,
+    "--vibe-glow": v.glow,
+    "--vibe-word": v.word,
+    "--vibe-ink": v.ink,
+    "--vibe-muted": v.muted,
+    "--vibe-accent": v.accent,
+    "--vibe-accent-ink": v.accentInk,
+    "--vibe-glass": v.glass,
+    "--vibe-line": v.line,
+    "--vibe-tint": v.line,
+    "--vibe-shade": v.shade,
+  };
+}
 
 export function Hero() {
-  const reduce = useReducedMotion();
-  const enter = (delay: number) =>
-    reduce
-      ? {}
-      : {
-          initial: { opacity: 0, y: 24 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.9, delay, ease: [0.21, 0.6, 0.35, 1] as const },
-        };
+  const [active, setActive] = useState(0);
+  const slide = heroShowcase[active];
+  const vibe = slide?.vibe ?? atelier;
+
+  // The nav and the cream sections' accents follow the pair on stage too.
+  useEffect(() => {
+    if (!slide) return;
+    const style = document.documentElement.style;
+    const vars = { ...vibeVars(slide.vibe), "--color-rose-2": slide.vibe.accentOnCream };
+    for (const [k, v] of Object.entries(vars)) style.setProperty(k, v);
+  }, [slide]);
+  // Leaving the homepage fades everything back to the atelier colours.
+  useEffect(
+    () => () => {
+      const style = document.documentElement.style;
+      for (const k of Array.from(style)) {
+        if (k.startsWith("--vibe-") || k === "--color-rose-2") style.removeProperty(k);
+      }
+    },
+    [],
+  );
+
+  // same markup on server and client; MotionConfig drops the rise for reduced motion
+  const enter = (delay: number) => ({
+    initial: { opacity: 0, y: 24 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.9, delay, ease: [0.21, 0.6, 0.35, 1] as const },
+  });
 
   return (
-    <section className="relative overflow-hidden pt-36 pb-20 sm:pt-44 lg:pb-28">
-      {/* one soft warm wash — calm, not busy */}
-      <div
-        aria-hidden
-        className="glow-sage pointer-events-none absolute -top-32 right-[-10%] h-[36rem] w-[36rem]"
-      />
+    <MotionConfig reducedMotion="user">
+      <section
+        className="vibe-scope relative overflow-hidden"
+        style={vibeVars(vibe) as CSSProperties}
+      >
+        <div
+          className={cn(
+            "mx-auto grid max-w-[90rem] items-center gap-8 px-4 pt-28 pb-16 sm:px-6 sm:pt-32 lg:px-12 lg:pt-32 lg:pb-20 xl:px-20",
+            slide && "lg:min-h-[min(100svh,60rem)] lg:grid-cols-[1.1fr_1fr] lg:gap-10",
+          )}
+        >
+          {/* Copy */}
+          <div className="relative z-10 max-w-2xl">
+            <motion.p {...enter(0)} className="hand mb-4 text-3xl text-(--vibe-muted)">
+              painted by hand
+            </motion.p>
+            <motion.h1
+              {...enter(0.08)}
+              className="display leading-[1.02] text-[clamp(2.75rem,1.55rem+4.2vw,4.75rem)]"
+            >
+              Custom sneakers,
+              <br />
+              <span className="display-italic text-(--vibe-accent)">painted by hand.</span>
+            </motion.h1>
+            <motion.p
+              {...enter(0.16)}
+              className="mt-7 max-w-lg text-xl leading-relaxed text-(--vibe-muted)"
+            >
+              Wearable art created from your moodboard, story, colours, and
+              obsessions. Send me the mood and I&apos;ll turn it into something you
+              can wear.
+            </motion.p>
+            <motion.div
+              {...enter(0.24)}
+              className="mt-9 flex flex-wrap items-center gap-4"
+            >
+              <Button href="/design-lab" variant="vibe" size="lg">
+                Start a sneaker commission
+              </Button>
+              <Button href="/projects" variant="vibe-outline" size="lg">
+                View my projects
+              </Button>
+            </motion.div>
+            <motion.div
+              {...enter(0.32)}
+              className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-2 text-base text-(--vibe-muted)"
+            >
+              <span>{site.location}</span>
+            </motion.div>
+          </div>
 
-      <div className={`mx-auto grid max-w-[90rem] items-center gap-14 px-4 sm:px-6 ${heroPhoto ? "lg:grid-cols-[1.1fr_0.9fr] lg:gap-20" : ""} lg:px-12 xl:px-20`}>
-        {/* Copy */}
-        <div className="relative z-10 max-w-2xl">
-          <motion.p {...enter(0)} className="hand mb-4 text-3xl text-sage">
-            painted by hand
-          </motion.p>
-          <motion.h1
-            {...enter(0.08)}
-            className="display leading-[1.02] text-[clamp(2.75rem,1.55rem+4.2vw,4.75rem)]"
-          >
-            Custom sneakers,
-            <br />
-            <span className="display-italic text-rose-2">painted by hand.</span>
-          </motion.h1>
-          <motion.p
-            {...enter(0.16)}
-            className="mt-7 max-w-lg text-xl leading-relaxed text-muted"
-          >
-            Wearable art created from your moodboard, story, colours, and
-            obsessions. Send me the mood and I&apos;ll turn it into something you
-            can wear.
-          </motion.p>
-          <motion.div
-            {...enter(0.24)}
-            className="mt-9 flex flex-wrap items-center gap-4"
-          >
-            <Button href="/design-lab" size="lg">
-              Start a sneaker commission
-            </Button>
-            <Button href="/projects" variant="outline" size="lg">
-              View my projects
-            </Button>
-          </motion.div>
-          <motion.div
-            {...enter(0.32)}
-            className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-2 text-base text-muted"
-          >
-            <span>{site.location}</span>
-          </motion.div>
+          {/* The pairs take turns on stage, each bringing its own colours */}
+          {slide && (
+            <SneakerStage
+              slides={heroShowcase}
+              active={active}
+              onSelect={setActive}
+              className="max-lg:order-first max-lg:mx-auto max-lg:w-full max-lg:max-w-2xl"
+            />
+          )}
         </div>
-
-        {/* One large editorial visual — only when a real photo is set */}
-        {heroPhoto && (
-          <motion.div
-            {...enter(0.2)}
-            className="relative mx-auto w-full max-w-md lg:max-w-none"
-          >
-            {heroPhoto.cutout ? (
-              // a cutout floats on the page — no frame, nothing cropped
-              <Link href={heroPhoto.href} className="group block">
-                <div className="relative aspect-[3/2] transition-transform duration-700 group-hover:-translate-y-1 lg:scale-110">
-                  <Photo photo={heroPhoto} priority sizes="(min-width: 1024px) 45vw, 90vw" />
-                </div>
-                {heroPhoto.caption && (
-                  <p className="hand mt-2 text-center text-2xl text-sage transition-colors group-hover:text-rose-2 lg:mt-6">
-                    {heroPhoto.caption} →
-                  </p>
-                )}
-              </Link>
-            ) : (
-              <Link href={heroPhoto.href} className="block overflow-hidden rounded-[2rem] border border-line bg-cream-soft p-3 shadow-lift">
-                <div className="relative aspect-[4/5] overflow-hidden rounded-[1.4rem]">
-                  <Photo photo={heroPhoto} priority sizes="(min-width: 1024px) 40vw, 90vw" />
-                </div>
-              </Link>
-            )}
-          </motion.div>
-        )}
-      </div>
-    </section>
+      </section>
+    </MotionConfig>
   );
 }

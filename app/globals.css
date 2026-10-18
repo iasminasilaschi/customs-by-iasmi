@@ -183,6 +183,112 @@ body {
   background: radial-gradient(closest-side, rgba(143, 155, 130, 0.22), transparent 70%);
 }
 
+/*
+  Vibes — the homepage hero hands each pair's palette to these properties
+  (on the hero, and on <html> for the nav and page accents). They're
+  registered as <color>, so the browser fades the whole palette instead of
+  snapping. Initial values = the regular nav look, used on every other page.
+  See heroShowcase in data/media.ts.
+*/
+@property --vibe-bg { syntax: "<color>"; inherits: true; initial-value: #f5f0e6; }
+@property --vibe-glow { syntax: "<color>"; inherits: true; initial-value: #fbf8f0; }
+@property --vibe-word { syntax: "<color>"; inherits: true; initial-value: #ece2d1; }
+@property --vibe-ink { syntax: "<color>"; inherits: true; initial-value: #2c2a20; }
+@property --vibe-muted { syntax: "<color>"; inherits: true; initial-value: #8f9b82; }
+@property --vibe-accent { syntax: "<color>"; inherits: true; initial-value: #5f6f52; }
+@property --vibe-accent-ink { syntax: "<color>"; inherits: true; initial-value: #f5f0e6; }
+@property --vibe-glass { syntax: "<color>"; inherits: true; initial-value: rgb(251 248 240 / 0.72); }
+@property --vibe-line { syntax: "<color>"; inherits: true; initial-value: rgb(58 50 34 / 0.14); }
+@property --vibe-tint { syntax: "<color>"; inherits: true; initial-value: rgb(95 111 82 / 0.12); }
+@property --vibe-shade { syntax: "<color>"; inherits: true; initial-value: rgb(47 58 47 / 0.6); }
+@property --color-rose-2 { syntax: "<color>"; inherits: true; initial-value: #bb8355; }
+
+:root,
+.vibe-scope {
+  --vibe-wash: 900ms;
+  transition-property: --vibe-bg, --vibe-glow, --vibe-word, --vibe-ink, --vibe-muted,
+    --vibe-accent, --vibe-accent-ink, --vibe-glass, --vibe-line, --vibe-tint, --vibe-shade,
+    --color-rose-2;
+  transition-duration: var(--vibe-wash);
+  transition-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+.vibe-scope {
+  color: var(--vibe-ink);
+  background:
+    radial-gradient(70% 45% at 50% 24%, var(--vibe-glow), transparent 72%),
+    var(--vibe-bg);
+}
+@media (min-width: 64rem) {
+  .vibe-scope {
+    background:
+      radial-gradient(55% 65% at 72% 48%, var(--vibe-glow), transparent 72%),
+      var(--vibe-bg);
+  }
+}
+.vibe-scope ::selection {
+  background: var(--vibe-accent);
+  color: var(--vibe-accent-ink);
+}
+.vibe-scope :focus-visible {
+  outline-color: var(--vibe-ink);
+}
+
+/* The nav's pills — the same glass, tinted by the current vibe */
+.vibe-glass {
+  background: var(--vibe-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--vibe-line);
+}
+.vibe-glass:focus-visible,
+.vibe-glass :focus-visible {
+  outline-color: var(--vibe-ink);
+}
+
+/* Giant word behind the shoe; SneakerStage sizes it to fit, then shows it */
+.vibe-word {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-variation-settings: "SOFT" 100, "WONK" 0, "opsz" 144;
+  letter-spacing: -0.03em;
+  line-height: 0.8;
+  color: var(--vibe-word);
+  white-space: nowrap;
+  text-align: center;
+  user-select: none;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+.vibe-word[data-fit] {
+  opacity: 1;
+}
+
+/* Gentle idle float of the shoe, with its ground shadow breathing in sync */
+.vibe-float {
+  animation: vibe-float 5.5s ease-in-out infinite alternate;
+}
+.vibe-ground {
+  background: radial-gradient(closest-side, var(--vibe-shade), transparent);
+  animation: vibe-ground 5.5s ease-in-out infinite alternate;
+}
+@keyframes vibe-float {
+  to { transform: translateY(-12px); }
+}
+@keyframes vibe-ground {
+  to { transform: scaleX(0.9); opacity: 0.75; }
+}
+
+/* Progress line under the pair on stage — it's also the swap timer */
+.vibe-bar {
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: vibe-fill var(--vibe-interval, 6s) linear forwards;
+}
+@keyframes vibe-fill {
+  to { transform: scaleX(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -193,5 +299,14 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  /* colour washes carry meaning, not movement — keep them */
+  :root,
+  .vibe-scope {
+    transition-duration: var(--vibe-wash) !important;
+  }
+  /* the timer has to keep real time (autoplay only runs if asked for) */
+  .vibe-bar {
+    animation-duration: var(--vibe-interval, 6s) !important;
   }
 }

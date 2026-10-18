@@ -16,16 +16,16 @@ export function Nav() {
       <div className="mx-auto flex max-w-[90rem] items-center justify-between px-4 py-5 sm:px-6 lg:px-12 xl:px-20">
         <Link
           href="/"
-          className="glass group flex items-baseline gap-1.5 rounded-full px-5 py-2.5 text-cream transition-colors hover:text-olive"
+          className="vibe-glass group flex items-baseline gap-1.5 rounded-full px-5 py-2.5 text-(--vibe-ink) transition-colors hover:text-(--vibe-accent)"
         >
-          <span className="hand text-lg leading-none text-sage transition-colors group-hover:text-olive">
+          <span className="hand text-lg leading-none text-(--vibe-muted) transition-colors group-hover:text-(--vibe-accent)">
             customs by
           </span>
           <span className="hand text-[1.4rem] leading-none">Iasmi</span>
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-2.5 md:flex">
-          <div className="glass flex items-center gap-1 rounded-full p-1.5">
+          <div className="vibe-glass flex items-center gap-1 rounded-full p-1.5">
             {navLinks.map((l) => {
               const active = pathname === l.href || pathname.startsWith(l.href + "/");
               return (
@@ -35,7 +35,7 @@ export function Nav() {
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "rounded-full px-4 py-2.5 text-[0.95rem] transition-colors lg:text-base",
-                    active ? "bg-olive/12 text-deep" : "text-cream/70 hover:text-deep",
+                    active ? "bg-(--vibe-tint) text-(--vibe-ink)" : "text-(--vibe-ink)/70 hover:text-(--vibe-ink)",
                   )}
                 >
                   {l.label}
@@ -43,7 +43,7 @@ export function Nav() {
               );
             })}
           </div>
-          <Button href="/design-lab" className="ml-1">
+          <Button href="/design-lab" variant="vibe" className="ml-1">
             Start a commission
           </Button>
         </nav>
@@ -54,7 +54,7 @@ export function Nav() {
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="glass flex h-11 w-11 items-center justify-center rounded-full text-cream md:hidden"
+          className="vibe-glass flex h-11 w-11 items-center justify-center rounded-full text-(--vibe-ink) md:hidden"
         >
           <span aria-hidden className="relative block h-3 w-4">
             <span
@@ -87,21 +87,21 @@ export function Nav() {
           open ? "max-h-[26rem] opacity-100" : "max-h-0 opacity-0",
         )}
       >
-        <nav aria-label="Mobile" className="glass rounded-blob p-4">
+        <nav aria-label="Mobile" className="vibe-glass rounded-blob p-4">
           <ul className="flex flex-col">
             {navLinks.map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-xl px-3 py-3 text-lg text-cream/85 transition-colors hover:bg-olive/8 hover:text-deep"
+                  className="block rounded-xl px-3 py-3 text-lg text-(--vibe-ink)/85 transition-colors hover:bg-(--vibe-tint) hover:text-(--vibe-ink)"
                 >
                   {l.label}
                 </Link>
               </li>
             ))}
           </ul>
-          <Button href="/design-lab" className="mt-3 w-full">
+          <Button href="/design-lab" variant="vibe" className="mt-3 w-full">
             Start a commission
           </Button>
         </nav>

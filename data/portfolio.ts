@@ -108,7 +108,7 @@ export const portfolio: PortfolioPiece[] = [
       cutout: true,
     },
     story:
-      "These were a birthday gift for one of my best friends. All she asked for was a pair of black Air Force 1s: she can walk 10,000 steps in them and they're still comfy, and black doesn't get dirty as easily as white. So I got my first real challenge: can I paint on black sneakers? Spoiler alert: oh yes, I can.\n\nThe design was all mine; she had no say in it. I only knew that she loves sushi and she loves cats, so I combined the two: sushi drawn as cats. An orange cat plays the salmon, fluffy white rice gives a great contrast on the black leather, and a black nori sheet in some of them completes the sushi vibe. I found inspiration in cute sushi-cat artwork online, but sadly I don't remember the artist.\n\nMy first idea was a different cat altogether, holding a fork and a knife. I drew it on tape and tried it on the shoe, and didn't like the vibe. It was too portrait-y for the side of a sneaker, which needs something more landscape-y. And who eats sushi with a fork and knife, anyway?\n\nThe roll and the maki were givens: the most basic sushi, the ones everyone adores. For the other two sides I needed wider shapes, and the only landscape sushi is nigiri. So I made two: a classic nigiri, with the cat lying on its bed of rice, and a nori nigiri, where the cat is tucked in, ready to sleep, with the nori sheet as its blanket. A gunkan was too tall for the shoes, so it ended up on the Nike box instead, as a little extra.\n\nI started on 22 April 2022 and finished on 27 April, at 4:37 in the morning, to be exact. Not the healthiest way to work: I used to leave everything to the last minute, and her birthday was already overdue.",
+      "These were a birthday gift for one of my best friends. All she asked for was a pair of black Air Force 1s: she can walk 10,000 steps in them and they're still comfy, and black doesn't get dirty as easily as white. So I got my first real challenge: can I paint on black sneakers? Spoiler alert: oh yes, I can.\n\nThe design was all mine; she had no say in it. I only knew that she loves sushi and she loves cats, so I combined the two: sushi drawn as cats. An orange cat plays the salmon, fluffy white rice gives a great contrast on the black leather, and a black nori sheet in some of them completes the sushi vibe. I found inspiration in cute sushi-cat artwork online, most likely on Pinterest, but sadly I don't remember the artist.\n\nMy first idea was a different cat altogether, holding a fork and a knife. I drew it on tape and tried it on the shoe, and didn't like the vibe. It was too portrait-y for the side of a sneaker, which needs something more landscape-y. And who eats sushi with a fork and knife, anyway?\n\nThe roll and the maki were givens: the most basic sushi, the ones everyone adores. For the other two sides I needed wider shapes, and the only landscape sushi is nigiri. So I made two: a classic nigiri, with the cat lying on its bed of rice, and a nori nigiri, where the cat is tucked in, ready to sleep, with the nori sheet as its blanket. A gunkan was too tall for the shoes, so it ended up on the Nike box instead, as a little extra.\n\nI started on 22 April 2022 and finished on 27 April, at 4:37 in the morning, to be exact. Not the healthiest way to work: I used to leave everything to the last minute, and her birthday was already overdue.",
     processSteps: [
       "Trying a first idea, a cat with a fork and knife, drawn on tape, then dropping it",
       "Deglazing only where the cats would go, so the black finish stays untouched",
@@ -144,6 +144,59 @@ export const portfolio: PortfolioPiece[] = [
       { src: "/work/sushi-cats/making-02.jpg", alt: "Tape over the shoe with the maki cat's shape cut out and filled with orange and white base colours.", caption: "The maki cat outlined in tape, with the base colours painted inside." },
       { src: "/work/sushi-cats/making-03.jpg", alt: "The roll cat in flat orange and white base colours on black leather, right after the tape came off.", caption: "Tape off: the roll cat in flat base colours." },
       { src: "/work/sushi-cats/making-04.jpg", alt: "The roll cat with its first line details, the maki cat shoe and paint jars in the background.", caption: "Line details on the roll cat, with the maki cat and my paints in the back." },
+    ],
+  },
+  {
+    slug: "tattoo-cats",
+    title: "Tattoo cats",
+    subtitle: "Eight fine-line cat tattoos and two tiny paws on white Air Force 1s, a birthday gift for a best friend.",
+    category: "sneakers",
+    year: 2023,
+    baseShoe: "Nike Air Force 1",
+    tags: ["hand-painted", "cats", "tattoo inspo", "fine line", "minimalist", "white sneakers", "gift"],
+    cover: {
+      src: "/work/tattoo-cats/cover.webp",
+      alt: "The pair seen from the heels: a cat sitting on a crescent moon with a red flower on the left shoe, a cat on a looping heart on the right one, and a small black cat paw on each heel under the upside-down Nike Air logo.",
+      cutout: true,
+    },
+    story:
+      "A birthday gift for another one of my best friends, from a few of us together. She likes things classy, minimalist and cute, and she loves cats, so the idea was simple, classy, subtle. The base was a pair of Air Force 1s again, but an interesting edition with an upside-down vibe: the Nike Air logo on the heel is flipped.\n\nLooking for cats, I found so many cat tattoos that were sooo cute. So, basically, I tattooed the shoes with cats. I don't remember the artists, sadly; the tattoos most likely came from Pinterest. Doing this, I found out that tattoo inspo is perfect for subtle details on shoes.\n\nEach side of an Air Force 1 is split in two by the middle panel with the Nike logo, so every side has a front panel and a back panel. That made 8 tattoos, 2 on each side, so 8 cats to draw. I printed all the tattoos I liked on my home printer, sized for the panels before printing, then cut them out and placed them on the shoes until it all looked cute and matchy. I only made those paper cutouts to ask the friends I was making the gift with if they liked it, and lucky I even have the photos. As a lovely touch I added cat paws on the heels: they fit sooo nicely, stay subtle, and tie the whole cat vibe together.\n\nI started on 18 November 2023 at 1:48 at night and finished the same day, at 5:02 in the morning. An all-nighter, because her birthday was that very day.\n\nThe thing I'm really proud of: she has machine washed them at least twice, and the drawings are still there, just a bit faded in places. That's with my old paints, not Angelus, and without leaving enough time between coats. With Angelus and better timing, I'm sure I could make them even more durable.",
+    processSteps: [
+      "Collecting cute cat tattoos and choosing 8: a front and a back panel on each side",
+      "Sizing them for the panels and printing them on my home printer",
+      "Cutting them out and placing them on the shoes, to plan a matchy layout and ask my friends if they liked it",
+      "Deglazing the panels with acetone and cotton balls",
+      "Painting the 8 cats in fine black lines with a thin brush, with little touches of red",
+      "A small cat paw on each heel",
+      "Finisher coats on top",
+    ],
+    materials: [
+      "Leather paints (my old ones, not Angelus)",
+      "A thin paintbrush, for the fine lines",
+      "Acetone and cotton balls, for deglazing",
+      "A finisher",
+      "Home printer, paper and scissors, for the mockup",
+    ],
+    time: "One night: 18 November 2023, from 1:48 to 5:02 a.m.",
+    learned: [
+      "Tattoo inspo is perfect for subtle details on shoes.",
+      "Printed paper cutouts are a quick way to plan a layout and get a yes before painting.",
+      "Rushing costs durability: leave proper time between paint coats and finisher coats.",
+      "With Angelus paints and better timing, the same design would last even longer.",
+    ],
+    gallery: [
+      { src: "/work/tattoo-cats/01.jpg", alt: "The right shoe's outer side: a cat asleep inside a heart with a crescent moon and a red flower near the heel, and a cat stretching up towards a butterfly near the toe.", caption: "Right shoe, outside: a cat asleep in a heart, and one reaching for a butterfly." },
+      { src: "/work/tattoo-cats/02.jpg", alt: "The left shoe's inner side, held in a hand: a cat sitting on a crescent moon with a star and a red flower near the heel, and a cat rolling on its back under a butterfly near the toe.", caption: "Left shoe, inside: the moon cat, and a cat rolling on its back." },
+      { src: "/work/tattoo-cats/03.jpg", alt: "The left shoe's outer side, held in a hand: a long stretching cat with a red flower at its tail near the toe, and near the heel a sitting cat with a butterfly above a cat curled in a ring of little red flowers.", caption: "Left shoe, outside: a long stretch, and a cat curled up in flowers." },
+      { src: "/work/tattoo-cats/04.jpg", alt: "The right shoe's inner side, held in a hand: a stretching cat near the toe, and near the heel a cat beside a heart drawn in one looping line that ends in a red flower.", caption: "Right shoe, inside: another stretch, and a cat with a looping heart." },
+      { src: "/work/tattoo-cats/05.jpg", alt: "The heel of one shoe: the Nike Air logo embossed upside down, and a small black cat paw painted on the heel tab.", caption: "A tiny paw on each heel, under the upside-down logo." },
+    ],
+    processPhotos: [
+      { src: "/work/tattoo-cats/making-01.jpg", alt: "One of the white Air Force 1s before painting, with an iridescent Swoosh.", caption: "Before: clean white, with an iridescent Swoosh." },
+      { src: "/work/tattoo-cats/making-02.jpg", alt: "The left shoe's inner side with two printed tattoos cut out and taped on: a cat on a crescent moon on the back panel, and a cat with a butterfly on the front panel.", caption: "The paper mockup: printed tattoos, sized and cut out, placed where the cats would go." },
+      { src: "/work/tattoo-cats/making-03.jpg", alt: "The left shoe's outer side with printed tattoos taped on: a cat under a crescent moon on the front panel, and two cats with flowers and a butterfly on the back panel.", caption: "Left shoe, outside, in paper." },
+      { src: "/work/tattoo-cats/making-04.jpg", alt: "The right shoe's inner side with printed tattoos taped on: a slim cat with a little flower on the front panel, and a cat with a looping heart and a butterfly on the back panel.", caption: "Right shoe, inside, in paper." },
+      { src: "/work/tattoo-cats/making-05.jpg", alt: "The right shoe's outer side with printed tattoos taped on: a cat asleep in a heart on the back panel, and a cat reaching up for a butterfly on the front panel.", caption: "Right shoe, outside, in paper." },
     ],
   },
   {
