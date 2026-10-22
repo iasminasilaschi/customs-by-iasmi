@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="relative mt-28 bg-deep text-paper">
       <div className="mx-auto max-w-[90rem] px-4 py-16 sm:px-6 lg:px-12 xl:px-20">
-        <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
+        <div className="flex flex-col gap-12 xl:flex-row xl:items-start xl:justify-between">
           <div className="max-w-sm">
             <p className="leading-none">
               <span className="hand block text-xl text-champagne">customs by</span>
@@ -55,7 +55,7 @@ export function Footer() {
                 ))}
               </ul>
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="mb-4 text-[0.8rem] uppercase tracking-[0.24em] text-champagne">
                 Elsewhere
               </p>
@@ -83,9 +83,11 @@ export function Footer() {
                 <li>
                   <a
                     href={`mailto:${site.email}`}
-                    className="text-paper/70 transition-colors hover:text-paper"
+                    // the address is one long word: it may break after the @ rather than widen the page
+                    className="text-paper/70 transition-colors [overflow-wrap:anywhere] hover:text-paper"
                   >
-                    {site.email}
+                    {site.email.split("@")[0]}@<wbr />
+                    {site.email.split("@")[1]}
                   </a>
                 </li>
               </ul>

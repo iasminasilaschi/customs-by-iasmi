@@ -111,10 +111,10 @@ export const heroShowcase: ShowcaseSlide[] = [
     },
   },
   {
-    slug: "pink-flowers",
-    name: "Blossoms",
+    slug: "cherry-blossoms",
+    name: "Cherry blossoms",
     photo: {
-      src: "/work/pink-flowers/cover.webp",
+      src: "/work/cherry-blossoms/cover.webp",
       alt: "The remade pair stacked on each other: white Air Force 1s with pink Swooshes and pink cherry blossoms with golden centres on brown branches.",
       cutout: true,
     },

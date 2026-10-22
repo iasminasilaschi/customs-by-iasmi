@@ -24,7 +24,7 @@ export function Nav() {
           <span className="hand text-[1.4rem] leading-none">Iasmi</span>
         </Link>
 
-        <nav aria-label="Main" className="hidden items-center gap-2.5 md:flex">
+        <nav aria-label="Main" className="hidden items-center gap-2.5 lg:flex">
           <div className="vibe-glass flex items-center gap-1 rounded-full p-1.5">
             {navLinks.map((l) => {
               const active = pathname === l.href || pathname.startsWith(l.href + "/");
@@ -54,7 +54,7 @@ export function Nav() {
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="vibe-glass flex h-11 w-11 items-center justify-center rounded-full text-(--vibe-ink) md:hidden"
+          className="vibe-glass flex h-11 w-11 items-center justify-center rounded-full text-(--vibe-ink) lg:hidden"
         >
           <span aria-hidden className="relative block h-3 w-4">
             <span
@@ -83,7 +83,7 @@ export function Nav() {
       <div
         id="mobile-menu"
         className={cn(
-          "mx-4 overflow-hidden rounded-blob transition-all duration-300 md:hidden",
+          "mx-4 overflow-hidden rounded-blob transition-all duration-300 lg:hidden",
           open ? "max-h-[26rem] opacity-100" : "max-h-0 opacity-0",
         )}
       >

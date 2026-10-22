@@ -58,7 +58,7 @@ export function DesignLabStudio({ initialIdea = "" }: { initialIdea?: string }) 
         {/* 3D stage — first on mobile, center on desktop */}
         <section
           aria-label="3D shoe preview"
-          className="lg:order-2 lg:col-span-6"
+          className="min-w-0 lg:order-2 lg:col-span-6"
         >
           <div className="grain relative h-[26rem] overflow-hidden rounded-blob border border-line bg-coal shadow-soft sm:h-[30rem] lg:sticky lg:top-24 lg:h-[34rem]">
             {/* soft sage glow behind the shoe */}
