@@ -111,6 +111,33 @@ export const heroShowcase: ShowcaseSlide[] = [
     },
   },
   {
+    slug: "pink-flowers",
+    name: "Blossoms",
+    photo: {
+      src: "/work/pink-flowers/cover.webp",
+      alt: "The remade pair stacked on each other: white Air Force 1s with pink Swooshes and pink cherry blossoms with golden centres on brown branches.",
+      cutout: true,
+    },
+    caption: "cherry blossoms, ruined once and remade a year later",
+    word: ["CHERRY", "BLOSSOMS"],
+    pose: { x: "0%", y: "-1%", rotate: -3, scale: 0.98 },
+    // blossom pink, buttery cream, the branches' brown, the flowers' golden centres
+    vibe: {
+      bg: "#f2c6c5",
+      glow: "#fbe6cf",
+      word: "#fcefe4",
+      ink: "#3b2116",
+      muted: "#6b4232",
+      accent: "#7a3f1f",
+      accentInk: "#fff4e3",
+      accentOnCream: "#8c4a24",
+      pop: "#775000",
+      glass: "rgb(255 244 234 / 0.62)",
+      line: "rgb(59 33 22 / 0.16)",
+      shade: "rgb(122 63 31 / 0.34)",
+    },
+  },
+  {
     slug: "tattoo-cats",
     name: "Tattoo cats",
     photo: {

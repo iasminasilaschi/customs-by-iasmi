@@ -184,16 +184,20 @@ export default async function ProjectPage({
           <h2 className="display text-2xl text-cream">Before / after</h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <div>
-              <div className="relative aspect-[3/4] overflow-hidden rounded-blob border border-line">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-blob border border-line">
                 <Photo photo={piece.before} sizes="(min-width: 640px) 50vw, 100vw" />
               </div>
-              <p className="mt-2 text-center text-sm uppercase tracking-widest text-muted">before</p>
+              <p className="mt-2 text-center text-sm uppercase tracking-widest text-muted">
+                {piece.before.caption ?? "before"}
+              </p>
             </div>
             <div>
-              <div className="relative aspect-[3/4] overflow-hidden rounded-blob border border-line">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-blob border border-line">
                 <Photo photo={piece.after} sizes="(min-width: 640px) 50vw, 100vw" />
               </div>
-              <p className="mt-2 text-center text-sm uppercase tracking-widest text-rose-2">after</p>
+              <p className="mt-2 text-center text-sm uppercase tracking-widest text-rose-2">
+                {piece.after.caption ?? "after"}
+              </p>
             </div>
           </div>
         </section>
@@ -201,6 +205,9 @@ export default async function ProjectPage({
 
       {/* Galleries */}
       {piece.gallery && piece.gallery.length > 0 && <PhotoGrid title="Gallery" photos={piece.gallery} />}
+      {piece.chapters?.map((c) => (
+        <PhotoGrid key={c.title} title={c.title} note={c.note} photos={c.photos} />
+      ))}
       {piece.processPhotos && piece.processPhotos.length > 0 && (
         <PhotoGrid title="Making of" note={piece.processNote} photos={piece.processPhotos} />
       )}

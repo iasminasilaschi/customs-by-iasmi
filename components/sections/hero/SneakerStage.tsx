@@ -281,7 +281,8 @@ export function SneakerStage({
           <div
             role="group"
             aria-label="Choose a pair"
-            className="vibe-glass relative z-10 flex max-w-full items-center gap-1 overflow-x-auto rounded-full p-1 [scrollbar-width:none]"
+            // wraps onto two rows when the column is narrow, rather than hiding pairs off the edge
+            className="vibe-glass relative z-10 flex max-w-full flex-wrap items-center justify-center gap-1 rounded-[1.6rem] p-1"
             onPointerEnter={(e) => e.pointerType === "mouse" && setHovering(true)}
             onPointerLeave={(e) => e.pointerType === "mouse" && setHovering(false)}
           >

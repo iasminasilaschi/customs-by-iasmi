@@ -20,6 +20,13 @@ export const categoryLabels: Record<PortfolioCategory, string> = {
   sketches: "Sketches",
 };
 
+/** A titled set of photos for a piece with more than one story to show, e.g. a first try. */
+export interface PhotoChapter {
+  title: string;
+  note?: string;
+  photos: PhotoData[];
+}
+
 export interface PortfolioPiece {
   slug: string; // also the folder name in /public/work/
   title: string;
@@ -30,8 +37,9 @@ export interface PortfolioPiece {
   gallery?: PhotoData[]; // finished-piece photos
   processPhotos?: PhotoData[]; // making-of photos
   processNote?: string; // short line above the making-of photos, e.g. "video coming soon"
+  chapters?: PhotoChapter[]; // extra titled photo sets, shown between gallery and making-of
   video?: VideoData; // making-of video
-  before?: PhotoData;
+  before?: PhotoData; // a `caption` replaces the "before" / "after" label
   after?: PhotoData;
   instagramUrl?: string; // link to the real post, if it was posted
   reelUrl?: string; // link to a reel
@@ -147,12 +155,100 @@ export const portfolio: PortfolioPiece[] = [
     ],
   },
   {
+    slug: "pink-flowers",
+    title: "Cherry blossoms, take two",
+    subtitle: "Painted in a rush for a trip to the tulip fields, ruined, scrubbed back to white, and painted again a year later. Properly, this time.",
+    category: "sneakers",
+    year: 2024,
+    featured: true,
+    baseShoe: "Nike Air Force 1",
+    tags: ["hand-painted", "florals", "cherry blossoms", "remake", "white sneakers", "gift"],
+    cover: {
+      src: "/work/pink-flowers/cover.webp",
+      alt: "The remade pair stacked on each other: white Air Force 1s with pink Swooshes and pink cherry blossoms with golden centres on brown branches.",
+      cutout: true,
+    },
+    story:
+      "My favourite story, because it has a plot twist. I painted this pair in such a rush, so last-minute, that they got ruined. Really ruined. All mushed, terrible.\n\nThey were a birthday gift, and the birthday came with a trip to Amsterdam. She wanted to wear them in the tulip fields, so the shoes had to be ready. To my utter shame, I started on the evening of 15 April 2023, and only painted the Swooshes. On 16 April at 22:48 I started the pencil sketches of the flowers. On 17 April at 13:00 the flowers had their first layer of pink, no details at all yet. I finished them at 2:17 on 18 April, and on 19 April at 5:40 in the morning we were boarding the plane. Only a few hours of actual painting, scattered over those days. Far too little for a pair like this.\n\nI had no patience, no good products, and my prep was superficial. There was no time to build the details up in layers: I needed the yellow and the other light colours to show up immediately, fully opaque. So I did the most logical thing at that point: thick layers. A lot of paint. And, damn, did I learn my lesson. The colours bled and mushed around, and some of it got onto the fabric at the top of the shoe, where you put your foot in. She did wear them in the tulip fields, at least. But was it worth it? Probably not. I should have started sooner and done them right.\n\nThen came the twist: I took the whole design off. It was my first full removal, and it taught me a lot. You can clean a pair right back to white and start over. It's also sooo hard. The paint sinks into the little seams, and they hold on to the colour like their life depends on it. The fabric collar was the worst: I scrubbed and rubbed, used tons of acetone and brushes, and in the end I think I repainted some parts in white to hide the damage. If you look closely, you can still see pink around the seams. Pretty poetic.\n\nA year later, on 27 April 2024, I got them back. They were fully clean by 7 May and finished by 10 May. Same design, but this time with Angelus paints, more skill and knowledge, a chiller pace, and real time to pay attention to them.",
+    processSteps: [
+      "2023: Swooshes first, then pencil sketches of the flowers",
+      "2023: Thick layers, so the light colours would cover in one go. They bled and mushed together",
+      "2024: Taking the whole design off with acetone, brushes and a lot of scrubbing",
+      "Repainting the most stubborn spots in white",
+      "The pink blossoms, in Angelus this time",
+      "Brown-gold branches and tiny dots",
+      "Golden centres and pink details on every flower",
+      "Pink Swooshes, last",
+    ],
+    materials: [
+      "Angelus leather paints, for the remake",
+      "Lots of acetone and brushes, to take the first design off",
+      "White paint, to cover what wouldn't come out",
+      "The first time: paints I wouldn't use again",
+    ],
+    time: "First try: a few rushed hours, 15–18 April 2023. Remake: cleaned from 27 April to 7 May 2024, painted by 10 May.",
+    learned: [
+      "Thick layers make light colours cover fast, then bleed and mush. Now I paint the slightest layers, just a drop of colour at a time.",
+      "Tape the fabric collar while you paint. Getting paint out of it is a pain.",
+      "A design can be fully removed and repainted, but the seams never quite give the colour back.",
+      "Rushing cost me far more time in the end than doing it right would have.",
+    ],
+    before: {
+      src: "/work/pink-flowers/first-09.jpg",
+      alt: "The first version, worn: mushed pink blossoms, and yellow paint bled onto the fabric collar and the laces.",
+      caption: "2023, the first try",
+    },
+    after: {
+      src: "/work/pink-flowers/03.jpg",
+      alt: "The remake: clean, crisp pink cherry blossoms with golden centres on brown branches.",
+      caption: "2024, the remake",
+    },
+    gallery: [
+      { src: "/work/pink-flowers/01.jpg", alt: "The remade left shoe's inner side: a pink Swoosh, cherry blossoms with golden centres on thin brown branches, and falling petals.", caption: "The remake: left shoe, inside." },
+      { src: "/work/pink-flowers/02.jpg", alt: "The heel of the remade left shoe: a branch of pink cherry blossoms with golden centres under the Nike Air logo.", caption: "A blossom branch wrapping round the heel." },
+      { src: "/work/pink-flowers/03.jpg", alt: "The remade right shoe's inner side, nearly finished: cherry blossoms with golden centres along brown branches, the Swoosh still white with pink stitching.", caption: "Almost finished: golden centres in, the Swoosh still white." },
+    ],
+    chapters: [
+      {
+        title: "The first try, April 2023",
+        note: "Started far too late, painted in thick layers, finished at 2:17 a.m., a day before the flight.",
+        photos: [
+          { src: "/work/pink-flowers/first-01.jpg", alt: "A white Air Force 1 held up in one hand, its Swoosh being painted pale pink.", caption: "15 April, evening: only the Swooshes." },
+          { src: "/work/pink-flowers/first-02.jpg", alt: "Both shoes on a table with pale pink Swooshes, the rest still white.", caption: "Both Swooshes pink, nothing else yet." },
+          { src: "/work/pink-flowers/first-03.jpg", alt: "Two shoes side by side with pink Swooshes and faint pencil sketches of blossoms on the leather.", caption: "16 April, 22:48: pencil sketches of the flowers." },
+          { src: "/work/pink-flowers/first-04.jpg", alt: "A shoe held up against an orange wall, with a pink Swoosh and faint pencil outlines of blossoms.", caption: "The sketches, up close." },
+          { src: "/work/pink-flowers/first-05.jpg", alt: "Close-up of the shoe's back panel: flat pink blossoms and petals over thin pencil lines.", caption: "17 April: the first layer of pink, no details yet." },
+          { src: "/work/pink-flowers/first-06.jpg", alt: "One shoe held in front with pink blossoms, the other shoe behind it on its box.", caption: "One shoe ahead of the other." },
+          { src: "/work/pink-flowers/first-07.jpg", alt: "Both finished shoes on a patterned blanket and the shoe box: pink Swooshes and pink blossoms with yellow centres on brown branches.", caption: "Finished, 18 April at 2:17 a.m." },
+          { src: "/work/pink-flowers/first-08.jpg", alt: "Both finished shoes from behind, with blossom branches running along the sides.", caption: "Thick, bright, and done just in time." },
+          { src: "/work/pink-flowers/first-09.jpg", alt: "One shoe of the first version after wear: blurred pink blossoms and yellow paint smeared onto the fabric collar.", caption: "Later: yellow bled onto the fabric collar." },
+          { src: "/work/pink-flowers/first-10.jpg", alt: "The other side of a first-version shoe: blossoms smudged into each other and yellow stains along the collar.", caption: "Colours mushed into each other." },
+          { src: "/work/pink-flowers/first-11.jpg", alt: "A first-version shoe with laces in: muddy blossoms near the heel and stained, worn leather.", caption: "Ruined. Time to take it all off." },
+          { src: "/work/pink-flowers/first-12.jpg", alt: "The fourth side of the first version: smudged blossoms and yellow marks near the laces.", caption: "All four sides needed saving." },
+        ],
+      },
+    ],
+    processNote: "The remake, 2024: scrubbed back to white, then painted again, slowly.",
+    processPhotos: [
+      { src: "/work/pink-flowers/making-01.jpg", alt: "A shoe on a table after the old design was removed: white again, with faint pink left in the stitching around the Swoosh.", caption: "Fully cleaned. Almost." },
+      { src: "/work/pink-flowers/making-02.jpg", alt: "Close-up of a cleaned Swoosh, its stitching still tinted pink.", caption: "Pink still hiding in the seams. Pretty poetic." },
+      { src: "/work/pink-flowers/making-03.jpg", alt: "Close-up of the other side's Swoosh, white leather with pink-tinted stitching.", caption: "The seams held on to the colour like their life depended on it." },
+      { src: "/work/pink-flowers/making-04.jpg", alt: "A shoe held in one hand with flat pink blossoms and petals painted across the sides.", caption: "The blossoms go back on, in flat pink." },
+      { src: "/work/pink-flowers/making-05.jpg", alt: "The heel of a shoe held in one hand, with small pink blossoms on either side.", caption: "Blossoms round the heel." },
+      { src: "/work/pink-flowers/making-06.jpg", alt: "A brush mixing golden-brown paint on a palette.", caption: "Mixing the brown-gold for the branches." },
+      { src: "/work/pink-flowers/making-07.jpg", alt: "A shoe on a dark blanket with thin brown branches and gold dots added between the pink blossoms.", caption: "Branches and tiny dots." },
+      { src: "/work/pink-flowers/making-08.jpg", alt: "Both heels side by side, each with a brown branch of pink blossoms.", caption: "Both heels, branches in." },
+      { src: "/work/pink-flowers/making-09.jpg", alt: "Both shoes from the inner side, one above the other, with pink blossoms on brown branches.", caption: "Both inner sides." },
+      { src: "/work/pink-flowers/making-10.jpg", alt: "A shoe's inner side with blossom branches near the toe and the heel.", caption: "Building up the details." },
+      { src: "/work/pink-flowers/making-11.jpg", alt: "Both heels from behind, with blossom branches and petals.", caption: "Nearly there, before the golden centres." },
+    ],
+  },
+  {
     slug: "tattoo-cats",
     title: "Tattoo cats",
     subtitle: "Eight fine-line cat tattoos and two tiny paws on white Air Force 1s, a birthday gift for a best friend.",
     category: "sneakers",
     year: 2023,
-    featured: true,
     baseShoe: "Nike Air Force 1",
     tags: ["hand-painted", "cats", "tattoo inspo", "fine line", "minimalist", "white sneakers", "gift"],
     cover: {
