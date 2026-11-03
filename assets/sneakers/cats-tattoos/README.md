@@ -39,3 +39,19 @@ kept here only.
   least twice: the lines are still there, a bit faded in places.
 - Tattoo designs most likely from Pinterest; artists unknown (she's OK showing the mockups).
 - Painted with a thin brush (no markers); deglazed with acetone and cotton balls.
+
+## Cutouts
+
+`cutouts/` has a transparent PNG of every photo above, same file names, full
+resolution (BiRefNet for the edges, SAM to tell the shoe apart from hands and
+the other shoe). Sideways photos are turned upright; where a shoe runs out of
+the frame, that edge fades out softly.
+
+- `finished-right-outer.png`: her hand is removed. The heel corner her thumb
+  covered reuses the same filled-in spot as the site cover (`cover-side-2.webp`),
+  so nothing new was invented.
+- `finished-left-inner.png`, `finished-left-outer.png`, `finished-right-inner.png`:
+  her hand covers too much of the sole and heel to fill in honestly (on the
+  inner side, the thumb sits on the AIR logo), so these are "shoe in hand"
+  cutouts. The arm fades out where it leaves the frame.
+- Everything else is the photo's own pixels with the background removed.

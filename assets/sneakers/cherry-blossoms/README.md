@@ -40,3 +40,17 @@ Kept here only: `before/only-swooshes-painted-another-angle`,
 `after/left-shoe-heel--stage-1` (her face right behind the heel),
 `after/right-outside-stage-2`, `after/right-inner-stage-3-above`,
 `after/both-outer-stage-4`.
+
+## Cutouts
+
+`cutouts/after/` and `cutouts/before/` have transparent PNGs of the clearest
+photos, same file names, full resolution (BiRefNet for the edges, SAM to drop
+the other shoe, hands, her and the shoebox). Every pixel comes from the photo;
+nothing is painted in. Sideways photos are turned upright; where a shoe runs out of the
+frame, that edge fades out softly.
+
+Left out: close-ups that crop the shoe, the paint palette, near-duplicates and
+shots where a hand cuts into the shoe (`left-outside-stage-2`,
+`right-outside-stage-2`, `right-heel-stage-2`, `only-swoosh-painting`,
+`swoosh-painted-crayon-sketch-of-flowes`,
+`left-finished-right-backgorund-not-finished-yet`).
