@@ -40,3 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .claude/settings.local.json
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
+
+# claude
+.claude
