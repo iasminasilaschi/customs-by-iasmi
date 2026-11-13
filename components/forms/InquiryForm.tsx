@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -581,7 +582,10 @@ export function InquiryForm({
           <p className="text-sm leading-relaxed text-muted">
             Your answers are saved only on this device, in this browser, until
             you send them. Nothing reaches me until you open the email or
-            Instagram yourself.
+            Instagram yourself.{" "}
+            <Link href="/privacy" className="text-olive underline underline-offset-2 hover:text-deep">
+              How I handle your data
+            </Link>
           </p>
         </div>
       )}

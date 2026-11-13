@@ -30,9 +30,18 @@ by a professional before accepting paid orders.
 ## Privacy / GDPR
 - The current form sends data via the visitor's own email client (mailto) —
   no data is stored by the site, so exposure is minimal in v1.
-- Before adding a real backend (API route/Resend/Supabase): publish a
-  privacy policy, add consent language to the form, define retention, and
-  add a cookie notice only if analytics/cookies are introduced.
+- Done (Nov 2026): `/privacy` is live (who runs the site, no server storage,
+  form drafts only in the visitor's browser with 30-day expiry and a
+  "clear saved draft" link, Vercel Web Analytics, email/DM data, GDPR
+  rights, ANSPDCP). Linked from the footer, the FAQ note and the form.
+- No cookie banner needed: no cookies are set; Vercel Web Analytics is
+  cookieless. Revisit if any cookie-based tool is ever added.
+- Design Lab state (colours, uploaded photos, lettering) also lives in
+  localStorage with no expiry; the privacy page says so. Consider an expiry
+  like the form draft's.
+- Before adding a real backend (API route/Resend/Supabase): update the
+  privacy page, add consent language to the form, define retention, and
+  list the new processor (e.g. the email service).
 
 ## Testimonials & claims
 - All testimonials are mock data flagged `isSample: true` and badged
@@ -44,7 +53,10 @@ by a professional before accepting paid orders.
 ## Pre-launch checklist
 - [ ] Replace placeholder email/phone/socials in `data/site.ts`
 - [ ] Real pricing ranges + lead times
-- [ ] Terms & privacy pages
+- [x] Privacy page (`/privacy`, Nov 2026); update its "last updated" date on changes
+- [ ] Terms of sale + business details (legal form, CUI/registration, address)
+      — wait until paid orders open; required before taking money
 - [ ] Replace sample testimonials or keep badges
 - [ ] Review FAQ policy wording with a professional
-- [ ] Real domain metadata check (OG image, favicon)
+- [x] Real domain metadata check (OG image, favicon): canonicals, per-page
+      OG tags, icons, manifest, robots.txt and sitemap.xml are in (Nov 2026)

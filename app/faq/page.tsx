@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { pageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Accordion } from "@/components/ui/Accordion";
@@ -40,10 +41,14 @@ export default function FAQPage() {
       </div>
 
       <p className="mt-10 rounded-2xl border border-gold/25 bg-gold/5 p-5 text-sm leading-relaxed text-muted">
-        ✦ Transparency note: Customs by Iasmi is an emerging studio. Final order,
-        return and privacy policies are being reviewed and will be published
-        in full before paid orders open. Nothing on this page limits your
-        statutory rights regarding faulty products.
+        ✦ Transparency note: Customs by Iasmi is an emerging studio. Final order
+        and return policies are being reviewed and will be published in full
+        before paid orders open. How I handle your data is on the{" "}
+        <Link href="/privacy" className="text-olive underline underline-offset-2 hover:text-deep">
+          privacy page
+        </Link>
+        . Nothing on this page limits your statutory rights regarding faulty
+        products.
       </p>
 
       <div className="mt-12 text-center">
