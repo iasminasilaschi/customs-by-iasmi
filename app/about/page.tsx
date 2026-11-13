@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
@@ -7,11 +8,12 @@ import { lifeMosaic } from "@/data/mosaic";
 import { site } from "@/data/site";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About",
   description:
     "The person behind Customs by Iasmi — custom hand-painted sneakers and graduation caps.",
-};
+  path: "/about",
+});
 
 const sizeClasses = {
   sm: "col-span-1 row-span-1 aspect-square",

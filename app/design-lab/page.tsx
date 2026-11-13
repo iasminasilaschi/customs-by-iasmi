@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { DesignLabStudio } from "@/components/design-lab/studio/DesignLabStudio";
 import { Tag } from "@/components/ui/Tag";
 import { getPiece } from "@/data/portfolio";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Design Lab",
   description:
     "Spin a real 3D sneaker, paint every panel, add your photos and initials, and send the concept as a real commission request — the interactive Design Lab studio.",
-};
+  path: "/design-lab",
+});
 
 export default async function DesignLabPage({
   searchParams,

@@ -228,6 +228,7 @@ export function ArtPanel() {
                   <img
                     src={a.src}
                     alt=""
+                    aria-hidden
                     className="h-8 w-8 shrink-0 rounded-md border border-line bg-cream-soft object-contain"
                   />
                   <span className="min-w-0 flex-1">

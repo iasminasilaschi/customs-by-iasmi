@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Accordion } from "@/components/ui/Accordion";
 import { Button } from "@/components/ui/Button";
 import { faqCategories, faqItems } from "@/data/faq";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "FAQ",
   description:
     "Everything about ordering custom hand-painted sneakers: sourcing, wearability, care, timelines, design rights and policies.",
-};
+  path: "/faq",
+});
 
 export default function FAQPage() {
   return (

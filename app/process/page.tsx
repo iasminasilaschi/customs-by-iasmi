@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
@@ -6,11 +7,12 @@ import { VideoPlayer } from "@/components/ui/VideoPlayer";
 import { Tag } from "@/components/ui/Tag";
 import { processVideo } from "@/data/media";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Process",
   description:
     "How a custom sneaker commission works at Customs by Iasmi — from moodboard to deposit to hand-painted, sealed, documented pair.",
-};
+  path: "/process",
+});
 
 const steps = [
   {

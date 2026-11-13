@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ProjectsGrid } from "@/components/projects/ProjectsGrid";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Projects",
   description:
     "Custom hand-painted sneakers and graduation caps — the projects from Customs by Iasmi.",
-};
+  path: "/projects",
+});
 
 export default function ArchivePage() {
   return (

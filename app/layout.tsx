@@ -49,6 +49,8 @@ export const metadata: Metadata = {
     type: "website",
     images: ["/work/one-piece-sneakers/04.jpg"],
   },
+  // per-page title/description/image come from the og: tags (see lib/metadata.ts)
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({

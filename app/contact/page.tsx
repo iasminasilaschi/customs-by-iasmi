@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { InquiryForm } from "@/components/forms/InquiryForm";
 import { site } from "@/data/site";
 import type { ProjectType } from "@/lib/validation";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description:
     "Start a custom sneaker or graduation cap commission, or just say hi. Send me a DM on Instagram, write an email, or use the short form.",
-};
+  path: "/contact",
+});
 
 const validTypes: ProjectType[] = ["sneakers", "cap", "collab", "other"];
 

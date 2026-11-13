@@ -10,6 +10,7 @@ import { PageVibe } from "@/components/projects/PageVibe";
 import { vibeFor } from "@/data/media";
 import { pageTokens } from "@/lib/vibe";
 import { categoryLabels, getPiece, portfolio, requestHref } from "@/data/portfolio";
+import { pageMetadata } from "@/lib/metadata";
 
 export function generateStaticParams() {
   return portfolio.map((p) => ({ slug: p.slug }));
@@ -27,11 +28,12 @@ export async function generateMetadata({
   const preview = piece.cover.cutout
     ? (piece.gallery?.find((p) => !p.cutout) ?? piece.cover)
     : piece.cover;
-  return {
+  return pageMetadata({
     title: piece.title,
     description: piece.subtitle,
-    openGraph: { images: [preview.src] },
-  };
+    path: `/projects/${piece.slug}`,
+    image: preview.src,
+  });
 }
 
 export default async function ProjectPage({
