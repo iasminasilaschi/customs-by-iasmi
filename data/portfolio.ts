@@ -53,7 +53,8 @@ export interface PortfolioPiece {
   featured?: boolean; // shown on the homepage (max 3)
 }
 
-export const portfolio: PortfolioPiece[] = [
+/** Listed in any order; `portfolio` below sorts them. */
+const pieces: PortfolioPiece[] = [
   {
     slug: "one-piece-sneakers",
     title: "One Piece, made personal",
@@ -108,6 +109,7 @@ export const portfolio: PortfolioPiece[] = [
     category: "sneakers",
     year: 2022,
     featured: true,
+    instagramUrl: "https://www.instagram.com/p/DfFn5VeDXXd/",
     baseShoe: "Nike Air Force 1",
     tags: ["hand-painted", "sushi", "cats", "black sneakers", "gift"],
     cover: {
@@ -161,6 +163,7 @@ export const portfolio: PortfolioPiece[] = [
     category: "sneakers",
     year: 2024,
     featured: true,
+    instagramUrl: "https://www.instagram.com/customsbyiasmi/p/DfiRnA2DWhN/",
     baseShoe: "Nike Air Force 1",
     tags: ["hand-painted", "florals", "cherry blossoms", "remake", "white sneakers", "gift"],
     cover: {
@@ -250,6 +253,7 @@ export const portfolio: PortfolioPiece[] = [
     subtitle: "Eight fine-line cat tattoos and two tiny paws on white Air Force 1s, a birthday gift for a best friend.",
     category: "sneakers",
     year: 2023,
+    instagramUrl: "https://www.instagram.com/customsbyiasmi/p/DfUk7Hvjes_/",
     baseShoe: "Nike Air Force 1",
     tags: ["hand-painted", "cats", "tattoo inspo", "fine line", "minimalist", "white sneakers", "gift"],
     cover: {
@@ -422,6 +426,9 @@ export const portfolio: PortfolioPiece[] = [
     ],
   },
 ];
+
+/** Oldest first, so new pieces slot in by `year`. Same-year pieces keep their order above. */
+export const portfolio: PortfolioPiece[] = [...pieces].sort((a, b) => a.year - b.year);
 
 export function getPiece(slug: string): PortfolioPiece | undefined {
   return portfolio.find((p) => p.slug === slug);
