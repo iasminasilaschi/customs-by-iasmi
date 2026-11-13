@@ -65,6 +65,7 @@ export default function ProcessPage() {
   return (
     <div className="mx-auto max-w-[90rem] px-5 pt-36 pb-20 sm:px-6 lg:px-12 xl:px-20">
       <SectionHeading
+        as="h1"
         eyebrow="The process"
         title={
           <>
@@ -78,13 +79,15 @@ export default function ProcessPage() {
       {/* Steps */}
       <ol className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {steps.map((s, i) => (
-          <Reveal key={s.n} delay={(i % 3) * 0.08}>
-            <li className="glass grain h-full rounded-blob p-7">
-              <span className="display-italic text-4xl text-rose/70">{s.n}</span>
-              <h2 className="display mt-3 text-xl text-cream">{s.title}</h2>
-              <p className="mt-3 text-base leading-relaxed text-muted">{s.text}</p>
-            </li>
-          </Reveal>
+          <li key={s.n}>
+            <Reveal delay={(i % 3) * 0.08} className="h-full">
+              <div className="glass grain h-full rounded-blob p-7">
+                <span className="display-italic text-4xl text-rose">{s.n}</span>
+                <h2 className="display mt-3 text-xl text-cream">{s.title}</h2>
+                <p className="mt-3 text-base leading-relaxed text-muted">{s.text}</p>
+              </div>
+            </Reveal>
+          </li>
         ))}
       </ol>
 

@@ -7,6 +7,7 @@ export function SectionHeading({
   lede,
   align = "left",
   wide = false,
+  as: Heading = "h2",
   className,
 }: {
   eyebrow?: string;
@@ -15,6 +16,8 @@ export function SectionHeading({
   align?: "left" | "center";
   /** Roomier measure for page-level headings (e.g. the Projects page). */
   wide?: boolean;
+  /** "h1" for the heading at the top of a page; sections keep the default h2. */
+  as?: "h1" | "h2";
   className?: string;
 }) {
   return (
@@ -26,9 +29,9 @@ export function SectionHeading({
       )}
     >
       {eyebrow && <p className="eyebrow mb-4">{eyebrow}</p>}
-      <h2 className="display text-cream text-[clamp(2.5rem,1.4rem+3.2vw,3.75rem)]">
+      <Heading className="display text-cream text-[clamp(2.5rem,1.4rem+3.2vw,3.75rem)]">
         {title}
-      </h2>
+      </Heading>
       {lede && (
         <p className="mt-6 text-lg leading-relaxed text-muted">{lede}</p>
       )}

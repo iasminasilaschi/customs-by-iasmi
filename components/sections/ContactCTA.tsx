@@ -10,7 +10,7 @@ export function ContactCTA() {
       />
       <Reveal>
         <div className="relative mx-auto max-w-2xl text-center">
-          <p className="hand rotate-[-2deg] text-2xl text-sage">
+          <p className="hand rotate-[-2deg] text-2xl text-sage-ink">
             have an idea for a pair?
           </p>
           <h2 className="display mt-5 text-[clamp(2.5rem,1.5rem+3.4vw,4.25rem)]">

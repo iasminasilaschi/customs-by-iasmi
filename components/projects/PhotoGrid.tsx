@@ -71,6 +71,9 @@ function Viewer({
   const photo = photos[index];
   const many = photos.length > 1;
 
+  // closing the native dialog (rather than unmounting it) returns focus to the photo that opened it
+  const close = () => dialog.current?.close();
+
   const go = (step: number) => {
     setZoom(null);
     onIndex((index + step + photos.length) % photos.length);
@@ -108,11 +111,11 @@ function Viewer({
       <div
         className="flex h-full flex-col"
         // a tap on the dark area (not the photo or a button) closes
-        onClick={(e) => e.target === e.currentTarget && onClose()}
+        onClick={(e) => e.target === e.currentTarget && close()}
       >
         <div
           className="relative min-h-0 flex-1 overflow-hidden"
-          onClick={(e) => e.target === e.currentTarget && onClose()}
+          onClick={(e) => e.target === e.currentTarget && close()}
           onTouchStart={(e) => {
             const t = e.touches[0];
             swipeStart.current = e.touches.length === 1 ? { x: t.clientX, y: t.clientY } : null;
@@ -157,7 +160,7 @@ function Viewer({
           )}
           <p className="min-w-0 flex-1 text-center text-sm leading-snug text-paper/80">
             {photo.caption}
-            {many && <span className="ml-2 text-paper/50">{index + 1} / {photos.length}</span>}
+            {many && <span className="ml-2 text-paper/75">{index + 1} / {photos.length}</span>}
           </p>
           {many && (
             <ViewerButton label="Next photo" onClick={() => go(1)}>
@@ -167,7 +170,7 @@ function Viewer({
         </div>
       </div>
 
-      <ViewerButton label="Close" onClick={onClose} className="absolute top-[max(0.75rem,env(safe-area-inset-top))] right-3 sm:right-5">
+      <ViewerButton label="Close" onClick={close} className="absolute top-[max(0.75rem,env(safe-area-inset-top))] right-3 sm:right-5">
         ✕
       </ViewerButton>
     </dialog>

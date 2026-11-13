@@ -57,7 +57,7 @@ export function ProjectsGrid() {
       ) : (
         <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
           {pieces.map((piece) => (
-            <ProjectCard key={piece.slug} piece={piece} />
+            <ProjectCard key={piece.slug} piece={piece} headingLevel={2} />
           ))}
         </div>
       )}

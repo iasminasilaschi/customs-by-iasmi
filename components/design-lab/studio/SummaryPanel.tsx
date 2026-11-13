@@ -63,7 +63,7 @@ export function SummaryPanel() {
     <div className="space-y-4">
       <section aria-label="Your concept" className="rounded-blob border border-line bg-coal p-5">
         <p className="eyebrow mb-1">your concept</p>
-        <h3 className="font-medium text-cream">{baseShoe.name}</h3>
+        <h2 className="font-medium text-cream">{baseShoe.name}</h2>
         <p className="mt-1 text-sm leading-relaxed text-muted">{baseShoe.description}</p>
 
         <ul className="mt-4 space-y-1">
@@ -82,7 +82,7 @@ export function SummaryPanel() {
                   {p.label.toLowerCase()}
                 </span>
                 <span className="flex items-center gap-2">
-                  <span className={cn("text-sm", painted ? "text-cream-2" : "text-muted/70")}>
+                  <span className={cn("text-sm", painted ? "text-cream-2" : "text-muted")}>
                     {painted
                       ? `${swatchName(colors[p.key])}${finish[p.key] !== defaultFinish[p.key] ? ` · ${finish[p.key]}` : ""}`
                       : "clean white"}

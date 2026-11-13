@@ -50,7 +50,7 @@ function FieldWrap({
               </p>
             )}
             {error && (
-              <p id={`${htmlFor}-error`} role="alert" className="text-sm text-rose-2">
+              <p id={`${htmlFor}-error`} role="alert" className="text-sm text-rose-ink">
                 {error}
               </p>
             )}
@@ -58,7 +58,7 @@ function FieldWrap({
           {counter && (
             <p
               id={`${htmlFor}-count`}
-              className={cn("shrink-0 text-sm tabular-nums", over ? "font-medium text-rose-2" : "text-muted")}
+              className={cn("shrink-0 text-sm tabular-nums", over ? "font-medium text-rose-ink" : "text-muted")}
             >
               {counter.value} / {counter.max}
               <span className="sr-only"> characters</span>

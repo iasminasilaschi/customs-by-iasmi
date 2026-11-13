@@ -52,7 +52,7 @@ export function InstagramGrid() {
                     sizes="(min-width: 1024px) 22vw, 45vw"
                     className="transition-transform duration-700 group-hover:scale-[1.04]"
                   />
-                  <span className="absolute right-3 top-3 rounded-full bg-deep/55 px-2.5 py-1 text-[0.78rem] uppercase tracking-widest text-paper/90 backdrop-blur-sm">
+                  <span className="absolute right-3 top-3 rounded-full bg-deep/80 px-2.5 py-1 text-[0.78rem] uppercase tracking-widest text-paper/90 backdrop-blur-sm">
                     {post.kind === "reel" ? "▶ reel" : "post"}
                   </span>
                 </div>

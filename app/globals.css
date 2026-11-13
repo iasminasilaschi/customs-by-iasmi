@@ -26,14 +26,15 @@
   --color-coal-2: #e4d8c3; /* deeper panel */
   --color-cream: #2c2a20; /* primary text — ink brown */
   --color-cream-2: #4b4636; /* secondary text */
-  --color-muted: #7a7060; /* muted text */
+  --color-muted: #685f52; /* muted text — 5.5:1 on ink, 4.9:1 on coal */
   --color-line: rgba(58, 50, 34, 0.14); /* warm hairline */
 
   /* accents */
   --color-rose: #a56a44; /* warm clay */
-  --color-rose-2: #bb8355; /* clay, lighter (hover / italic) */
+  --color-rose-2: #a8734a; /* clay, lighter (hover / large italic) — 3.5:1 on cream, 3.1:1 on coal */
   --color-lilac: #7f8d6f; /* sage (readable) */
-  --color-gold: #a4863f; /* muted gold (readable on cream) */
+  --color-gold: #a4863f; /* muted gold — decorative and large text */
+  --color-gold-ink: #735e2c; /* gold for small text (eyebrows, tags) — 5.5:1 on ink, 4.9:1 on coal */
 
   /* explicit atelier palette */
   --color-paper: #f5f0e6; /* light — for text on dark sections */
@@ -56,6 +57,18 @@
 
   --shadow-soft: 0 18px 50px -24px rgba(74, 58, 34, 0.35);
   --shadow-lift: 0 26px 70px -30px rgba(74, 58, 34, 0.45);
+}
+
+/* Readable mixes for small text: an accent pulled toward the page's own text
+   colour. `inline` resolves them where they're used, so a project page's
+   palette (lib/vibe.ts) mixes its own accent and text. */
+@theme inline {
+  --color-rose-ink: color-mix(in oklab, var(--color-rose), var(--color-cream) 35%); /* errors, tags */
+  --color-olive-ink: color-mix(in oklab, var(--color-olive), var(--color-cream) 20%);
+  --color-brown-ink: color-mix(in oklab, var(--color-brown), var(--color-cream) 20%);
+  --color-sage-ink: color-mix(in oklab, var(--color-sage), var(--color-cream) 25%); /* large handwriting */
+  --color-gold-deep: color-mix(in oklab, var(--color-gold), var(--color-cream) 30%); /* large numbers */
+  --color-gold-tag: color-mix(in oklab, var(--color-gold-ink), var(--color-cream) 25%); /* gold tag text on its tint */
 }
 
 :root {
@@ -145,7 +158,7 @@ body {
   font-size: clamp(0.78rem, 0.75rem + 0.1vw, 0.85rem);
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-gold);
+  color: var(--color-gold-ink);
   font-weight: 500;
 }
 

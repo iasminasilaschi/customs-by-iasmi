@@ -398,7 +398,7 @@ export function InquiryForm({
                   {...register("projectType")}
                 />
                 <span className="block font-medium text-cream">{t.label}</span>
-                <span className="mt-1 block text-sm text-muted">{typeBlurbs[t.value]}</span>
+                <span className="mt-1 block text-sm text-cream/75">{typeBlurbs[t.value]}</span>
               </label>
             ))}
           </div>

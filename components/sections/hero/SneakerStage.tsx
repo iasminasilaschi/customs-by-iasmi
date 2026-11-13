@@ -242,7 +242,7 @@ export function SneakerStage({
         {rotating && (
           <div aria-hidden className="invisible absolute inset-0">
             {slides.map((s) => (
-              <Image key={s.slug} src={s.photo.src} alt="" fill sizes={SIZES} loading="eager" />
+              <Image key={s.slug} src={s.photo.src} alt="" fill sizes={SIZES} loading="eager" className="object-contain" />
             ))}
           </div>
         )}

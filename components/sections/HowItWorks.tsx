@@ -41,7 +41,7 @@ export function HowItWorks() {
           {steps.map((s, i) => (
             <Reveal key={s.n} delay={i * 0.1}>
               <div className="flex flex-col">
-                <span className="display-italic text-5xl text-gold">{s.n}</span>
+                <span className="display-italic text-5xl text-gold-deep">{s.n}</span>
                 <div className="rule-gold my-5 w-12" />
                 <h3 className="display text-2xl text-cream">{s.title}</h3>
                 <p className="mt-3 text-[0.98rem] leading-relaxed text-muted">

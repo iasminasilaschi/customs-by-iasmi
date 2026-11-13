@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { navLinks } from "@/data/site";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,19 @@ import { cn } from "@/lib/utils";
 export function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const toggle = useRef<HTMLButtonElement>(null);
+
+  // Escape closes the open menu and puts focus back on the toggle
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      toggle.current?.focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
@@ -49,6 +62,7 @@ export function Nav() {
         </nav>
 
         <button
+          ref={toggle}
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
@@ -82,6 +96,8 @@ export function Nav() {
       {/* Mobile menu */}
       <div
         id="mobile-menu"
+        // closed: invisible, so also out of the tab order and the accessibility tree
+        inert={!open}
         className={cn(
           "mx-4 overflow-hidden rounded-blob transition-all duration-300 lg:hidden",
           open ? "max-h-[26rem] opacity-100" : "max-h-0 opacity-0",

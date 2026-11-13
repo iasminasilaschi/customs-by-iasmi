@@ -290,7 +290,7 @@ export function ArtPanel() {
         </ul>
       )}
 
-      <p className="mt-3 text-sm text-muted/80">
+      <p className="mt-3 text-sm text-muted">
         Only use images you have the rights to — your photos stay in this browser.
       </p>
     </section>

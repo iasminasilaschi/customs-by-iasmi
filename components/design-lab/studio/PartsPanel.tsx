@@ -71,7 +71,7 @@ export function PartsPanel() {
         {active ? (
           <>
             <div className="flex items-baseline justify-between gap-3">
-              <h3 className="font-medium text-cream">{active.label}</h3>
+              <h2 className="font-medium text-cream">{active.label}</h2>
               <span className="text-sm text-muted">{swatchName(colors[active.key])}</span>
             </div>
             <p className="mt-1 text-sm leading-relaxed text-muted">{active.blurb}</p>

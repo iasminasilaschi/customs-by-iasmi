@@ -54,6 +54,7 @@ export function pageTokens(v: VibePalette): CSSProperties {
     "--color-deep": `color-mix(in oklab, ${v.accent}, ${v.ink} 22%)`,
     "--color-paper": v.accentInk,
     "--color-gold": v.pop,
+    "--color-gold-ink": v.pop,
     "--color-lilac": v.pop,
     "--color-sage": v.pop,
   } as CSSProperties;

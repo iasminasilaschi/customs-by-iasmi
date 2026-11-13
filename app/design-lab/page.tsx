@@ -27,6 +27,7 @@ export default async function DesignLabPage({
     <div className="mx-auto max-w-[90rem] px-5 pt-36 pb-20 sm:px-6 lg:px-12 xl:px-20">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading
+          as="h1"
           eyebrow="The Design Lab · v3"
           title={
             <>

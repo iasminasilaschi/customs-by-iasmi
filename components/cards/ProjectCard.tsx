@@ -3,7 +3,15 @@ import { Photo } from "@/components/ui/Photo";
 import { Tag } from "@/components/ui/Tag";
 import { categoryLabels, requestHref, type PortfolioPiece } from "@/data/portfolio";
 
-export function ProjectCard({ piece }: { piece: PortfolioPiece }) {
+export function ProjectCard({
+  piece,
+  headingLevel = 3,
+}: {
+  piece: PortfolioPiece;
+  /** 2 when the cards sit right under the page's h1 (the Projects page). */
+  headingLevel?: 2 | 3;
+}) {
+  const Heading = headingLevel === 2 ? "h2" : "h3";
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-blob border border-line bg-cream-soft shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-lift">
       <Link
@@ -14,7 +22,7 @@ export function ProjectCard({ piece }: { piece: PortfolioPiece }) {
       <div className="relative aspect-[4/5] overflow-hidden">
         <Photo photo={piece.cover} className="transition-transform duration-700 group-hover:scale-[1.04]" />
         {piece.video && (
-          <span className="absolute right-3 top-3 rounded-full bg-deep/55 px-2.5 py-1 text-[0.78rem] uppercase tracking-widest text-paper/90 backdrop-blur-sm">
+          <span className="absolute right-3 top-3 rounded-full bg-deep/80 px-2.5 py-1 text-[0.78rem] uppercase tracking-widest text-paper/90 backdrop-blur-sm">
             ▶ process
           </span>
         )}
@@ -23,9 +31,9 @@ export function ProjectCard({ piece }: { piece: PortfolioPiece }) {
         <p className="eyebrow mb-2">
           {categoryLabels[piece.category]} · {piece.year}
         </p>
-        <h3 className="display text-2xl text-cream transition-colors group-hover:text-olive lg:text-[1.75rem]">
+        <Heading className="display text-2xl text-cream transition-colors group-hover:text-olive lg:text-[1.75rem]">
           {piece.title}
-        </h3>
+        </Heading>
         <p className="mt-2.5 line-clamp-2 text-[0.98rem] leading-relaxed text-muted">{piece.subtitle}</p>
         {piece.tags && piece.tags.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-1.5">
@@ -35,7 +43,7 @@ export function ProjectCard({ piece }: { piece: PortfolioPiece }) {
           </div>
         )}
         <span className="relative z-20 mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-olive">
-          <Link href={requestHref(piece)} className="hover:underline">
+          <Link href={requestHref(piece)} className="-my-1.5 inline-block py-1.5 hover:underline">
             Request something like this
           </Link>
           <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span>

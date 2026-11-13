@@ -105,7 +105,7 @@ export default async function ProjectPage({
               <ol className="mt-4 space-y-3">
                 {piece.processSteps.map((step, i) => (
                   <li key={step} className="flex gap-4 text-base leading-relaxed text-cream/80">
-                    <span className="display-italic shrink-0 text-lg text-rose/70">
+                    <span className="display-italic shrink-0 text-lg text-rose-ink">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span className="pt-0.5">{step}</span>
