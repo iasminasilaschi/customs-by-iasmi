@@ -11,6 +11,7 @@ import {
   UploadPlaceholder,
 } from "@/components/forms/fields";
 import {
+  LIMITS,
   inquirySchema,
   projectTypes,
   type InquiryValues,
@@ -23,7 +24,7 @@ import { site } from "@/data/site";
  * The single smart intake form, shown one small step at a time so it never
  * feels like a wall of fields. The fun part (what are we making, what's the
  * idea) comes first; contact details come last. Progress is saved in the
- * visitor's browser.
+ * visitor's browser only (see the draft helpers below) and expires after 30 days.
  *
  * There is intentionally NO backend yet: submissions are validated
  * client-side, then the user picks how to send them (pre-filled email
@@ -32,6 +33,10 @@ import { site } from "@/data/site";
  */
 
 const DRAFT_KEY = "iasmi-inquiry-draft-v1";
+/** Drafts hold personal details: drop them after 30 days without an edit. */
+const DRAFT_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+/** Longer mailto links get cut off by some mail apps; above this, offer copy & paste instead. */
+const MAILTO_MAX = 1800;
 
 const steps = [
   { title: "What are we making?", sub: "Pick the closest one, we can always adjust." },
@@ -41,6 +46,20 @@ const steps = [
 ] as const;
 const LAST = steps.length - 1;
 
+/** Step 3's fields, validated together before moving on. */
+const detailFields = [
+  "baseShoe",
+  "shoeSize",
+  "hasShoes",
+  "graduationDate",
+  "capTheme",
+  "schoolColors",
+  "capNameYear",
+  "hasCap",
+  "deadline",
+  "budget",
+] as const satisfies ReadonlyArray<keyof InquiryValues>;
+
 const typeBlurbs: Record<ProjectType, string> = {
   sneakers: "Hand-painted on a pair of shoes",
   cap: "A small square canvas for a big day",
@@ -48,17 +67,30 @@ const typeBlurbs: Record<ProjectType, string> = {
   other: "An idea that doesn't fit a box",
 };
 
-function readDraft(): { values?: Partial<InquiryValues>; step?: number } | null {
+interface Draft {
+  values?: Partial<InquiryValues>;
+  step?: number;
+  savedAt?: number;
+}
+
+function readDraft(): Draft | null {
   try {
     const raw = localStorage.getItem(DRAFT_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const draft = JSON.parse(raw) as Draft;
+    // no date (an older draft) counts as expired
+    if (typeof draft.savedAt !== "number" || Date.now() - draft.savedAt > DRAFT_MAX_AGE_MS) {
+      localStorage.removeItem(DRAFT_KEY);
+      return null;
+    }
+    return draft;
   } catch {
     return null;
   }
 }
 function writeDraft(values: Partial<InquiryValues>, step: number) {
   try {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify({ values, step }));
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({ values, step, savedAt: Date.now() }));
   } catch {
     // storage full or blocked: progress just isn't saved
   }
@@ -87,6 +119,7 @@ export function InquiryForm({
   context?: string;
 }) {
   const [sent, setSent] = useState<InquiryValues | null>(null);
+  const [copy, setCopy] = useState<"idle" | "copied" | "failed">("idle");
   const [step, setStep] = useState(0);
   const hydrated = useRef(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -128,9 +161,28 @@ export function InquiryForm({
   }, []);
 
   const all = useWatch({ control });
+  // Only save once the visitor has actually written something (not just the defaults).
+  const hasContent = Object.entries(all).some(
+    ([key, val]) =>
+      key !== "projectType" &&
+      typeof val === "string" &&
+      val.trim() !== "" &&
+      !(key === "idea" && val === initialIdea),
+  );
   useEffect(() => {
-    if (hydrated.current) writeDraft(all as Partial<InquiryValues>, step);
-  }, [all, step]);
+    if (!hydrated.current) return;
+    if (hasContent) writeDraft(all as Partial<InquiryValues>, step);
+    else clearDraft();
+  }, [all, step, hasContent]);
+
+  function clearSaved() {
+    clearDraft();
+    reset({ projectType: defaultType, idea: initialIdea } as InquiryValues);
+    setStep(0);
+  }
+
+  // counted like zod counts it: by character, so an emoji is one, not two
+  const ideaLength = Array.from(useWatch({ control, name: "idea" }) ?? "").length;
 
   useEffect(() => {
     if (stepChanged.current) headingRef.current?.focus();
@@ -140,6 +192,7 @@ export function InquiryForm({
   async function next() {
     if (step === 1 && !(await trigger("idea"))) return;
     if (step === 2) {
+      if (!(await trigger(detailFields))) return;
       const v = getValues();
       if (v.projectType === "sneakers" && !v.shoeSize?.trim()) {
         setError("shoeSize", { message: "Your size helps me quote the right base shoe." });
@@ -155,7 +208,7 @@ export function InquiryForm({
 
   function onInvalid(errs: typeof errors) {
     if (errs.idea) setStep(1);
-    else if (errs.shoeSize || errs.graduationDate || errs.hasShoes || errs.hasCap) setStep(2);
+    else if (detailFields.some((f) => errs[f])) setStep(2);
   }
 
   function summaryLines(v: InquiryValues) {
@@ -167,13 +220,29 @@ export function InquiryForm({
     return lines;
   }
 
-  function buildMailto(v: InquiryValues) {
+  function requestText(v: InquiryValues) {
+    return `Hi Iasmi!\n\n${summaryLines(v)}\n\n(sent from the Customs by Iasmi site)`;
+  }
+
+  /** The pre-filled email. If the full request would make the link too long, it says "pasting below" instead. */
+  function buildMailto(v: InquiryValues): { href: string; complete: boolean } {
     const label = projectTypes.find((t) => t.value === v.projectType)?.label;
-    const subject = encodeURIComponent(`Commission request: ${label}`);
-    const body = encodeURIComponent(
-      `Hi Iasmi!\n\n${summaryLines(v)}\n\n(sent from the Customs by Iasmi site)`,
-    );
-    return `mailto:${site.email}?subject=${subject}&body=${body}`;
+    const base = `mailto:${site.email}?subject=${encodeURIComponent(`Commission request: ${label}`)}&body=`;
+    const full = base + encodeURIComponent(requestText(v));
+    if (full.length <= MAILTO_MAX) return { href: full, complete: true };
+    return {
+      href: base + encodeURIComponent("Hi Iasmi!\n\nMy request was too long for an email link, so I'm pasting it below:\n\n"),
+      complete: false,
+    };
+  }
+
+  async function copyRequest(v: InquiryValues) {
+    try {
+      await navigator.clipboard.writeText(requestText(v));
+      setCopy("copied");
+    } catch {
+      setCopy("failed");
+    }
   }
 
   async function onSubmit(values: InquiryValues) {
@@ -184,25 +253,61 @@ export function InquiryForm({
   }
 
   if (sent) {
+    const mail = buildMailto(sent);
     return (
       <div className="glass grain rounded-blob p-8 text-center" role="status">
         <p className="hand text-3xl text-lilac">love it already.</p>
         <h3 className="display mt-3 text-2xl text-cream">Your request is ready to send</h3>
-        <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-muted">
-          The studio inbox isn&apos;t wired up yet, so the last step is yours.
-          Pick whichever is easiest: each button carries everything you wrote.
-        </p>
+        {mail.complete ? (
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-muted">
+            The studio inbox isn&apos;t wired up yet, so the last step is yours.
+            The email button carries everything you wrote; for Instagram, copy
+            your request and paste it into the DM.
+          </p>
+        ) : (
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-muted">
+            Your request is too long to fit in an email link. Copy it first,
+            then open the email (or an Instagram DM) and paste it in.
+          </p>
+        )}
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Button href={buildMailto(sent)}>
-            Open pre-filled email
+          {!mail.complete && (
+            <Button type="button" onClick={() => void copyRequest(sent)}>
+              Copy my request
+            </Button>
+          )}
+          <Button href={mail.href} variant={mail.complete ? "primary" : "outline"}>
+            {mail.complete ? "Open pre-filled email" : "Open email"}
           </Button>
           <Button href={site.instagram} variant="outline">
             DM on Instagram
           </Button>
+          {mail.complete && (
+            <Button type="button" variant="outline" onClick={() => void copyRequest(sent)}>
+              Copy my request
+            </Button>
+          )}
         </div>
+        <p className="mt-3 text-sm text-muted" role="status">
+          {copy === "copied" && "Copied! Paste it into your email or DM."}
+          {copy === "failed" && "Couldn't copy automatically. Select the text below and copy it."}
+        </p>
+        {copy === "failed" && (
+          <textarea
+            readOnly
+            aria-label="Your request, to copy"
+            value={requestText(sent)}
+            rows={8}
+            onFocus={(e) => e.currentTarget.select()}
+            className="mt-2 w-full rounded-xl border border-line bg-ink/60 p-3 text-left text-sm text-cream"
+          />
+        )}
         <button
           type="button"
-          onClick={() => setSent(null)}
+          onClick={() => {
+            setCopy("idle");
+            setSent(null);
+          }}
           className="mt-5 text-sm text-muted underline-offset-2 hover:text-cream hover:underline"
         >
           ← edit my request
@@ -223,11 +328,24 @@ export function InquiryForm({
     >
       {/* Progress */}
       <div>
-        <div className="flex items-baseline justify-between text-sm text-muted">
+        <div className="flex items-baseline justify-between gap-4 text-sm text-muted">
           <span>
             Step {step + 1} of {steps.length}
           </span>
-          <span>saved as you go</span>
+          {hasContent ? (
+            <span>
+              saved on this device ·{" "}
+              <button
+                type="button"
+                onClick={clearSaved}
+                className="underline underline-offset-2 hover:text-cream"
+              >
+                clear saved draft
+              </button>
+            </span>
+          ) : (
+            <span>saved only on this device</span>
+          )}
         </div>
         <div
           className="mt-2 flex gap-1.5"
@@ -298,6 +416,7 @@ export function InquiryForm({
             label="Your idea"
             placeholder="The mood, the story, the colours, the obsession. References welcome, songs and films count."
             rows={compact ? 5 : 7}
+            counter={{ value: ideaLength, max: LIMITS.idea }}
             {...register("idea")}
             error={errors.idea?.message}
           />
@@ -316,12 +435,14 @@ export function InquiryForm({
                   label="Base shoe"
                   optional
                   placeholder="e.g. AF1, Old Skool, no idea yet"
+                  maxLength={LIMITS.short}
                   {...register("baseShoe")}
                   error={errors.baseShoe?.message}
                 />
                 <TextField
                   label="Shoe size"
                   placeholder="EU 38 / US 7.5"
+                  maxLength={LIMITS.short}
                   {...register("shoeSize")}
                   error={errors.shoeSize?.message}
                 />
@@ -347,6 +468,7 @@ export function InquiryForm({
                 <TextField
                   label="Graduation date"
                   placeholder="e.g. 12 September 2027"
+                  maxLength={LIMITS.short}
                   {...register("graduationDate")}
                   error={errors.graduationDate?.message}
                 />
@@ -354,6 +476,7 @@ export function InquiryForm({
                   label="School / university colours"
                   optional
                   placeholder="e.g. navy & gold"
+                  maxLength={LIMITS.short}
                   {...register("schoolColors")}
                   error={errors.schoolColors?.message}
                 />
@@ -362,7 +485,8 @@ export function InquiryForm({
                 label="Theme, quote or symbols"
                 optional
                 placeholder="a quote, an inside joke, a dream"
-                {...register("capTheme")}
+                maxLength={LIMITS.short}
+                  {...register("capTheme")}
                 error={errors.capTheme?.message}
               />
               <div className="grid gap-5 sm:grid-cols-2">
@@ -370,6 +494,7 @@ export function InquiryForm({
                   label="Name / year on the cap"
                   optional
                   placeholder="e.g. Ana · 2027"
+                  maxLength={LIMITS.short}
                   {...register("capNameYear")}
                   error={errors.capNameYear?.message}
                 />
@@ -392,7 +517,8 @@ export function InquiryForm({
               label="Deadline"
               optional
               placeholder="a date, an event, or 'no rush'"
-              {...register("deadline")}
+              maxLength={LIMITS.short}
+                  {...register("deadline")}
               error={errors.deadline?.message}
             />
             <TextField
@@ -400,7 +526,8 @@ export function InquiryForm({
               optional
               placeholder="a rough number or range"
               hint="Rough is fine, it helps me suggest the right scope."
-              {...register("budget")}
+              maxLength={LIMITS.short}
+                  {...register("budget")}
               error={errors.budget?.message}
             />
           </div>
@@ -414,7 +541,8 @@ export function InquiryForm({
             label="Your name"
             placeholder="Your name"
             autoComplete="name"
-            {...register("name")}
+            maxLength={LIMITS.short}
+                  {...register("name")}
             error={errors.name?.message}
           />
           <div className="grid gap-5 sm:grid-cols-2">
@@ -424,14 +552,16 @@ export function InquiryForm({
               type="email"
               placeholder="you@example.com"
               autoComplete="email"
-              {...register("email")}
+              maxLength={LIMITS.short}
+                  {...register("email")}
               error={errors.email?.message}
             />
             <TextField
               label="Instagram"
               optional
               placeholder="@yourhandle"
-              {...register("instagram")}
+              maxLength={LIMITS.short}
+                  {...register("instagram")}
               error={errors.instagram?.message}
             />
           </div>
@@ -440,12 +570,18 @@ export function InquiryForm({
             optional
             placeholder="+40 ..."
             autoComplete="tel"
-            {...register("phone")}
+            maxLength={LIMITS.phone}
+                  {...register("phone")}
             error={errors.phone?.message}
           />
           <p className="text-sm leading-relaxed text-muted">
             This is a hand-painted commission. Any preview is a concept, not
             the final result: the final piece is handmade, textured, and alive.
+          </p>
+          <p className="text-sm leading-relaxed text-muted">
+            Your answers are saved only on this device, in this browser, until
+            you send them. Nothing reaches me until you open the email or
+            Instagram yourself.
           </p>
         </div>
       )}

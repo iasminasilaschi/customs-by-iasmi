@@ -14,14 +14,26 @@ interface BaseProps {
   optional?: boolean;
 }
 
+/** Ids of the hint / error / counter under a field, for aria-describedby. */
+function describedBy(id: string, { hint, error, counter }: { hint?: string; error?: string; counter?: boolean }) {
+  return [hint && !error && `${id}-hint`, error && `${id}-error`, counter && `${id}-count`].filter(Boolean).join(" ") || undefined;
+}
+
 function FieldWrap({
   label,
   error,
   hint,
   optional,
   htmlFor,
+  counter,
   children,
-}: BaseProps & { htmlFor: string; children: React.ReactNode }) {
+}: BaseProps & {
+  htmlFor: string;
+  /** Live "used / max" counter shown under the field. */
+  counter?: { value: number; max: number };
+  children: React.ReactNode;
+}) {
+  const over = counter && counter.value > counter.max;
   return (
     <div>
       <label htmlFor={htmlFor} className="mb-2 flex items-baseline justify-between text-[0.95rem] text-cream/85">
@@ -29,11 +41,30 @@ function FieldWrap({
         {optional && <span className="text-sm text-muted">optional</span>}
       </label>
       {children}
-      {hint && !error && <p className="mt-2 text-sm text-muted">{hint}</p>}
-      {error && (
-        <p role="alert" className="mt-2 text-sm text-rose-2">
-          {error}
-        </p>
+      {(hint || error || counter) && (
+        <div className="mt-2 flex items-start justify-between gap-4">
+          <div>
+            {hint && !error && (
+              <p id={`${htmlFor}-hint`} className="text-sm text-muted">
+                {hint}
+              </p>
+            )}
+            {error && (
+              <p id={`${htmlFor}-error`} role="alert" className="text-sm text-rose-2">
+                {error}
+              </p>
+            )}
+          </div>
+          {counter && (
+            <p
+              id={`${htmlFor}-count`}
+              className={cn("shrink-0 text-sm tabular-nums", over ? "font-medium text-rose-2" : "text-muted")}
+            >
+              {counter.value} / {counter.max}
+              <span className="sr-only"> characters</span>
+            </p>
+          )}
+        </div>
       )}
     </div>
   );
@@ -50,6 +81,7 @@ export const TextField = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={id}
           aria-invalid={!!error}
+          aria-describedby={describedBy(id, { hint, error })}
           className={cn(control, error && "border-rose/70", className)}
           {...props}
         />
@@ -58,18 +90,22 @@ export const TextField = forwardRef<HTMLInputElement, InputProps>(
   },
 );
 
-type TextareaProps = BaseProps & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+type TextareaProps = BaseProps &
+  React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+    counter?: { value: number; max: number };
+  };
 
 export const TextAreaField = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  function TextAreaField({ label, error, hint, optional, className, ...props }, ref) {
+  function TextAreaField({ label, error, hint, optional, counter, className, ...props }, ref) {
     const id = useId();
     return (
-      <FieldWrap label={label} error={error} hint={hint} optional={optional} htmlFor={id}>
+      <FieldWrap label={label} error={error} hint={hint} optional={optional} htmlFor={id} counter={counter}>
         <textarea
           ref={ref}
           id={id}
           rows={4}
           aria-invalid={!!error}
+          aria-describedby={describedBy(id, { hint, error, counter: !!counter })}
           className={cn(control, "resize-y", error && "border-rose/70", className)}
           {...props}
         />
@@ -96,6 +132,7 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={id}
           aria-invalid={!!error}
+          aria-describedby={describedBy(id, { hint, error })}
           className={cn(control, "appearance-none", error && "border-rose/70", className)}
           {...props}
         >
