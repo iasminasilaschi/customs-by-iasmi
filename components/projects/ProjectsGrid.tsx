@@ -35,7 +35,7 @@ export function ProjectsGrid() {
             onClick={() => setActive(f.value)}
             aria-pressed={active === f.value}
             className={cn(
-              "rounded-full border px-5 py-2 text-[0.95rem] transition-all duration-300 lg:text-base",
+              "min-h-11 rounded-full border px-5 py-2 text-[0.95rem] transition-all duration-300 lg:text-base",
               active === f.value
                 ? "border-olive bg-olive text-paper"
                 : "border-line text-muted hover:border-olive/40 hover:text-deep",

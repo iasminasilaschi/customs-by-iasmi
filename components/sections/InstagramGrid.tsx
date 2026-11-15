@@ -8,7 +8,7 @@ import { site } from "@/data/site";
 export function InstagramGrid() {
   if (instagramPosts.length === 0) return null;
   return (
-    <section className="mx-auto max-w-[90rem] px-4 py-24 sm:px-6 md:py-32 lg:px-12 xl:px-20">
+    <section className="gutter mx-auto max-w-[90rem] py-24 md:py-32">
       <Reveal>
         <div className="flex flex-wrap items-end justify-between gap-8">
           <SectionHeading
@@ -29,7 +29,7 @@ export function InstagramGrid() {
             href={site.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-olive hover:underline"
+            className="inline-flex min-h-11 items-center font-medium text-olive hover:underline"
           >
             Follow along →
           </a>

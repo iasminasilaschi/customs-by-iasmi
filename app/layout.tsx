@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Space_Grotesk, Caveat } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
@@ -51,6 +51,17 @@ export const metadata: Metadata = {
   },
   // per-page title/description/image come from the og: tags (see lib/metadata.ts)
   twitter: { card: "summary_large_image" },
+};
+
+/*
+  viewport-fit=cover lets the page run under the iPhone's notch and home bar,
+  so backgrounds reach the screen edges. Content keeps clear of them with the
+  safe-area insets: .gutter (sides), the nav (top) and the footer (bottom).
+*/
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

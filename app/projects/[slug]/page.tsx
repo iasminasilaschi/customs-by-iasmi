@@ -51,9 +51,9 @@ export default async function ProjectPage({
   return (
     <div className={vibe ? "vibe-page text-cream" : undefined} style={vibe ? pageTokens(vibe) : undefined}>
     {vibe && <PageVibe vibe={vibe} />}
-    <article className="mx-auto max-w-6xl px-5 pt-36 pb-20 sm:px-6 lg:px-8">
+    <article className="gutter mx-auto max-w-6xl pt-36 pb-20 max-sm:[--gutter:1.25rem] lg:[--gutter:2rem]">
       {/* Header */}
-      <Link href="/projects" className="text-base text-muted transition-colors hover:text-rose-2">
+      <Link href="/projects" className="-my-3 inline-flex min-h-11 items-center text-base text-muted transition-colors hover:text-rose-2">
         ← Back to projects
       </Link>
       <div className="mt-6 grid items-center gap-10 md:grid-cols-[1.15fr_0.85fr] lg:gap-16">
@@ -130,14 +130,14 @@ export default async function ProjectPage({
           )}
 
           {piece.instagram && piece.instagram.length > 0 && (
-            <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
+            <ul className="mt-9 flex flex-wrap gap-x-8">
               {piece.instagram.map((link) => (
                 <li key={link.url}>
                   <a
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-olive hover:underline"
+                    className="inline-flex min-h-11 items-center font-medium text-olive hover:underline"
                   >
                     {link.label} <span aria-hidden>→</span>
                   </a>

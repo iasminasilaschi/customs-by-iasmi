@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 pt-24 text-center">
+    <div className="gutter flex min-h-[70vh] flex-col items-center justify-center pt-24 text-center">
       <p className="hand rotate-[-2deg] text-3xl text-lilac">oops — blank canvas</p>
       <h1 className="display mt-4 text-[clamp(2.5rem,1.5rem+3.4vw,4.25rem)]">
         This page isn&apos;t{" "}

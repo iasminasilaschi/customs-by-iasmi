@@ -7,7 +7,7 @@ import { lifeMosaic } from "@/data/mosaic";
 export function AboutTeaser() {
   const tiles = lifeMosaic.slice(0, 4);
   return (
-    <section className="mx-auto max-w-[90rem] px-4 py-24 sm:px-6 md:py-32 lg:px-12 xl:px-20">
+    <section className="gutter mx-auto max-w-[90rem] py-24 md:py-32">
       <div className={tiles.length > 0 ? "grid items-center gap-14 lg:grid-cols-2 lg:gap-20" : ""}>
         {tiles.length > 0 && (
           <Reveal>
@@ -37,7 +37,7 @@ export function AboutTeaser() {
             />
             <Link
               href="/about"
-              className="group mt-8 inline-flex items-center gap-2 font-medium text-olive"
+              className="group mt-6 inline-flex min-h-11 items-center gap-2 font-medium text-olive"
             >
               Meet me properly
               <span

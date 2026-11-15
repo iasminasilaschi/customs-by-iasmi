@@ -3,7 +3,7 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function ContactCTA() {
   return (
-    <section className="relative overflow-hidden px-4 py-28 sm:px-6 md:py-36">
+    <section className="gutter relative overflow-hidden py-28 md:py-36">
       <div
         aria-hidden
         className="glow-gold pointer-events-none absolute inset-x-0 top-1/2 mx-auto h-[28rem] w-[40rem] -translate-y-1/2"

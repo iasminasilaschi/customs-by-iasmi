@@ -24,8 +24,8 @@ export function Nav() {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="mx-auto flex max-w-[90rem] items-center justify-between px-4 py-5 sm:px-6 lg:px-12 xl:px-20">
+    <header className="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)]">
+      <div className="gutter mx-auto flex max-w-[90rem] items-center justify-between py-5">
         <Link
           href="/"
           className="vibe-glass group flex items-baseline gap-1.5 rounded-full px-5 py-2.5 text-(--vibe-ink) transition-colors hover:text-(--vibe-accent)"
@@ -64,56 +64,65 @@ export function Nav() {
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="vibe-glass flex h-11 w-11 items-center justify-center rounded-full text-(--vibe-ink) lg:hidden"
+          className="vibe-glass grid size-11 place-items-center rounded-full text-(--vibe-ink) lg:hidden"
         >
-          <span aria-hidden className="relative block h-3 w-4">
+          {/*
+            All three lines sit on the exact centre of the button and only move
+            with translate/rotate, so the X turns around that centre: the
+            hamburger's outer lines slide 6px up/down from it, the X is the
+            same two lines rotated in place (a touch longer, so it carries the
+            same weight as the three lines).
+          */}
+          <span aria-hidden className="relative block size-5">
             <span
               className={cn(
-                "absolute left-0 top-0 h-px w-full bg-current transition-transform duration-300",
-                open && "top-1.5 rotate-45",
+                "absolute inset-x-0.5 top-1/2 -mt-[0.75px] h-[1.5px] rounded-full bg-current transition-[translate,rotate,scale] duration-300 ease-out",
+                open ? "rotate-45 scale-x-[1.15]" : "-translate-y-1.5",
               )}
             />
             <span
               className={cn(
-                "absolute left-0 top-1.5 h-px w-full bg-current transition-opacity duration-300",
-                open && "opacity-0",
+                "absolute inset-x-0.5 top-1/2 -mt-[0.75px] h-[1.5px] rounded-full bg-current transition-[opacity,scale] duration-300 ease-out",
+                open && "scale-x-0 opacity-0",
               )}
             />
             <span
               className={cn(
-                "absolute left-0 top-3 h-px w-full bg-current transition-transform duration-300",
-                open && "top-1.5 -rotate-45",
+                "absolute inset-x-0.5 top-1/2 -mt-[0.75px] h-[1.5px] rounded-full bg-current transition-[translate,rotate,scale] duration-300 ease-out",
+                open ? "-rotate-45 scale-x-[1.15]" : "translate-y-1.5",
               )}
             />
           </span>
         </button>
       </div>
 
-      {/* Mobile menu */}
-      <div
-        id="mobile-menu"
-        // closed: invisible, so also out of the tab order and the accessibility tree
-        inert={!open}
-        className={cn(
-          "mx-4 overflow-hidden rounded-blob transition-all duration-300 lg:hidden",
-          open ? "max-h-[26rem] opacity-100" : "max-h-0 opacity-0",
-        )}
-      >
-        <nav aria-label="Mobile" className="vibe-glass rounded-blob p-4">
-          <ul className="flex flex-col">
-            {navLinks.map((l) => (
-              <li key={l.href}>
-                <Link
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="block rounded-xl px-3 py-3 text-lg text-(--vibe-ink)/85 transition-colors hover:bg-(--vibe-tint) hover:text-(--vibe-ink)"
-                >
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+      {/* Mobile menu (lined up with the bar above by the same gutter) */}
+      <div className="gutter lg:hidden">
+        <div
+          id="mobile-menu"
+          // closed: invisible, so also out of the tab order and the accessibility tree
+          inert={!open}
+          className={cn(
+            "overflow-hidden rounded-blob transition-all duration-300",
+            open ? "max-h-[26rem] opacity-100" : "max-h-0 opacity-0",
+          )}
+        >
+          <nav aria-label="Mobile" className="vibe-glass rounded-blob p-4">
+            <ul className="flex flex-col">
+              {navLinks.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    className="block rounded-xl px-3 py-3 text-lg text-(--vibe-ink)/85 transition-colors hover:bg-(--vibe-tint) hover:text-(--vibe-ink)"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </div>
     </header>
   );

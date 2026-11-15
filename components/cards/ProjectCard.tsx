@@ -43,7 +43,7 @@ export function ProjectCard({
           </div>
         )}
         <span className="relative z-20 mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-olive">
-          <Link href={contactHref(piece)} className="-my-1.5 inline-block py-1.5 hover:underline">
+          <Link href={contactHref(piece)} className="-my-3 inline-flex min-h-11 items-center hover:underline">
             Dream up one like this
           </Link>
           <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span>

@@ -152,10 +152,10 @@ function Viewer({
           </div>
         </div>
 
-        <div className="flex items-center gap-3 px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6">
+        <div className="gutter flex items-center gap-3 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))] lg:[--gutter:1.5rem]">
           {many && (
             <ViewerButton label="Previous photo" onClick={() => go(-1)}>
-              ←
+              <Icon d="M15 5l-7 7 7 7" />
             </ViewerButton>
           )}
           <p className="min-w-0 flex-1 text-center text-sm leading-snug text-paper/80">
@@ -164,14 +164,14 @@ function Viewer({
           </p>
           {many && (
             <ViewerButton label="Next photo" onClick={() => go(1)}>
-              →
+              <Icon d="M9 5l7 7-7 7" />
             </ViewerButton>
           )}
         </div>
       </div>
 
-      <ViewerButton label="Close" onClick={close} className="absolute top-[max(0.75rem,env(safe-area-inset-top))] right-3 sm:right-5">
-        ✕
+      <ViewerButton label="Close" onClick={close} className="absolute top-[max(0.75rem,env(safe-area-inset-top))] right-[max(0.75rem,env(safe-area-inset-right))] sm:right-[max(1.25rem,env(safe-area-inset-right))]">
+        <Icon d="M6 6l12 12M18 6L6 18" />
       </ViewerButton>
     </dialog>
   );
@@ -194,11 +194,29 @@ function ViewerButton({
       onClick={onClick}
       aria-label={label}
       className={cn(
-        "grid size-11 shrink-0 place-items-center rounded-full border border-paper/25 bg-deep/60 text-lg text-paper transition-colors hover:bg-paper/15",
+        "grid size-11 shrink-0 place-items-center rounded-full border border-paper/25 bg-deep/60 text-paper transition-colors hover:bg-paper/15",
         className,
       )}
     >
       {children}
     </button>
+  );
+}
+
+/** Drawn icons (not text glyphs like ✕ or →), so they sit dead centre on every phone. */
+function Icon({ d }: { d: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden
+      className="size-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d={d} />
+    </svg>
   );
 }

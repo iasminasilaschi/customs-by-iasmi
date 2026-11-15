@@ -83,7 +83,7 @@ export function Hero() {
 
         <div
           className={cn(
-            "relative mx-auto grid max-w-[90rem] items-center gap-8 px-4 pt-28 pb-16 sm:px-6 sm:pt-32 lg:px-12 lg:pt-32 lg:pb-20 xl:px-20",
+            "gutter relative mx-auto grid max-w-[90rem] items-center gap-8 pt-28 pb-16 sm:pt-32 lg:pt-32 lg:pb-20",
             slide && "lg:min-h-[min(100svh,60rem)] lg:grid-cols-[1.1fr_1fr] lg:gap-10",
           )}
         >

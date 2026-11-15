@@ -48,7 +48,7 @@ const steps = [
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-[90rem] px-5 pt-36 pb-20 sm:px-6 lg:px-12 xl:px-20">
+    <div className="gutter mx-auto max-w-[90rem] pt-36 pb-20 max-sm:[--gutter:1.25rem]">
       {/* Intro */}
       <div className="max-w-2xl">
         <p className="eyebrow mb-4">hi, I&apos;m Iasmi</p>

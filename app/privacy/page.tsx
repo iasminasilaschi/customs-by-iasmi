@@ -18,7 +18,7 @@ const a = "text-olive underline underline-offset-2 hover:text-deep";
 
 export default function PrivacyPage() {
   return (
-    <div className="mx-auto max-w-3xl px-5 pt-36 pb-20 sm:px-6">
+    <div className="gutter mx-auto max-w-3xl pt-36 pb-20 max-sm:[--gutter:1.25rem] lg:[--gutter:1.5rem]">
       <p className="eyebrow mb-4">Privacy</p>
       <h1 className="display text-[clamp(2.5rem,1.4rem+3.2vw,3.75rem)]">
         The short, honest{" "}
@@ -123,8 +123,8 @@ export default function PrivacyPage() {
         Last updated: {LAST_UPDATED}. If anything here changes, this page
         changes first.
       </p>
-      <p className="mt-6">
-        <Link href="/contact" className={a}>
+      <p className="mt-3">
+        <Link href="/contact" className={`${a} inline-flex min-h-11 items-center`}>
           ← Back to contact
         </Link>
       </p>
