@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   useEffect,
+  useEffectEvent,
   useLayoutEffect,
   useRef,
   useState,
@@ -15,8 +16,12 @@ import type { ShowcaseSlide } from "@/data/media";
 import { WASH } from "@/components/sections/hero/wash";
 import { cn } from "@/lib/utils";
 
-/** Seconds each pair stays on stage. */
-const SWAP_EVERY = 6;
+/**
+ * Seconds each pair stays on stage, counted from the moment it starts flying
+ * in. It lands after ~1.1s, so it's fully still for ~3.4s before the next swap.
+ */
+const SWAP_EVERY = 4.5;
+const SWAP_MS = SWAP_EVERY * 1000;
 
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 const EASE_IN = [0.55, 0, 0.75, 0.2] as const;
@@ -131,9 +136,10 @@ const caption: Variants = {
 
 /**
  * The homepage hero's stage: one pair at a time, swapping every few
- * seconds. Autoplay always starts on its own; it pauses while the pointer is
- * on the switcher, on keyboard focus, when scrolled away or the tab is
- * hidden, and whenever the visitor presses pause.
+ * seconds. Autoplay always starts on its own (with reduced motion the pairs
+ * crossfade instead of flying); it pauses while the pointer is on the
+ * pause button, on keyboard focus, when scrolled away or the tab is hidden,
+ * and whenever the visitor presses pause.
  */
 export function SneakerStage({
   slides,
@@ -158,6 +164,21 @@ export function SneakerStage({
   const [tabHidden, setTabHidden] = useState(false);
   const paused = stopped || hovering || focused || offscreen || tabHidden;
 
+  // The timer. A pause keeps the time left for the pair on stage, so it
+  // picks up where it stopped; a new pair always gets the full SWAP_EVERY.
+  const advance = useEffectEvent(() => onSelect((active + 1) % slides.length));
+  const left = useRef({ slug: slide.slug, ms: SWAP_MS });
+  useEffect(() => {
+    if (!rotating || paused) return;
+    if (left.current.slug !== slide.slug) left.current = { slug: slide.slug, ms: SWAP_MS };
+    const started = performance.now();
+    const timer = window.setTimeout(advance, left.current.ms);
+    return () => {
+      window.clearTimeout(timer);
+      left.current.ms = Math.max(0, left.current.ms - (performance.now() - started));
+    };
+  }, [slide.slug, paused, rotating]);
+
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -181,7 +202,6 @@ export function SneakerStage({
       aria-roledescription="carousel"
       aria-label="Sneakers I've painted"
       className={cn("relative min-w-0", className)}
-      style={{ "--vibe-interval": `${SWAP_EVERY}s` } as CSSProperties}
       onFocus={(e) => e.target.matches(":focus-visible") && setFocused(true)}
       onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setFocused(false)}
     >
@@ -248,8 +268,36 @@ export function SneakerStage({
         )}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-        <div aria-live={paused ? "polite" : "off"} className="min-h-[2rem]">
+      <div className="mt-3 flex items-start gap-1.5">
+        {rotating && (
+          <button
+            type="button"
+            onClick={() => setStopped(!stopped)}
+            onPointerEnter={(e) => e.pointerType === "mouse" && setHovering(true)}
+            onPointerLeave={(e) => e.pointerType === "mouse" && setHovering(false)}
+            aria-label={stopped ? "Play the slideshow" : "Pause the slideshow"}
+            // a 44px target around a small, quiet 32px circle, centred on the caption's first line
+            className="group relative z-10 -my-1.5 -ml-1.5 grid size-11 shrink-0 place-items-center rounded-full text-(--vibe-ink)/75 transition-colors hover:text-(--vibe-ink)"
+          >
+            <span className="grid size-8 place-items-center rounded-full border border-(--vibe-ink)/20 transition-colors group-hover:bg-(--vibe-tint)">
+              <svg viewBox="0 0 16 16" aria-hidden className="size-3">
+                {stopped ? (
+                  <path
+                    d="M4.5 2.8v10.4a.8.8 0 0 0 1.2.7l8.3-5.2a.8.8 0 0 0 0-1.4L5.7 2.1a.8.8 0 0 0-1.2.7Z"
+                    fill="currentColor"
+                  />
+                ) : (
+                  <>
+                    <rect x="3.5" y="2.5" width="3" height="11" rx="1" fill="currentColor" />
+                    <rect x="9.5" y="2.5" width="3" height="11" rx="1" fill="currentColor" />
+                  </>
+                )}
+              </svg>
+            </span>
+          </button>
+        )}
+
+        <div aria-live={paused ? "polite" : "off"} className="min-h-[2rem] min-w-0">
           {/* its ::after stretches over the whole stage, so the shoe is clickable too */}
           <Link
             href={`/projects/${slide.slug}`}
@@ -276,64 +324,6 @@ export function SneakerStage({
             </AnimatePresence>
           </Link>
         </div>
-
-        {rotating && (
-          <div
-            role="group"
-            aria-label="Choose a pair"
-            // wraps onto two rows when the column is narrow, rather than hiding pairs off the edge
-            className="vibe-glass relative z-10 flex max-w-full flex-wrap items-center justify-center gap-1 rounded-[1.6rem] p-1"
-            onPointerEnter={(e) => e.pointerType === "mouse" && setHovering(true)}
-            onPointerLeave={(e) => e.pointerType === "mouse" && setHovering(false)}
-          >
-            {slides.map((s, i) => {
-              const on = i === active;
-              return (
-                <button
-                  key={s.slug}
-                  type="button"
-                  aria-current={on ? "true" : undefined}
-                  onClick={() => onSelect(i)}
-                  className={cn(
-                    "relative whitespace-nowrap rounded-full px-2.5 pt-2 pb-2.5 text-[0.85rem] transition-colors min-[400px]:px-3 min-[400px]:text-[0.9rem] sm:px-4 sm:text-[0.95rem]",
-                    on ? "bg-(--vibe-tint) text-(--vibe-ink)" : "text-(--vibe-ink)/70 hover:text-(--vibe-ink)",
-                  )}
-                >
-                  {s.name}
-                  {on && (
-                    // the progress line is also the timer: when it fills, the next pair comes on
-                    <span
-                      aria-hidden
-                      onAnimationEnd={() => onSelect((active + 1) % slides.length)}
-                      style={{ animationPlayState: paused ? "paused" : "running" }}
-                      className="vibe-bar absolute inset-x-2.5 bottom-1.5 min-[400px]:inset-x-3 sm:inset-x-4 h-0.5 rounded-full bg-(--vibe-accent)"
-                    />
-                  )}
-                </button>
-              );
-            })}
-            <button
-              type="button"
-              onClick={() => setStopped(!stopped)}
-              aria-label={stopped ? "Play the slideshow" : "Pause the slideshow"}
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-(--vibe-ink) transition-colors hover:bg-(--vibe-tint)"
-            >
-              <svg viewBox="0 0 16 16" aria-hidden className="h-3.5 w-3.5">
-                {stopped ? (
-                  <path
-                    d="M4.5 2.8v10.4a.8.8 0 0 0 1.2.7l8.3-5.2a.8.8 0 0 0 0-1.4L5.7 2.1a.8.8 0 0 0-1.2.7Z"
-                    fill="currentColor"
-                  />
-                ) : (
-                  <>
-                    <rect x="3.5" y="2.5" width="3" height="11" rx="1" fill="currentColor" />
-                    <rect x="9.5" y="2.5" width="3" height="11" rx="1" fill="currentColor" />
-                  </>
-                )}
-              </svg>
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

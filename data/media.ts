@@ -30,7 +30,7 @@ export interface VibePalette {
   word: string; // giant word behind the shoe (stays close to bg)
   ink: string; // text on bg
   muted: string; // secondary text on bg
-  accent: string; // italic headline, main button, progress line
+  accent: string; // italic headline, main button, caption arrow
   accentInk: string; // text on the accent button
   accentOnCream: string; // italics + links in the cream sections below (must read on cream)
   pop: string; // a complementary colour from the artwork, for small details (must read on bg)
@@ -42,7 +42,6 @@ export interface VibePalette {
 /** One pair in the homepage hero rotation. */
 export interface ShowcaseSlide {
   slug: string; // its project; the shoe and caption link to /projects/<slug>
-  name: string; // short label on the switcher
   photo: PhotoData; // a transparent cutout
   caption: string;
   word: string[]; // giant word behind the shoe, one entry per line
@@ -58,7 +57,6 @@ export interface ShowcaseSlide {
 export const heroShowcase: ShowcaseSlide[] = [
   {
     slug: "one-piece-sneakers",
-    name: "One Piece",
     photo: {
       src: "/work/one-piece-sneakers/cover.webp",
       alt: "A pair of hand-painted One Piece sneakers stacked on each other: Zoro with three swords on one shoe, Luffy in his straw hat on the other.",
@@ -85,7 +83,6 @@ export const heroShowcase: ShowcaseSlide[] = [
   },
   {
     slug: "sushi-cats",
-    name: "Sushi cats",
     photo: {
       src: "/work/sushi-cats/cover.webp",
       alt: "The pair of black Air Force 1s: a ginger cat peeking out of a nori-wrapped maki on the front shoe, and a cat curled inside a ring of rice on the shoe behind it.",
@@ -112,7 +109,6 @@ export const heroShowcase: ShowcaseSlide[] = [
   },
   {
     slug: "cherry-blossoms",
-    name: "Cherry blossoms",
     photo: {
       src: "/work/cherry-blossoms/cover.webp",
       alt: "The remade pair stacked on each other: white Air Force 1s with pink Swooshes and pink cherry blossoms with golden centres on brown branches.",
@@ -139,7 +135,6 @@ export const heroShowcase: ShowcaseSlide[] = [
   },
   {
     slug: "tattoo-cats",
-    name: "Tattoo cats",
     photo: {
       src: "/work/tattoo-cats/cover-side-2.webp",
       alt: "The right shoe from the side: a cat asleep inside a heart with a crescent moon near the heel and a cat reaching up for a butterfly near the toe, with the left shoe and its moon cat behind it.",

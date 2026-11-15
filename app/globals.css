@@ -324,6 +324,13 @@ html[data-vibe-wash] :is(.vibe-scope, .vibe-glass, [class*="--vibe-"], [class*="
 .vibe-word[data-fit] {
   opacity: 1;
 }
+/* The word is sized by measuring it (SneakerStage's GiantWord). Under reduced
+   motion every element gets a tiny `all` transition (see the bottom of this
+   file), so the letters would still report the old font size while being
+   measured, and the word came out far too wide. Letters never transition. */
+.vibe-word * {
+  transition: none !important;
+}
 
 /* Gentle idle float of the shoe, with its ground shadow breathing in sync */
 .vibe-float {
@@ -340,16 +347,6 @@ html[data-vibe-wash] :is(.vibe-scope, .vibe-glass, [class*="--vibe-"], [class*="
   to { transform: scaleX(0.9); opacity: 0.75; }
 }
 
-/* Progress line under the pair on stage — it's also the swap timer */
-.vibe-bar {
-  transform: scaleX(0);
-  transform-origin: left;
-  animation: vibe-fill var(--vibe-interval, 6s) linear forwards;
-}
-@keyframes vibe-fill {
-  to { transform: scaleX(1); }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -360,9 +357,5 @@ html[data-vibe-wash] :is(.vibe-scope, .vibe-glass, [class*="--vibe-"], [class*="
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-  /* the timer has to keep real time */
-  .vibe-bar {
-    animation-duration: var(--vibe-interval, 6s) !important;
   }
 }
