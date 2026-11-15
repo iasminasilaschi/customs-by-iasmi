@@ -3,7 +3,8 @@ import { SITE_URL } from "@/lib/metadata";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
+    // the Design Lab is private (password-protected, see proxy.ts)
+    rules: { userAgent: "*", allow: "/", disallow: "/design-lab" },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

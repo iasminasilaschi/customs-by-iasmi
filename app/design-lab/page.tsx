@@ -1,49 +1,39 @@
 import type { Metadata } from "next";
-import { pageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { DesignLabStudio } from "@/components/design-lab/studio/DesignLabStudio";
 import { Tag } from "@/components/ui/Tag";
-import { getPiece } from "@/data/portfolio";
 
-export const metadata: Metadata = pageMetadata({
+/**
+ * Private: password-protected by proxy.ts, not linked anywhere, kept out of
+ * the sitemap and disallowed in robots.txt. A sketching tool for me.
+ */
+export const metadata: Metadata = {
   title: "Design Lab",
-  description:
-    "Spin a real 3D sneaker, paint every panel, add your photos and initials, and send the concept as a real commission request — the interactive Design Lab studio.",
-  path: "/design-lab",
-});
+  robots: { index: false, follow: false },
+};
 
-export default async function DesignLabPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ ref?: string }>;
-}) {
-  const { ref } = await searchParams;
-  const refPiece = ref ? getPiece(ref) : undefined;
-  const initialIdea = refPiece
-    ? `I saw "${refPiece.title}" in your projects and I'd love something in that direction — but made mine. `
-    : "";
-
+export default function DesignLabPage() {
   return (
     <div className="mx-auto max-w-[90rem] px-5 pt-36 pb-20 sm:px-6 lg:px-12 xl:px-20">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading
           as="h1"
-          eyebrow="The Design Lab · v3"
+          eyebrow="The Design Lab · private"
           title={
             <>
               Paint the pair{" "}
               <span className="display-italic text-rose-2">before it exists.</span>
             </>
           }
-          lede="Turn the shoe in your hands, click a part, build a colour story. A concept first — a hand-painted commission next."
+          lede="Turn the shoe, click a part, build a colour story. Save the image or copy the summary to plan a pair."
         />
         <div className="flex flex-wrap gap-2">
-          <Tag tone="lilac">new · interactive 3D</Tag>
+          <Tag tone="lilac">just for me</Tag>
         </div>
       </div>
 
       <div className="mt-12">
-        <DesignLabStudio initialIdea={initialIdea} />
+        <DesignLabStudio />
       </div>
     </div>
   );

@@ -159,7 +159,7 @@ function FlatFallback() {
       />
       <p className="max-w-sm text-center text-sm text-muted">
         Your browser can&apos;t show the 3D shoe, so here&apos;s the flat
-        concept sketch — every colour still reaches the commission request.
+        concept sketch, with every colour you picked.
       </p>
     </div>
   );

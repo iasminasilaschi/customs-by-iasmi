@@ -146,7 +146,7 @@ export interface ArtworkSummary {
 
 /**
  * One human-readable line describing a configuration — used by the design
- * summary, the "copy concept" button and the commission form context.
+ * summary and the "copy concept" button.
  */
 export function conceptSummary(
   colors: Record<ShoePartKey, string>,

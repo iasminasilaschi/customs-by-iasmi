@@ -2,8 +2,8 @@
 
 /**
  * Right panel — the concept made "real": base shoe, per-part colour
- * recap, placed artwork, an inspiration note, a downloadable concept
- * image, and the handoff into a commission request.
+ * recap, placed artwork, a note, a downloadable concept image and a
+ * copyable summary. Nothing is sent anywhere: the Lab is a private tool.
  */
 
 import { useState } from "react";
@@ -55,7 +55,7 @@ export function SummaryPanel() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // clipboard unavailable — no drama, the form still carries everything
+      // clipboard unavailable: the summary is still on screen
     }
   };
 
@@ -143,9 +143,6 @@ export function SummaryPanel() {
           handmade details that make them yours.
         </p>
         <div className="mt-4 space-y-2">
-          <Button href="#request" className="w-full">
-            Request this concept ↓
-          </Button>
           <Button
             variant="outline"
             onClick={saveImage}
@@ -159,8 +156,8 @@ export function SummaryPanel() {
           </Button>
         </div>
         <p className="mt-3 text-center text-sm text-muted">
-          Saved in this browser as you play. Attach the image to your
-          email or DM so I can see exactly what you made.
+          Saved in this browser as you play. Nothing leaves this
+          device unless you save or copy it.
         </p>
       </section>
     </div>
