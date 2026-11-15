@@ -5,33 +5,46 @@ import { z } from "zod";
 z.config({ jitless: true });
 
 /**
- * One smart inquiry schema for all commission types. Conditional
- * requirements stay gentle on purpose — the form should feel like a
- * conversation starter, not a tax return.
+ * The contact form's schema, shared by the browser (instant feedback) and
+ * the /api/contact route (the real check). Short and friendly on purpose.
  */
 
-export const projectTypes = [
-  { value: "sneakers", label: "Custom sneakers" },
-  { value: "cap", label: "Custom graduation cap" },
-  { value: "collab", label: "Collaboration" },
-  { value: "other", label: "Other creative idea" },
+export const paintOptions = [
+  { value: "sneakers", label: "Sneakers", blurb: "a pair of shoes, painted by hand" },
+  { value: "cap", label: "A graduation cap", blurb: "a small canvas for a big day" },
+  { value: "other", label: "Something else", blurb: "surprise me with the idea" },
 ] as const;
 
-export type ProjectType = (typeof projectTypes)[number]["value"];
+export type PaintChoice = (typeof paintOptions)[number]["value"];
+
+export function paintLabel(value: PaintChoice): string {
+  return paintOptions.find((o) => o.value === value)?.label ?? value;
+}
 
 /** Field limits, shared with the form (counter, maxLength). */
-export const LIMITS = { idea: 1500, short: 120, phone: 40 } as const;
+export const LIMITS = { short: 120, idea: 1500, link: 300, ref: 80 } as const;
 
 const tooLong = (max: number) => `Keep this under ${max} characters, please.`;
-/** An optional single-line answer: trimmed, capped. */
-const short = (max: number = LIMITS.short) =>
-  z.string().trim().max(max, tooLong(max)).optional();
 
 /** "@handle", "handle" or an instagram.com/handle link — loosely. */
-const INSTAGRAM = /^(?:@?|(?:https?:\/\/)?(?:www\.)?instagram\.com\/)[A-Za-z0-9._]{1,30}\/?$/;
+export const INSTAGRAM = /^(?:@?|(?:https?:\/\/)?(?:www\.)?instagram\.com\/)([A-Za-z0-9._]{1,30})\/?$/;
+/** A web link, with or without https:// (e.g. pinterest.com/pin/123). */
+export const LINK = /^(?:https?:\/\/)?(?:[\w-]+\.)+[a-z]{2,}(?:[/?#]\S*)?$/i;
 
-export const inquirySchema = z
+export const contactSchema = z
   .object({
+    paint: z.enum(["sneakers", "cap", "other"]),
+    idea: z
+      .string()
+      .trim()
+      .min(10, "Give me a little more, even two sentences about the vibe help.")
+      .max(LIMITS.idea, `That's a lot of love! Keep it under ${LIMITS.idea} characters and send the rest by email.`),
+    inspo: z
+      .string()
+      .trim()
+      .max(LIMITS.link, tooLong(LIMITS.link))
+      .refine((v) => v === "" || LINK.test(v), "That doesn't look like a link, e.g. pinterest.com/…")
+      .optional(),
     name: z
       .string()
       .trim()
@@ -43,58 +56,33 @@ export const inquirySchema = z
       .max(LIMITS.short, tooLong(LIMITS.short))
       .pipe(z.union([z.literal(""), z.email("That email doesn't look right.")]))
       .optional(),
-    phone: short(LIMITS.phone),
     instagram: z
       .string()
       .trim()
       .max(LIMITS.short, tooLong(LIMITS.short))
       .refine((v) => v === "" || INSTAGRAM.test(v), "That doesn't look like an Instagram handle, e.g. @yourname.")
       .optional(),
-    projectType: z.enum(["sneakers", "cap", "collab", "other"]),
-
-    // sneakers
-    baseShoe: short(),
-    shoeSize: short(),
-    hasShoes: z.enum(["yes", "no", "unsure", ""]).optional(),
-
-    // graduation cap
-    graduationDate: short(),
-    capTheme: short(),
-    schoolColors: short(),
-    capNameYear: short(),
-    hasCap: z.enum(["yes", "no", ""]).optional(),
-
-    // shared
-    budget: short(),
-    deadline: short(),
-    idea: z
+    /** The project slug from a "dream up one like this" link (?ref=…). */
+    ref: z
       .string()
       .trim()
-      .min(10, "Give me a little more — even two sentences about the vibe help.")
-      .max(LIMITS.idea, `That's a lot of love! Keep it under ${LIMITS.idea} characters and send the rest by email.`),
+      .max(LIMITS.ref)
+      .regex(/^[a-z0-9-]*$/)
+      .optional(),
   })
   .superRefine((data, ctx) => {
-    if (!data.email?.trim() && !data.phone?.trim() && !data.instagram?.trim()) {
+    if (!data.email && !data.instagram) {
       ctx.addIssue({
         code: "custom",
         path: ["email"],
-        message: "Add at least one way to reach you: email, Instagram or phone.",
-      });
-    }
-    if (data.projectType === "sneakers" && !data.shoeSize?.trim()) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["shoeSize"],
-        message: "Your size helps me quote the right base shoe.",
-      });
-    }
-    if (data.projectType === "cap" && !data.graduationDate?.trim()) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["graduationDate"],
-        message: "The big day matters, caps are painted around deadlines.",
+        message: "Add an email or your Instagram, so I can write back.",
       });
     }
   });
 
-export type InquiryValues = z.infer<typeof inquirySchema>;
+export type ContactValues = z.infer<typeof contactSchema>;
+
+/** "@name", "name" or an instagram.com link → "name". */
+export function instagramHandle(value: string): string {
+  return value.match(INSTAGRAM)?.[1] ?? value.replace(/^@/, "");
+}

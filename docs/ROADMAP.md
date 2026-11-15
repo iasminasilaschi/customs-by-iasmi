@@ -48,8 +48,9 @@ The site is built so each phase adds on top of the last without a redesign.
 
 ## Integration seams already in place
 - `data/site.ts` — single place for contact details, slots, lead time
-- `lib/validation.ts` — inquiry schema ready to POST to an API route
-- `InquiryForm.deliver` comment marks where the real submission goes
+- `lib/validation.ts` — the contact schema, shared by the form and `/api/contact`
+- `app/api/contact/route.ts` — the real submission (Resend); swap the in-memory
+  rate limit for a shared store (e.g. Upstash) if spam ever gets through
 - `data/shoe.ts` part keys are the contract between the 3D model, the UI
   and the summary — a future GLTF shoe only maps mesh names onto them
 - All mock data typed and isolated in `/data`

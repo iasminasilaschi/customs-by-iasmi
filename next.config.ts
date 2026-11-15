@@ -13,7 +13,10 @@ const isDev = process.env.NODE_ENV === "development";
  * - images: our own files, plus blob:/data: for the 3D model's textures and the
  *   photos/lettering people place on the shoe in the Design Lab.
  * - fonts: self-hosted by next/font, so 'self' only.
- * - connect: analytics beacons, the GLB model, and blob:/data: texture reads.
+ * - connect: analytics beacons, the GLB model, blob:/data: texture reads, and
+ *   the contact form's POST to /api/contact. All same-origin, so 'self' covers
+ *   them; Resend is called from the server, never from the browser, so it
+ *   needs no entry here.
  *
  * CSP_ENFORCE: false sends it as Content-Security-Policy-Report-Only (violations
  * show in the browser console, nothing is blocked). Flip to true once the live

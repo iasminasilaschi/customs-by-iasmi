@@ -6,11 +6,11 @@ import { site } from "@/data/site";
 export const metadata: Metadata = pageMetadata({
   title: "Privacy",
   description:
-    "What this site keeps about you (almost nothing), what happens to the messages you send me, and your rights under the GDPR.",
+    "What this site keeps about you (almost nothing), how contact form messages reach me, how long I keep them, and your rights under the GDPR.",
   path: "/privacy",
 });
 
-const LAST_UPDATED = "13 November 2026";
+const LAST_UPDATED = "15 November 2026";
 
 const h2 = "display mt-14 text-[1.75rem] leading-tight text-cream";
 const p = "mt-4 text-base leading-relaxed text-cream/85";
@@ -39,12 +39,12 @@ export default function PrivacyPage() {
         .
       </p>
 
-      <h2 className={h2}>No accounts, no server storage</h2>
+      <h2 className={h2}>No accounts, no database</h2>
       <p className={p}>
-        There are no accounts and no logins here, and the site doesn&apos;t
-        save anything you type on a server. There is no database. No
-        advertising or tracking cookies either. The fonts are served from this
-        site, so your browser doesn&apos;t contact Google to load them.
+        There are no accounts and no logins here, and there is no database:
+        the site doesn&apos;t keep what you type. No advertising or tracking
+        cookies either. The fonts are served from this site, so your browser
+        doesn&apos;t contact Google to load them.
       </p>
       <p className={p}>
         Like any website, the site is delivered by a hosting company (Vercel),
@@ -52,24 +52,30 @@ export default function PrivacyPage() {
         can send you the pages and keep the site safe.
       </p>
 
-      <h2 className={h2}>The contact form stays on your device</h2>
+      <h2 className={h2}>The contact form</h2>
       <p className={p}>
-        When you fill in the commission form, your answers are saved as a draft
-        in your own browser (localStorage), so you can come back and finish
-        later. That draft never leaves your device on its own. It&apos;s
-        deleted when you finish the form, after 30 days without changes, or
-        whenever you press &ldquo;clear saved draft&rdquo;.
+        While you type, your answers are saved as a draft in your own browser
+        (localStorage), so you can come back and finish later. That draft
+        never leaves your device on its own. It&apos;s deleted when you send
+        the form, after 30 days without changes, or whenever you press
+        &ldquo;clear draft&rdquo;.
       </p>
       <p className={p}>
-        Nothing is sent to me when you press the button at the end. The form
-        only prepares your message: it reaches me when <em>you</em> open the
-        email or Instagram and send it yourself.
+        When you press send, your message travels from your browser to this
+        site&apos;s server (run by Vercel), which hands it to Resend, an email
+        delivery service, and Resend delivers it to my email inbox. What&apos;s
+        sent: your name, your email and/or Instagram handle, what you&apos;d
+        love painted, your idea, the inspiration link if you added one, and the
+        project you came from if you used a &ldquo;dream up one like
+        this&rdquo; link. Nothing is saved on the site itself. Resend keeps a
+        delivery log of sent emails for a limited time, as email services do.
       </p>
       <p className={p}>
-        The Design Lab works the same way: your colours, photos and lettering
-        are remembered in your browser so the shoe looks the same next time.
-        Remove them with the buttons in the Lab, or by clearing this
-        site&apos;s data in your browser.
+        Why: so I can read your idea and write back to you. That&apos;s the
+        only thing I use it for. To keep spam out, the server briefly
+        remembers how many messages came from an IP address in the last hour;
+        that count lives only in memory and is never stored or linked to your
+        message.
       </p>
 
       <h2 className={h2}>Visitor counts (Vercel Web Analytics)</h2>
@@ -82,17 +88,19 @@ export default function PrivacyPage() {
 
       <h2 className={h2}>When you write to me</h2>
       <p className={p}>
-        If you email me or send a DM, I get what you choose to send: your name,
-        how to reach you, your idea and any photos. I use it only to reply and
-        to plan and paint your commission. I never sell it or share it, except
-        what&apos;s truly needed to make your piece happen (for example, a
-        courier needs an address).
+        Whether you use the form, email me or send a DM, I get what you choose
+        to send: your name, how to reach you, your idea and any photos or
+        links. I use it only to reply and, if we make something together, to
+        plan and paint it. I never sell it or share it, except what&apos;s
+        truly needed to make your piece happen (for example, a courier needs
+        an address).
       </p>
       <p className={p}>
-        I keep our conversation while we&apos;re working together and for a
-        while after, in case something happens to your pair. Ask me any time
-        and I&apos;ll delete it. Instagram, TikTok and your email provider are
-        their own services, with their own privacy rules.
+        How long I keep it: until our conversation is done (and, if I painted
+        something for you, a while after, in case it ever needs a touch-up).
+        Ask me any time and I&apos;ll delete it sooner. Instagram, TikTok,
+        Resend and your email provider are their own services, with their own
+        privacy rules.
       </p>
 
       <h2 className={h2}>Your rights</h2>

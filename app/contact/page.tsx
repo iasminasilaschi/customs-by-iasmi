@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Accordion } from "@/components/ui/Accordion";
-import { InquiryForm } from "@/components/forms/InquiryForm";
+import { ContactForm } from "@/components/forms/ContactForm";
 import { getPiece } from "@/data/portfolio";
 import { site } from "@/data/site";
 
@@ -109,14 +109,14 @@ export default async function ContactPage({
         <div className="grain rounded-blob border border-line bg-coal p-6 sm:p-8">
           <h2 className="display text-2xl text-cream">Or write to me right here</h2>
           <p className="mt-2 mb-7 text-sm text-muted">
-            A few quick questions. Your answers are saved on this device, so you
-            can come back and finish later.
+            Just a few quick questions. It lands straight in my inbox, and
+            I&apos;ll write back by email or on Instagram.
           </p>
-          <InquiryForm
-            defaultType={isCap ? "cap" : "sneakers"}
-            typeFromLink={!!refPiece}
+          <ContactForm
+            defaultPaint={isCap ? "cap" : "sneakers"}
             initialIdea={initialIdea}
-            compact
+            refSlug={refPiece?.slug}
+            refTitle={refPiece?.title}
           />
         </div>
       </div>

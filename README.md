@@ -16,7 +16,7 @@ npm run build    # production build
 
 Next.js (App Router) · TypeScript · Tailwind CSS v4 · Framer Motion ·
 React Three Fiber + Drei (Design Lab 3D studio) · Zustand ·
-React Hook Form + Zod. No backend, no paid services — by design for v1.
+React Hook Form + Zod. One small route handler (`/api/contact`) sends the contact form through Resend; no database.
 
 ## Routes
 
@@ -42,7 +42,8 @@ React Hook Form + Zod. No backend, no paid services — by design for v1.
 
 ## Key decisions & assumptions
 
-- **No fake backend.** The form validates client-side, then hands the visitor a pre-filled `mailto:` and an Instagram DM link. Swap for an API route + Resend in Phase 2 (seam is marked in `InquiryForm`).
+- **The contact form really sends.** `components/forms/ContactForm.tsx` posts to `app/api/contact/route.ts`, which re-validates with the same zod schema (`lib/validation.ts`), checks a hidden honeypot field and a best-effort in-memory rate limit (5 per IP per hour, per server instance), then emails me through Resend (`lib/contact-email.ts`) with reply-to set to the visitor. Nothing is stored.
+- **Environment variables** (see `.env.example`; set them in Vercel, never commit them): `DESIGN_LAB_PASSWORD` (the private `/design-lab`, locked if missing), `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, optional `CONTACT_FROM_EMAIL`.
 - **Placeholder art is generative, not grey boxes.** `ArtPlaceholder` paints layered gradients + grain from each project's real palette; `VideoPlaceholder` mimics reel cards. Replacing them with real media is a per-item data change.
 - **The Design Lab shoe is a procedural 3D model** ("Studio Low 01" — a generic low-top built from per-part meshes in `components/design-lab/studio/`, deliberately unbranded, abstract twin-bar side mark instead of any logo). Zero heavy assets, every panel clickable/paintable; a scanned GLTF can replace it later by mapping mesh names onto the same `data/shoe.ts` part keys. The 2D `SneakerPreview` SVG remains as the homepage teaser and the no-WebGL fallback.
 - **Nav stays tight**: Home, Projects, About, Contact. Calls to action stay gentle ("say hi", "tell me about your dream pair"); orders aren't being pushed yet.
