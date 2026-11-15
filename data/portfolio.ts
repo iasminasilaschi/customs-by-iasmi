@@ -438,8 +438,12 @@ const pieces: PortfolioPiece[] = [
   },
 ];
 
-/** Oldest first, so new pieces slot in by `year`. Same-year pieces keep their order above. */
-export const portfolio: PortfolioPiece[] = [...pieces].sort((a, b) => a.year - b.year);
+/**
+ * Newest first, by `year`: the Projects page and the homepage's featured
+ * pieces both follow this order. Same-year pieces keep their order above
+ * (the sort is stable), so put the newer one first within a year.
+ */
+export const portfolio: PortfolioPiece[] = [...pieces].sort((a, b) => b.year - a.year);
 
 export function getPiece(slug: string): PortfolioPiece | undefined {
   return portfolio.find((p) => p.slug === slug);
