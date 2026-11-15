@@ -170,14 +170,3 @@ export const heroShowcase: ShowcaseSlide[] = [
 export function vibeFor(slug: string): VibePalette | undefined {
   return heroShowcase.find((s) => s.slug === slug)?.vibe;
 }
-
-/** Photo for the graduation caps card on the homepage. */
-export const beyondPhotos: { caps: PhotoData | null } = {
-  caps: {
-    src: "/work/graduation-caps/both-caps.jpg",
-    alt: "Two hand-painted graduation caps side by side: one with a floral stethoscope design, one with an anatomical heart and flowers.",
-  },
-};
-
-/** Video on /process (materials & sealing walkthrough). */
-export const processVideo: VideoData | null = null;

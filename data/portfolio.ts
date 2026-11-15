@@ -445,11 +445,9 @@ export function getPiece(slug: string): PortfolioPiece | undefined {
   return portfolio.find((p) => p.slug === slug);
 }
 
-/** Where "Request something like this" goes: caps → contact form, rest → Design Lab. */
-export function requestHref(piece: PortfolioPiece): string {
-  return piece.category === "graduation-caps"
-    ? "/contact?type=cap"
-    : `/design-lab?ref=${piece.slug}`;
+/** "Want one like this?" links: the contact form, prefilled with this project (?ref=<slug>). */
+export function contactHref(piece: PortfolioPiece): string {
+  return `/contact?ref=${piece.slug}`;
 }
 
 export const featuredPieces = portfolio.filter((p) => p.featured);

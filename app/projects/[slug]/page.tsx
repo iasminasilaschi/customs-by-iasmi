@@ -9,7 +9,7 @@ import { PhotoGrid } from "@/components/projects/PhotoGrid";
 import { PageVibe } from "@/components/projects/PageVibe";
 import { vibeFor } from "@/data/media";
 import { pageTokens } from "@/lib/vibe";
-import { categoryLabels, getPiece, portfolio, requestHref } from "@/data/portfolio";
+import { categoryLabels, getPiece, portfolio, contactHref } from "@/data/portfolio";
 import { pageMetadata } from "@/lib/metadata";
 
 export function generateStaticParams() {
@@ -210,17 +210,17 @@ export default async function ProjectPage({
       <div className="glass grain mt-16 rounded-blob p-8 text-center sm:p-12">
         <p className="hand text-2xl text-lilac">liked this one?</p>
         <h2 className="display mt-3 text-3xl text-cream">
-          {isCap ? "Want a cap like this — " : "Commission a similar pair — "}
-          <span className="display-italic text-rose-2">but yours.</span>
+          {isCap ? "Dreaming of a cap like this — " : "Dreaming of a pair like this — "}
+          <span className="display-italic text-rose-2">but yours?</span>
         </h2>
         <p className="mx-auto mt-4 max-w-md text-base text-muted">
           {isCap
-            ? "Tell me your words, your field and the things you love, and we'll design a cap around them."
-            : "No two commissions are the same. We take the mood of this project and rebuild it around your story, your colours, your shoes."}
+            ? "Tell me your words, your field and the things you love. No pressure, I just love hearing the ideas."
+            : "Tell me the mood, the story, the colours. No pressure, I just love hearing the ideas."}
         </p>
         <div className="mt-7">
-          <Button href={requestHref(piece)} size="lg">
-            Request something like this
+          <Button href={contactHref(piece)} size="lg">
+            {isCap ? "Tell me about your dream cap" : "Tell me about your dream pair"}
           </Button>
         </div>
       </div>

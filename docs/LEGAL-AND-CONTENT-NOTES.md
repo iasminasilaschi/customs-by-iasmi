@@ -13,7 +13,7 @@ by a professional before accepting paid orders.
 ## Branded base shoes
 - Base shoes are authentic, sourced at retail or client-supplied.
 - The site must never imply affiliation with or endorsement by Nike, Vans,
-  Adidas, etc. Current copy on /process includes an independence note —
+  Adidas, etc. Current copy on /about (the "how I paint" section) includes an independence note —
   keep it when rewriting.
 - Avoid using brand logos in site imagery; photograph customs so the
   artwork, not the brand mark, is the subject.

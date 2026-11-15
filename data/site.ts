@@ -13,15 +13,8 @@ export const site = {
 };
 
 export const navLinks = [
+  { href: "/", label: "Home" },
   { href: "/projects", label: "Projects" },
-  { href: "/design-lab", label: "Design Lab" },
-  { href: "/process", label: "Process" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
-] as const;
-
-export const footerLinks = [
-  { href: "/faq", label: "FAQ" },
-  { href: "/process", label: "How it works" },
-  { href: "/design-lab", label: "Start a commission" },
 ] as const;

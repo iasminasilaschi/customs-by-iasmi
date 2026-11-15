@@ -54,6 +54,13 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
+  // retired pages: their content now lives on /about and /contact
+  async redirects() {
+    return [
+      { source: "/process", destination: "/about", permanent: true },
+      { source: "/faq", destination: "/contact", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

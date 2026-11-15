@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s · Customs by Iasmi",
   },
   description:
-    "A personal creative studio for hand-painted sneakers and wearable art. One-of-one commissions painted by hand, plus custom graduation caps.",
+    "A personal creative studio for hand-painted sneakers and wearable art: one-of-one pieces painted by hand, plus custom graduation caps.",
   keywords: [
     "custom sneakers",
     "hand-painted sneakers",

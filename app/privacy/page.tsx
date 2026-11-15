@@ -117,7 +117,7 @@ export default function PrivacyPage() {
       </p>
       <p className="mt-6">
         <Link href="/contact" className={a}>
-          ← Back to starting a commission
+          ← Back to contact
         </Link>
       </p>
     </div>

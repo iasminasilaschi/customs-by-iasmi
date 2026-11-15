@@ -112,8 +112,8 @@ export function Hero() {
               {...enter(0.24)}
               className="mt-9 flex flex-wrap items-center gap-4"
             >
-              <Button href="/design-lab" variant="vibe" size="lg">
-                Start a sneaker commission
+              <Button href="/contact" variant="vibe" size="lg">
+                Tell me about your dream pair
               </Button>
               <Button href="/projects" variant="vibe-outline" size="lg">
                 View my projects

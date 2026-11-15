@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Photo } from "@/components/ui/Photo";
 import { Tag } from "@/components/ui/Tag";
-import { categoryLabels, requestHref, type PortfolioPiece } from "@/data/portfolio";
+import { categoryLabels, contactHref, type PortfolioPiece } from "@/data/portfolio";
 
 export function ProjectCard({
   piece,
@@ -43,8 +43,8 @@ export function ProjectCard({
           </div>
         )}
         <span className="relative z-20 mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-olive">
-          <Link href={requestHref(piece)} className="-my-1.5 inline-block py-1.5 hover:underline">
-            Request something like this
+          <Link href={contactHref(piece)} className="-my-1.5 inline-block py-1.5 hover:underline">
+            Dream up one like this
           </Link>
           <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span>
         </span>

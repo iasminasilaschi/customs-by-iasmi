@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { navLinks } from "@/data/site";
-import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 export function Nav() {
@@ -40,7 +39,7 @@ export function Nav() {
         <nav aria-label="Main" className="hidden items-center gap-2.5 lg:flex">
           <div className="vibe-glass flex items-center gap-1 rounded-full p-1.5">
             {navLinks.map((l) => {
-              const active = pathname === l.href || pathname.startsWith(l.href + "/");
+              const active = pathname === l.href || (l.href !== "/" && pathname.startsWith(l.href + "/"));
               return (
                 <Link
                   key={l.href}
@@ -56,9 +55,6 @@ export function Nav() {
               );
             })}
           </div>
-          <Button href="/design-lab" variant="vibe" className="ml-1">
-            Start a commission
-          </Button>
         </nav>
 
         <button
@@ -117,9 +113,6 @@ export function Nav() {
               </li>
             ))}
           </ul>
-          <Button href="/design-lab" variant="vibe" className="mt-3 w-full">
-            Start a commission
-          </Button>
         </nav>
       </div>
     </header>

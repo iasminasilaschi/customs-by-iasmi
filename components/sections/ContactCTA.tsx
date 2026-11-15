@@ -18,14 +18,12 @@ export function ContactCTA() {
             <span className="display-italic text-rose-2">I&apos;ll help shape it.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-md text-lg text-muted">
-            Tell me what refuses to leave your brain.
+            No pressure, no order forms. Tell me what refuses to leave your
+            brain, or just come say hi.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Button href="/design-lab" size="lg">
-              Start a custom request
-            </Button>
-            <Button href="/contact" variant="outline" size="lg">
-              Just say hi
+          <div className="mt-10 flex justify-center">
+            <Button href="/contact" size="lg">
+              Say hi
             </Button>
           </div>
         </div>
