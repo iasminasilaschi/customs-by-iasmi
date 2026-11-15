@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#2f3a2f"/>
+  <g transform="translate(256,262) scale(1.06) translate(-255,-277)">
+    <!-- upper -->
+    <path d="M58 318 C58 284 92 270 146 264 L226 244 L292 196 C306 184 328 180 344 188 C362 208 396 210 414 186 C436 194 452 232 454 282 L454 318 Z" fill="#ffffff"/>
+    <!-- sole -->
+    <path d="M48 326 L462 326 L462 352 C462 366 452 374 438 374 L80 374 C60 374 48 362 48 346 Z" fill="#ffffff"/>
+    <!-- details in tile colour -->
+    <g fill="none" stroke="#2f3a2f" stroke-linecap="round" stroke-width="11">
+      <path d="M244 254 L262 274"/>
+      <path d="M270 234 L288 254"/>
+      <path d="M296 214 L314 234"/>
+      <path d="M150 300 C230 296 330 292 452 300" stroke-width="9" stroke-dasharray="2 22"/>
+    </g>
+  </g>
+</svg>
