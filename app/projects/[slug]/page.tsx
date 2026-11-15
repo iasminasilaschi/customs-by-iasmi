@@ -129,29 +129,21 @@ export default async function ProjectPage({
             </>
           )}
 
-          {(piece.instagramUrl || piece.reelUrl) && (
-            <p className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
-              {piece.instagramUrl && (
-                <a
-                  href={piece.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-olive hover:underline"
-                >
-                  See the post on Instagram →
-                </a>
-              )}
-              {piece.reelUrl && (
-                <a
-                  href={piece.reelUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-olive hover:underline"
-                >
-                  Watch the reel →
-                </a>
-              )}
-            </p>
+          {piece.instagram && piece.instagram.length > 0 && (
+            <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
+              {piece.instagram.map((link) => (
+                <li key={link.url}>
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-olive hover:underline"
+                  >
+                    {link.label} <span aria-hidden>→</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
 

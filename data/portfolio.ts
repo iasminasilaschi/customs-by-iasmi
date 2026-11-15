@@ -27,6 +27,11 @@ export interface PhotoChapter {
   photos: PhotoData[];
 }
 
+export interface InstagramLink {
+  label: string; // e.g. "See the photos on Instagram"
+  url: string;
+}
+
 export interface PortfolioPiece {
   slug: string; // also the folder name in /public/work/
   title: string;
@@ -41,8 +46,8 @@ export interface PortfolioPiece {
   video?: VideoData; // making-of video
   before?: PhotoData; // a `caption` replaces the "before" / "after" label
   after?: PhotoData;
-  instagramUrl?: string; // link to the real post, if it was posted
-  reelUrl?: string; // link to a reel
+  /** Links to the real Instagram posts/reels, in the order shown. `label` is the link text. */
+  instagram?: InstagramLink[];
   tags?: string[];
   baseShoe?: string;
   story?: string; // her own words
@@ -62,6 +67,10 @@ const pieces: PortfolioPiece[] = [
     category: "sneakers",
     year: 2025,
     featured: true,
+    instagram: [
+      { label: "See the photos on Instagram", url: "https://www.instagram.com/customsbyiasmi/p/DfsuiMmDa3M/" },
+      { label: "Watch the reel", url: "https://www.instagram.com/customsbyiasmi/reel/DfuV1S6N-Fx/" },
+    ],
     baseShoe: "Zara",
     tags: ["hand-painted", "anime", "one piece", "fan art", "custom initials", "gift"],
     cover: {
@@ -109,7 +118,7 @@ const pieces: PortfolioPiece[] = [
     category: "sneakers",
     year: 2022,
     featured: true,
-    instagramUrl: "https://www.instagram.com/p/DfFn5VeDXXd/",
+    instagram: [{ label: "See the post on Instagram", url: "https://www.instagram.com/p/DfFn5VeDXXd/" }],
     baseShoe: "Nike Air Force 1",
     tags: ["hand-painted", "sushi", "cats", "black sneakers", "gift"],
     cover: {
@@ -163,7 +172,7 @@ const pieces: PortfolioPiece[] = [
     category: "sneakers",
     year: 2024,
     featured: true,
-    instagramUrl: "https://www.instagram.com/customsbyiasmi/p/DfiRnA2DWhN/",
+    instagram: [{ label: "See the post on Instagram", url: "https://www.instagram.com/customsbyiasmi/p/DfiRnA2DWhN/" }],
     baseShoe: "Nike Air Force 1",
     tags: ["hand-painted", "florals", "cherry blossoms", "remake", "white sneakers", "gift"],
     cover: {
@@ -253,7 +262,7 @@ const pieces: PortfolioPiece[] = [
     subtitle: "Eight fine-line cat tattoos and two tiny paws on white Air Force 1s, a birthday gift for a best friend.",
     category: "sneakers",
     year: 2023,
-    instagramUrl: "https://www.instagram.com/customsbyiasmi/p/DfUk7Hvjes_/",
+    instagram: [{ label: "See the post on Instagram", url: "https://www.instagram.com/customsbyiasmi/p/DfUk7Hvjes_/" }],
     baseShoe: "Nike Air Force 1",
     tags: ["hand-painted", "cats", "tattoo inspo", "fine line", "minimalist", "white sneakers", "gift"],
     cover: {
@@ -332,8 +341,10 @@ const pieces: PortfolioPiece[] = [
       "Angelus flat finisher",
     ],
     time: "Roughly 20 hours of painting, over about two weeks (alongside a second cap)",
-    instagramUrl: "https://www.instagram.com/p/DduCNfajTcy/",
-    reelUrl: "https://www.instagram.com/reel/Dd1_4IEtR9P/",
+    instagram: [
+      { label: "See the post on Instagram", url: "https://www.instagram.com/p/DduCNfajTcy/" },
+      { label: "Watch the reel", url: "https://www.instagram.com/reel/Dd1_4IEtR9P/" },
+    ],
     learned: [
       "Regular graphite transfer paper is basically invisible on a black cap, and going over it with white crayon didn't save it. White graphite paper was life-changing.",
       "Black paint is my eraser: I used it to fix stray spots, sharpen blurry edges and even reshape letters. The two o's in “doctor” looked like cousins, not sisters, until I blacked parts of them out.",
@@ -395,7 +406,7 @@ const pieces: PortfolioPiece[] = [
       "Angelus flat finisher",
     ],
     time: "Roughly 20 hours of painting, over about two weeks (alongside a second cap)",
-    instagramUrl: "https://www.instagram.com/p/DddqoOLDYcu/",
+    instagram: [{ label: "See the post on Instagram", url: "https://www.instagram.com/p/DddqoOLDYcu/" }],
     learned: [
       "Angelus 2-Soft thins the paint and keeps it flexible. Great for blending, terrible for sharp details, and caps don't need to bend anyway, so most details ended up in bare paint.",
       "Mixed 1:1 with 2-Soft, my white base was so thin the black cap soaked it up. Some of the lettering took about seven layers.",
