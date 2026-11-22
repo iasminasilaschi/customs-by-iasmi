@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { DesignLabStudio } from "@/components/design-lab/studio/DesignLabStudio";
 import { Tag } from "@/components/ui/Tag";
+import Link from "next/link";
 
 /**
  * Private: password-protected by proxy.ts, not linked anywhere, kept out of
@@ -27,7 +28,13 @@ export default function DesignLabPage() {
           }
           lede="Turn the shoe, click a part, build a colour story. Save the image or copy the summary to plan a pair."
         />
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/design-lab/planner"
+            className="inline-flex min-h-11 items-center rounded-full border border-olive/35 px-5 text-sm text-deep transition-colors hover:border-olive hover:bg-olive/5"
+          >
+            Photo planner →
+          </Link>
           <Tag tone="lilac">just for me</Tag>
         </div>
       </div>
