@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { askPersistentStorage, idb } from "./db";
 import { hydrate } from "./io";
 import { AdjustPanel, LayersPanel, LibraryPanel, ProjectPanel, TogetherPanel } from "./panels";
-import { preloadViews, setImageListener } from "./render";
+import { preloadViews, setImageListener, zoneData, zonesAt } from "./render";
 import { projectOf, usePlanner } from "./store";
 import { TogetherStage } from "./TogetherStage";
 import { ViewEditor } from "./ViewEditor";
@@ -75,6 +75,22 @@ export function PhotoPlanner({ pair = japanPair }: { pair?: PlannerPair }) {
     void hydrate(pair.id);
   }, [pair]);
   useAutosave();
+
+  // layers made before paint zones existed get the panel under their centre
+  useEffect(() => {
+    const run = () => {
+      const st = usePlanner.getState();
+      if (!st.hydrated) return;
+      for (const v of Object.values(pair.views)) {
+        if (!v.zonesSrc || !zoneData(v)) continue;
+        st.assignMissingZones(v.key, (l) => zonesAt(v, l.x, l.y) ?? [v.defaultZone ?? "side"]);
+      }
+    };
+    run();
+    return usePlanner.subscribe((s, p) => {
+      if (s.imagesVersion !== p.imagesVersion || s.hydrated !== p.hydrated || s.layers !== p.layers) run();
+    });
+  }, [pair]);
 
   const view = screen.kind === "view" ? pair.views[screen.key] : null;
 

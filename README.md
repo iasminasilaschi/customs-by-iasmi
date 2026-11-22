@@ -75,6 +75,23 @@ pair data in `data/planner.ts`, cut-outs in `public/design-lab/pairs/<pair>/`
   and badged in the UI. For the Japan pair, *Right outer* and *Right inner* are mirrored copies
   of the left shoe's photos.
 
+### Paint zones
+
+Each view is split into the shoe's real panels: **side panel, front panel, toe, collar, heel, laces & tongue, sole**, plus **inside** (the lining) on the top views. An image only shows on the parts it's assigned to:
+- A new image gets the part under where it's dropped.
+- The Adjust tab lists every part as a button, and hovering one highlights it on the shoe.
+- When an image reaches into parts it isn't on, the planner offers "It also reaches the front panel and the sole. Let it paint there too?"
+- While an image is selected, the cut-off part shows faintly.
+- Turning off "Crop to its parts" lets an image spill anywhere, as before.
+
+The zones come from one grey PNG per view in `public/design-lab/pairs/<pair>/zones/` (value = zone id × 28), made by `scripts/cutouts/zones.py` from `scripts/cutouts/zones-<pair>.json`:
+- SAM point prompts find the parts with clear edges: sole, laces, lining.
+- Seam lines traced by hand on the cut-out (pixel coordinates) split the leather panels.
+- Seed points name each region.
+- Leftover pixels join the nearest zone.
+
+Debug overlays (`--debug`) show each zone in colour, for checking. Mirrored views get mirrored maps. Rebuild with `venv/bin/python -I scripts/cutouts/zones.py scripts/cutouts/zones-japan.json OUT --debug` (same venv as the cut-outs, minus rembg), then copy `OUT/*.png` into the zones folder.
+
 ### Add a pair
 
 1. **Photos:** for the best result, take **4 photos of a single shoe at a time, straight from the side**:

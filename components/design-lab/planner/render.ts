@@ -9,7 +9,7 @@
  * show through, like paint) or plainly (sticker look).
  */
 
-import type { PlannerPair, PlannerView, PlannerViewKey, TogetherKey } from "@/data/planner";
+import { ZONE_STEP, zoneOrder, zones as zoneDefs, type PlannerPair, type PlannerView, type PlannerViewKey, type TogetherKey, type ZoneId } from "@/data/planner";
 import type { InnerLayout, Layer } from "./store";
 import { motifs, motifSrc } from "./motifs";
 
@@ -59,7 +59,10 @@ export const viewImage = (view: PlannerView) => imageFor(view.src, view.src);
 export const viewLoaded = (view: PlannerView, imagesVersion: number) => !!viewImage(view);
 
 export function preloadViews(pair: PlannerPair) {
-  for (const v of Object.values(pair.views)) viewImage(v);
+  for (const v of Object.values(pair.views)) {
+    viewImage(v);
+    if (v.zonesSrc) imageFor(v.zonesSrc, v.zonesSrc);
+  }
 }
 
 /* ------------------------------------------------- shoe outline (alpha map) */
@@ -109,6 +112,141 @@ export function alphaInfo(view: PlannerView): AlphaInfo | undefined {
       : { bounds: { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 }, alpha, width: view.width };
   alphaCache.set(view.src, info);
   return info;
+}
+
+/* ------------------------------------------------------------ paint zones */
+
+interface ZoneData {
+  ids: Uint8Array; // zone value per pixel, 0 = not shoe
+  present: ZoneId[];
+}
+const zoneCache = new Map<string, ZoneData>();
+const zoneByValue = new Map<number, ZoneId>(Object.entries(zoneDefs).map(([id, z]) => [z.value, id as ZoneId]));
+
+/** The view's zone map, decoded (undefined while loading, or without one). */
+export function zoneData(view: PlannerView): ZoneData | undefined {
+  if (!view.zonesSrc) return undefined;
+  const hit = zoneCache.get(view.zonesSrc);
+  if (hit) return hit;
+  const img = imageFor(view.zonesSrc, view.zonesSrc);
+  if (!img) return undefined;
+  const c = document.createElement("canvas");
+  c.width = view.width;
+  c.height = view.height;
+  const ctx = c.getContext("2d", { willReadFrequently: true })!;
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, 0, 0, view.width, view.height);
+  const px = ctx.getImageData(0, 0, view.width, view.height).data;
+  const ids = new Uint8Array(view.width * view.height);
+  const seen = new Set<number>();
+  for (let i = 0; i < ids.length; i++) {
+    const v = Math.round(px[i * 4] / ZONE_STEP); // rounding shrugs off any colour-management drift
+    ids[i] = v;
+    if (v) seen.add(v);
+  }
+  const data = { ids, present: zoneOrder.filter((z) => seen.has(zoneDefs[z].value)) };
+  zoneCache.set(view.zonesSrc, data);
+  return data;
+}
+
+/** The zone at a point given as fractions of the view (null off the shoe). */
+export function zoneAt(view: PlannerView, fx: number, fy: number): ZoneId | null {
+  const zd = zoneData(view);
+  if (!zd) return null;
+  const x = Math.floor(fx * view.width), y = Math.floor(fy * view.height);
+  if (x < 0 || y < 0 || x >= view.width || y >= view.height) return null;
+  return zoneByValue.get(zd.ids[y * view.width + x]) ?? null;
+}
+
+const maskCache = new Map<string, HTMLCanvasElement>();
+
+/** Alpha mask of some zones: the shoe's own soft edge, cut to those panels. */
+function zoneMask(view: PlannerView, sel: ZoneId[]): HTMLCanvasElement | null {
+  const zd = zoneData(view);
+  const info = alphaInfo(view);
+  if (!zd || !info) return null;
+  const key = `${view.zonesSrc}|${[...sel].sort().join(",")}`;
+  const hit = maskCache.get(key);
+  if (hit) return hit;
+  const want = new Set(sel.map((z) => zoneDefs[z].value));
+  const c = document.createElement("canvas");
+  c.width = view.width;
+  c.height = view.height;
+  const ctx = c.getContext("2d")!;
+  const out = ctx.createImageData(view.width, view.height);
+  for (let i = 0; i < zd.ids.length; i++) {
+    if (want.has(zd.ids[i])) out.data[i * 4 + 3] = info.alpha[i];
+  }
+  ctx.putImageData(out, 0, 0);
+  maskCache.set(key, c);
+  return c;
+}
+
+/** What a layer is cropped to: its zones, else the whole shoe; null = no crop. */
+function clipFor(view: PlannerView, layer: Layer, base: HTMLImageElement): CanvasImageSource | null {
+  if (!layer.clip) return null;
+  if (layer.zones && view.zonesSrc) return zoneMask(view, layer.zones) ?? base;
+  return base;
+}
+
+const gridCache = new Map<string, Uint8ClampedArray>();
+const GRID = 48;
+/** A coarse alpha grid of a library image, to see which zones it really covers. */
+function assetGrid(id: string): Uint8ClampedArray | undefined {
+  const hit = gridCache.get(id);
+  if (hit) return hit;
+  const img = assetImage(id);
+  if (!img || !img.naturalWidth) return undefined;
+  const c = document.createElement("canvas");
+  c.width = c.height = GRID;
+  const ctx = c.getContext("2d", { willReadFrequently: true })!;
+  ctx.drawImage(img, 0, 0, GRID, GRID);
+  const d = ctx.getImageData(0, 0, GRID, GRID).data;
+  const a = new Uint8ClampedArray(GRID * GRID);
+  for (let i = 0; i < a.length; i++) a[i] = d[i * 4 + 3];
+  gridCache.set(id, a);
+  return a;
+}
+
+/**
+ * Which zones the visible part of a layer lands on, and how much (samples).
+ * Null while the zone map or the image is still loading.
+ */
+export function layerZoneCoverage(view: PlannerView, layer: Layer): Map<ZoneId, number> | null {
+  const zd = zoneData(view);
+  const g = assetGrid(layer.assetId);
+  const img = assetImage(layer.assetId);
+  if (!zd || !g || !img) return null;
+  const N = 40;
+  const srcW = layer.crop.w * img.naturalWidth, srcH = layer.crop.h * img.naturalHeight;
+  const dw = layer.w * view.width, dh = (dw * srcH) / srcW;
+  const r = (layer.rotation * Math.PI) / 180, cos = Math.cos(r), sin = Math.sin(r);
+  const cx = layer.x * view.width, cy = layer.y * view.height;
+  const counts = new Map<ZoneId, number>();
+  for (let j = 0; j < N; j++) {
+    for (let i = 0; i < N; i++) {
+      const u = (i + 0.5) / N, v = (j + 0.5) / N;
+      const gx = Math.min(GRID - 1, Math.floor((layer.crop.x + u * layer.crop.w) * GRID));
+      const gy = Math.min(GRID - 1, Math.floor((layer.crop.y + v * layer.crop.h) * GRID));
+      if (g[gy * GRID + gx] < 40) continue; // transparent part of the image
+      const lx = (u - 0.5) * dw * (layer.flipX ? -1 : 1), ly = (v - 0.5) * dh;
+      const x = Math.floor(cx + lx * cos - ly * sin), y = Math.floor(cy + lx * sin + ly * cos);
+      if (x < 0 || y < 0 || x >= view.width || y >= view.height) continue;
+      const z = zoneByValue.get(zd.ids[y * view.width + x]);
+      if (z) counts.set(z, (counts.get(z) ?? 0) + 1);
+    }
+  }
+  return counts;
+}
+
+/** Zones a layer reaches into but doesn't show on yet (ignoring a few stray samples). */
+export function spillZones(view: PlannerView, layer: Layer): ZoneId[] {
+  if (!layer.clip || !layer.zones) return [];
+  const cov = layerZoneCoverage(view, layer);
+  if (!cov) return [];
+  const total = [...cov.values()].reduce((a, b) => a + b, 0);
+  const min = Math.max(3, total * 0.01);
+  return zoneOrder.filter((z) => !layer.zones!.includes(z) && (cov.get(z) ?? 0) >= min);
 }
 
 /* ------------------------------------------------------------ single views */
@@ -163,7 +301,20 @@ function scratchOf(w: number, h: number) {
  * Draw a view (shoe + layers) into ctx. `t` maps view pixels to canvas
  * pixels. Returns false while the shoe photo is still loading.
  */
-export function renderView(ctx: CanvasRenderingContext2D, view: PlannerView, layers: Layer[], t: DOMMatrix): boolean {
+export interface RenderOptions {
+  /** This layer's cropped-away part is shown faintly (editing aid). */
+  ghostId?: string | null;
+  /** Tint these zones (hovering a zone button). */
+  highlight?: ZoneId[] | null;
+}
+
+export function renderView(
+  ctx: CanvasRenderingContext2D,
+  view: PlannerView,
+  layers: Layer[],
+  t: DOMMatrix,
+  opts: RenderOptions = {},
+): boolean {
   const base = viewImage(view);
   if (!base) return false;
   ctx.save();
@@ -182,18 +333,12 @@ export function renderView(ctx: CanvasRenderingContext2D, view: PlannerView, lay
     sx.globalCompositeOperation = "source-over";
     sx.globalAlpha = 1;
     sx.clearRect(0, 0, cw, ch);
-    sx.setTransform(t);
-    const nw = img.naturalWidth, nh = img.naturalHeight;
-    const srcW = layer.crop.w * nw, srcH = layer.crop.h * nh;
-    const dw = layer.w * view.width, dh = (dw * srcH) / srcW;
-    sx.translate(layer.x * view.width, layer.y * view.height);
-    sx.rotate((layer.rotation * Math.PI) / 180);
-    sx.scale(layer.flipX ? -1 : 1, 1);
-    sx.drawImage(img, layer.crop.x * nw, layer.crop.y * nh, srcW, srcH, -dw / 2, -dh / 2, dw, dh);
-    if (layer.clip) {
+    drawLayer(sx, view, layer, img, t);
+    const clip = clipFor(view, layer, base);
+    if (clip) {
       sx.setTransform(t);
       sx.globalCompositeOperation = "destination-in";
-      sx.drawImage(base, 0, 0, view.width, view.height);
+      sx.drawImage(clip, 0, 0, view.width, view.height);
     }
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -201,8 +346,58 @@ export function renderView(ctx: CanvasRenderingContext2D, view: PlannerView, lay
     ctx.globalCompositeOperation = layer.paint ? "multiply" : "source-over";
     ctx.drawImage(s, 0, 0);
     ctx.restore();
+
+    // the part the crop hides, faintly, so you can see what the zones cut off
+    if (clip && opts.ghostId === layer.id) {
+      sx.setTransform(1, 0, 0, 1, 0, 0);
+      sx.globalCompositeOperation = "source-over";
+      sx.clearRect(0, 0, cw, ch);
+      drawLayer(sx, view, layer, img, t);
+      sx.setTransform(t);
+      sx.globalCompositeOperation = "destination-out";
+      sx.drawImage(clip, 0, 0, view.width, view.height);
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalAlpha = 0.22;
+      ctx.drawImage(s, 0, 0);
+      ctx.restore();
+    }
+  }
+
+  if (opts.highlight?.length) {
+    const mask = zoneMask(view, opts.highlight);
+    if (mask) {
+      const s = scratchOf(cw, ch);
+      const sx = s.getContext("2d")!;
+      sx.setTransform(1, 0, 0, 1, 0, 0);
+      sx.globalCompositeOperation = "source-over";
+      sx.clearRect(0, 0, cw, ch);
+      sx.setTransform(t);
+      sx.drawImage(mask, 0, 0, view.width, view.height);
+      sx.setTransform(1, 0, 0, 1, 0, 0);
+      sx.globalCompositeOperation = "source-in";
+      sx.fillStyle = "#5f6f52";
+      sx.fillRect(0, 0, cw, ch);
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalAlpha = 0.38;
+      ctx.drawImage(s, 0, 0);
+      ctx.restore();
+    }
   }
   return true;
+}
+
+/** One layer's image, placed, into a context whose canvas starts clean. */
+function drawLayer(sx: CanvasRenderingContext2D, view: PlannerView, layer: Layer, img: HTMLImageElement, t: DOMMatrix) {
+  sx.setTransform(t);
+  const nw = img.naturalWidth, nh = img.naturalHeight;
+  const srcW = layer.crop.w * nw, srcH = layer.crop.h * nh;
+  const dw = layer.w * view.width, dh = (dw * srcH) / srcW;
+  sx.translate(layer.x * view.width, layer.y * view.height);
+  sx.rotate((layer.rotation * Math.PI) / 180);
+  sx.scale(layer.flipX ? -1 : 1, 1);
+  sx.drawImage(img, layer.crop.x * nw, layer.crop.y * nh, srcW, srcH, -dw / 2, -dh / 2, dw, dh);
 }
 
 /* A rendered copy of each view at its own resolution, for the composites. */
@@ -488,3 +683,10 @@ export function downloadText(text: string, filename: string, type = "application
   setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
 export { stamp };
+
+/** Zones for an image placed at (fx, fy): the panel under it, else the view's default. */
+export function zonesAt(view: PlannerView, fx: number, fy: number): ZoneId[] | undefined {
+  if (!view.zonesSrc) return undefined;
+  const z = zoneAt(view, fx, fy);
+  return [z ?? view.defaultZone ?? "side"];
+}

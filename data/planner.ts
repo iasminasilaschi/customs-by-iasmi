@@ -25,6 +25,28 @@ export type PlannerViewKey =
 
 export type TogetherKey = "pair" | "outer" | "inner";
 
+/**
+ * Paint zones: the panels of the shoe an image can be kept inside. Each view
+ * has a zone map (grey PNG, value = id x 28) made by scripts/cutouts/zones.py
+ * from seams traced on the photo; see the README, "Paint zones".
+ */
+export type ZoneId = "side" | "front" | "toe" | "collar" | "heel" | "laces" | "sole" | "inside";
+
+export const zones: Record<ZoneId, { label: string; value: number }> = {
+  side: { label: "Side panel", value: 1 },
+  front: { label: "Front panel", value: 2 },
+  toe: { label: "Toe", value: 3 },
+  collar: { label: "Collar", value: 4 },
+  heel: { label: "Heel", value: 5 },
+  laces: { label: "Laces & tongue", value: 6 },
+  sole: { label: "Sole", value: 7 },
+  inside: { label: "Inside", value: 8 },
+};
+/** Grey step between zone ids in the map files. */
+export const ZONE_STEP = 28;
+/** The order zones are listed in the planner. */
+export const zoneOrder: ZoneId[] = ["side", "front", "toe", "heel", "collar", "laces", "sole", "inside"];
+
 export interface PlannerView {
   key: PlannerViewKey;
   /** "Left outer" */
@@ -40,6 +62,10 @@ export interface PlannerView {
   from: string;
   /** Set when the view is not a real photo of that side (mirrored copy). */
   approximate?: string;
+  /** Zone map (same size as the photo). Without one, images clip to the whole shoe. */
+  zonesSrc?: string;
+  /** Where a new image goes when dropped off the shoe. */
+  defaultZone?: ZoneId;
 }
 
 export interface PlannerPair {
@@ -68,6 +94,8 @@ export const japanPair: PlannerPair = {
       shoe: "left",
       part: "outer",
       src: `${japanDir}/left-outer.webp`,
+      zonesSrc: `${japanDir}/zones/left-outer.png`,
+      defaultZone: "side",
       width: 1094,
       height: 471,
       from: "clean-side-2.jpeg (top shoe)",
@@ -79,6 +107,8 @@ export const japanPair: PlannerPair = {
       shoe: "left",
       part: "inner",
       src: `${japanDir}/left-inner.webp`,
+      zonesSrc: `${japanDir}/zones/left-inner.png`,
+      defaultZone: "side",
       width: 1101,
       height: 462,
       from: "clean-side-1.jpeg (top shoe)",
@@ -90,6 +120,8 @@ export const japanPair: PlannerPair = {
       shoe: "right",
       part: "outer",
       src: `${japanDir}/right-outer.webp`,
+      zonesSrc: `${japanDir}/zones/right-outer.png`,
+      defaultZone: "side",
       width: 1094,
       height: 471,
       from: "mirrored copy of the left outer",
@@ -102,6 +134,8 @@ export const japanPair: PlannerPair = {
       shoe: "right",
       part: "inner",
       src: `${japanDir}/right-inner.webp`,
+      zonesSrc: `${japanDir}/zones/right-inner.png`,
+      defaultZone: "side",
       width: 1101,
       height: 462,
       from: "mirrored copy of the left inner",
@@ -114,6 +148,8 @@ export const japanPair: PlannerPair = {
       shoe: "left",
       part: "heel",
       src: `${japanDir}/left-heel.webp`,
+      zonesSrc: `${japanDir}/zones/left-heel.png`,
+      defaultZone: "heel",
       width: 540,
       height: 797,
       from: "clean-heels.jpeg (left of the pair)",
@@ -125,6 +161,8 @@ export const japanPair: PlannerPair = {
       shoe: "right",
       part: "heel",
       src: `${japanDir}/right-heel.webp`,
+      zonesSrc: `${japanDir}/zones/right-heel.png`,
+      defaultZone: "heel",
       width: 551,
       height: 817,
       from: "clean-heels.jpeg (right of the pair)",
@@ -136,6 +174,8 @@ export const japanPair: PlannerPair = {
       shoe: "left",
       part: "toe",
       src: `${japanDir}/left-toe.webp`,
+      zonesSrc: `${japanDir}/zones/left-toe.png`,
+      defaultZone: "toe",
       width: 489,
       height: 1258,
       from: "clean-front-top-view-table.jpeg (right of the photo)",
@@ -147,6 +187,8 @@ export const japanPair: PlannerPair = {
       shoe: "right",
       part: "toe",
       src: `${japanDir}/right-toe.webp`,
+      zonesSrc: `${japanDir}/zones/right-toe.png`,
+      defaultZone: "toe",
       width: 515,
       height: 1265,
       from: "clean-front-top-view-table.jpeg (left of the photo)",

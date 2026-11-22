@@ -145,6 +145,7 @@ const layerSchema = z.object({
   clip: z.boolean(),
   crop: cropSchema,
   hidden: z.boolean().default(false),
+  zones: z.array(z.enum(["side", "front", "toe", "collar", "heel", "laces", "sole", "inside"])).max(8).optional(),
 });
 const viewKeys = Object.keys(emptyLayers()) as (keyof ReturnType<typeof emptyLayers>)[];
 const projectSchema = z.object({

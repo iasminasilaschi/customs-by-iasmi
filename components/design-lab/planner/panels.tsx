@@ -7,7 +7,8 @@ import type { PlannerPair, PlannerView, TogetherKey } from "@/data/planner";
 import { cn } from "@/lib/utils";
 import { CropDialog } from "./CropDialog";
 import { addFiles, assetDims, deleteAsset, exportProject, importProject, motifAssets } from "./io";
-import { assetSrc, exportComposite, exportView, layoutFor } from "./render";
+import { assetSrc, exportComposite, exportView, layoutFor, spillZones, zoneData, zonesAt } from "./render";
+import { zones as zoneDefs, type ZoneId } from "@/data/planner";
 import { MAX_LAYERS_PER_VIEW, usePlanner, type AssetMeta, type Layer } from "./store";
 import { viewsIn } from "./TogetherStage";
 
@@ -37,7 +38,9 @@ export function LibraryPanel({ view, onAdded }: { view: PlannerView | null; onAd
 
   const add = (a: AssetMeta) => {
     if (!view) return;
-    if (addLayer(view.key, a, view.height / view.width)) onAdded();
+    // new images start at the middle (see addLayer): they get the panel under it
+    const wide = view.height / view.width < 1;
+    if (addLayer(view.key, a, view.height / view.width, zonesAt(view, 0.5, wide ? 0.45 : 0.42))) onAdded();
     else setMsg(`${MAX_LAYERS_PER_VIEW} layers is the most for one view.`);
   };
 
@@ -251,6 +254,111 @@ function Slider({ label, value, min, max, step, onChange, format }: { label: str
   );
 }
 
+/** "a, b and c" */
+const joinAnd = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
+
+/**
+ * Where the image shows: one button per panel of this view (side panel,
+ * sole…), and when the image reaches into panels it isn't on yet, an offer
+ * to let it paint there too. Hovering a button tints that panel on the shoe.
+ */
+function ZonePicker({ view, layer, set }: { view: PlannerView; layer: Layer; set: (patch: Partial<Layer>) => void }) {
+  // re-read once the zone map / image has loaded (passed as an argument, see render.ts layoutFor)
+  const version = usePlanner((s) => s.imagesVersion);
+  const setPreview = usePlanner((s) => s.setZonePreview);
+  const zd = zoneDataFor(view, version);
+  if (!view.zonesSrc || !layer.clip) return null;
+  if (!zd) return <p className="text-sm text-muted">loading the shoe&apos;s zones…</p>;
+
+  const on = layer.zones ?? [];
+  const spill = spillFor(view, layer, version);
+  const whole = zd.present.every((z) => on.includes(z));
+  const preview = (z: ZoneId[] | null) => () => setPreview(z);
+  const hover = (z: ZoneId[]) => ({
+    onMouseEnter: preview(z),
+    onMouseLeave: preview(null),
+    onFocus: preview(z),
+    onBlur: preview(null),
+  });
+  const toggle = (z: ZoneId) => {
+    if (on.includes(z)) {
+      if (on.length > 1) set({ zones: on.filter((x) => x !== z) }); // always keep one
+    } else set({ zones: [...on, z] });
+  };
+  const add = (zs: ZoneId[]) => {
+    set({ zones: [...on, ...zs.filter((z) => !on.includes(z))] });
+    setPreview(null);
+  };
+
+  return (
+    <div className="rounded-xl border border-line bg-cream-soft/60 p-3">
+      <p className="text-sm text-cream">Shows on</p>
+      <p className="text-xs text-muted">Kept inside these parts of the shoe. Hover one to see it.</p>
+      <div role="group" aria-label="Parts of the shoe it shows on" className="mt-2 flex flex-wrap gap-1.5">
+        {zd.present.map((z) => {
+          const active = on.includes(z);
+          return (
+            <button
+              key={z}
+              type="button"
+              aria-pressed={active}
+              title={active && on.length === 1 ? "It needs at least one part" : undefined}
+              onClick={() => toggle(z)}
+              {...hover([z])}
+              className={cn(
+                "inline-flex min-h-11 items-center rounded-full border px-3.5 text-sm transition-colors",
+                active ? "border-olive bg-olive text-paper" : "border-line text-cream-2 hover:border-olive/50",
+              )}
+            >
+              {active ? "✓ " : ""}
+              {zoneDefs[z].label}
+            </button>
+          );
+        })}
+        <button
+          type="button"
+          aria-pressed={whole}
+          onClick={() => add(zd.present)}
+          {...hover(zd.present)}
+          className={cn(
+            "inline-flex min-h-11 items-center rounded-full border border-dashed px-3.5 text-sm transition-colors",
+            whole ? "border-olive text-olive" : "border-line text-cream-2 hover:border-olive/50",
+          )}
+        >
+          whole shoe
+        </button>
+      </div>
+
+      {spill.length > 0 && (
+        <div role="status" className="mt-3 rounded-xl border border-olive/35 bg-sage/15 p-3">
+          <p className="text-sm text-cream">
+            It also reaches the {joinAnd(spill.map((z) => zoneDefs[z].label.toLowerCase()))}. Let it paint there too?
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {spill.map((z) => (
+              <button key={z} type="button" onClick={() => add([z])} {...hover([z])} className={chip}>
+                + {zoneDefs[z].label}
+              </button>
+            ))}
+            {spill.length > 1 && (
+              <button type="button" onClick={() => add(spill)} {...hover(spill)} className={cn(chip, "border-olive/50")}>
+                + all of them
+              </button>
+            )}
+          </div>
+          <p className="mt-2 text-xs text-muted">Not now? It stays cropped; the faint part on the shoe is what&apos;s hidden.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// version is a cache key only: it makes the React Compiler re-run these after loads
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const zoneDataFor = (view: PlannerView, version: number) => zoneData(view);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const spillFor = (view: PlannerView, layer: Layer, version: number) => spillZones(view, layer);
+
 export function AdjustPanel({ view }: { view: PlannerView }) {
   const layer = usePlanner((s) => s.layers[view.key].find((l) => l.id === s.selectedId) ?? null);
   const updateLayer = usePlanner((s) => s.updateLayer);
@@ -264,11 +372,17 @@ export function AdjustPanel({ view }: { view: PlannerView }) {
 
   return (
     <div className="space-y-3">
+      <ZonePicker view={view} layer={layer} set={set} />
       <Slider label="size" value={layer.w} min={0.02} max={1.6} step={0.005} onChange={(w) => set({ w })} format={(v) => `${Math.round(v * 100)}%`} />
       <Slider label="turn" value={layer.rotation} min={-180} max={180} step={1} onChange={(rotation) => set({ rotation })} format={(v) => `${Math.round(v)}°`} />
       <Slider label="opacity" value={layer.opacity} min={0.1} max={1} step={0.01} onChange={(opacity) => set({ opacity })} format={(v) => `${Math.round(v * 100)}%`} />
       <Toggle label="Paint look" hint="Leather, light and creases show through." on={layer.paint} onChange={(paint) => set({ paint })} />
-      <Toggle label="Clip to shoe" hint="Hide what falls off the shoe." on={layer.clip} onChange={(clip) => set({ clip })} />
+      <Toggle
+        label={view.zonesSrc ? "Crop to its parts" : "Clip to shoe"}
+        hint={view.zonesSrc ? "Off: it shows everywhere, even off the shoe." : "Hide what falls off the shoe."}
+        on={layer.clip}
+        onChange={(clip) => set({ clip, zones: layer.zones ?? zonesAt(view, layer.x, layer.y) })}
+      />
       <div className="flex flex-wrap gap-2 pt-1">
         <button type="button" className={chip} onClick={() => setCropping(true)}>
           crop

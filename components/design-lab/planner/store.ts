@@ -8,7 +8,7 @@
  */
 
 import { create } from "zustand";
-import type { PlannerViewKey, TogetherKey } from "@/data/planner";
+import type { PlannerViewKey, TogetherKey, ZoneId } from "@/data/planner";
 
 export interface Crop {
   /** Fractions of the source image. */
@@ -32,8 +32,13 @@ export interface Layer {
   opacity: number;
   /** Multiply onto the leather so the shoe's light and creases show through. */
   paint: boolean;
-  /** Hide whatever falls outside the shoe's outline. */
+  /** Crop to its zones (or, without zone data, to the shoe's outline). */
   clip: boolean;
+  /**
+   * The panels it shows on (side panel, sole…). Unset on layers made before
+   * zones existed: they get the zone under their centre once the map loads.
+   */
+  zones?: ZoneId[];
   crop: Crop;
   hidden: boolean;
 }
@@ -84,10 +89,12 @@ interface PlannerState extends ProjectData {
   /** Bumped whenever an image finishes loading, so canvases redraw. */
   imagesVersion: number;
   saveState: "idle" | "saving" | "saved" | "unavailable";
+  /** Zones to highlight on the canvas (hovering a zone button). */
+  zonePreview: ZoneId[] | null;
 
   setScreen: (s: Screen) => void;
   select: (id: string | null) => void;
-  addLayer: (view: PlannerViewKey, asset: AssetMeta, viewAspect: number) => string | null;
+  addLayer: (view: PlannerViewKey, asset: AssetMeta, viewAspect: number, zones?: ZoneId[]) => string | null;
   updateLayer: (view: PlannerViewKey, id: string, patch: Partial<Layer>) => void;
   removeLayer: (view: PlannerViewKey, id: string) => void;
   duplicateLayer: (view: PlannerViewKey, id: string) => void;
@@ -100,6 +107,9 @@ interface PlannerState extends ProjectData {
   removeAsset: (id: string) => void;
   loadProject: (p: ProjectData) => void;
   bumpImages: () => void;
+  setZonePreview: (z: ZoneId[] | null) => void;
+  /** Give every zone-less layer of a view its zones (see Layer.zones). */
+  assignMissingZones: (view: PlannerViewKey, pick: (layer: Layer) => ZoneId[]) => void;
   setSaveState: (s: PlannerState["saveState"]) => void;
   setHydrated: () => void;
 }
@@ -121,11 +131,12 @@ export const usePlanner = create<PlannerState>()((set, get) => ({
   selectedId: null,
   imagesVersion: 0,
   saveState: "idle",
+  zonePreview: null,
 
   setScreen: (screen) => set({ screen, selectedId: null }),
   select: (selectedId) => set({ selectedId }),
 
-  addLayer: (view, asset, viewAspect) => {
+  addLayer: (view, asset, viewAspect, zones) => {
     if (get().layers[view].length >= MAX_LAYERS_PER_VIEW) return null;
     const id = newId("layer");
     // start at roughly a third of the view, never taller than ~70% of it
@@ -147,6 +158,7 @@ export const usePlanner = create<PlannerState>()((set, get) => ({
       clip: true,
       crop: { ...FULL_CROP },
       hidden: false,
+      zones,
     };
     set((s) => ({ ...mapView(s, view, (l) => [...l, layer]), selectedId: id }));
     return id;
@@ -198,6 +210,11 @@ export const usePlanner = create<PlannerState>()((set, get) => ({
       selectedId: null,
     }),
   bumpImages: () => set((s) => ({ imagesVersion: s.imagesVersion + 1 })),
+  setZonePreview: (zonePreview) => set({ zonePreview }),
+  assignMissingZones: (view, pick) => {
+    if (!get().layers[view].some((l) => !l.zones)) return;
+    set((s) => mapView(s, view, (l) => l.map((x) => (x.zones ? x : { ...x, zones: pick(x) }))));
+  },
   setSaveState: (saveState) => set({ saveState }),
   setHydrated: () => set({ hydrated: true }),
 }));

@@ -14,7 +14,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import type { PlannerView } from "@/data/planner";
 import { cn } from "@/lib/utils";
 import { assetDims } from "./io";
-import { hitLayer, layerCorners, layerSize, renderView, viewLoaded } from "./render";
+import { hitLayer, layerCorners, layerSize, layerZoneCoverage, renderView, viewLoaded, zonesAt } from "./render";
 import { usePlanner, type Layer } from "./store";
 
 const MIN_W = 0.02;
@@ -36,6 +36,7 @@ export function ViewEditor({ view }: { view: PlannerView }) {
   const select = usePlanner((s) => s.select);
   const updateLayer = usePlanner((s) => s.updateLayer);
   const removeLayer = usePlanner((s) => s.removeLayer);
+  const zonePreview = usePlanner((s) => s.zonePreview);
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -94,7 +95,7 @@ export function ViewEditor({ view }: { view: PlannerView }) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, W, H);
     const t = new DOMMatrix().scale(dpr).multiply(cssMatrix());
-    const ok = renderView(ctx, view, layers, t);
+    const ok = renderView(ctx, view, layers, t, { ghostId: selectedId, highlight: zonePreview });
     const sel = layers.find((l) => l.id === selectedId);
     if (ok && sel && !sel.hidden) {
       const pts = layerCorners(view, sel, assetDims).map((p) => t.transformPoint(p));
@@ -121,7 +122,7 @@ export function ViewEditor({ view }: { view: PlannerView }) {
       ctx.stroke();
       ctx.restore();
     }
-  }, [box, cssMatrix, layers, selectedId, version, view]);
+  }, [box, cssMatrix, layers, selectedId, version, view, zonePreview]);
 
   const selected = layers.find((l) => l.id === selectedId) ?? null;
 
@@ -233,6 +234,17 @@ export function ViewEditor({ view }: { view: PlannerView }) {
     pointers.current.delete(e.pointerId);
     const g = gesture.current;
     if (g?.type === "pan" && !g.moved) select(null); // a tap on bare shoe clears the selection
+    // dragged right off its zones? it takes the zone it was dropped on, rather than vanishing
+    if (g && (g.type === "drag" || g.type === "pinch" || g.type === "handle")) {
+      const l = usePlanner.getState().layers[view.key].find((x) => x.id === g.id);
+      if (l?.clip && l.zones) {
+        const cov = layerZoneCoverage(view, l);
+        if (cov && !l.zones.some((z) => (cov.get(z) ?? 0) > 0)) {
+          const next = zonesAt(view, l.x, l.y);
+          if (next) updateLayer(view.key, l.id, { zones: next });
+        }
+      }
+    }
     if (pointers.current.size === 0) gesture.current = null;
     else if (g?.type === "pinch" || g?.type === "stagePinch") gesture.current = null; // lifted one finger: stop
   };
@@ -345,7 +357,7 @@ export function ViewEditor({ view }: { view: PlannerView }) {
       </div>
       <p className="mt-2 text-xs text-muted" aria-live="polite">
         {selected && selSize
-          ? `Selected · ${Math.round(selected.rotation)}° · ${Math.round((selSize.w / view.width) * 100)}% of the view wide. Drag to move, pinch or use the round handle to size and turn.`
+          ? `Selected · ${Math.round(selected.rotation)}° · ${Math.round((selSize.w / view.width) * 100)}% of the view wide. Drag to move, pinch or use the round handle to size and turn.${selected.clip && selected.zones ? " The faint part is cropped off by its zones." : ""}`
           : layers.length
             ? "Tap a layer to select it. Pinch the shoe to zoom."
             : "Add something from the library."}
