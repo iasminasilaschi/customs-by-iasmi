@@ -1,13 +1,23 @@
 import Link from "next/link";
 import { Photo } from "@/components/ui/Photo";
 import { Tag } from "@/components/ui/Tag";
-import { categoryLabels, contactHref, type PortfolioPiece } from "@/data/portfolio";
+import { contactHref, type PortfolioPiece } from "@/data/portfolio";
+import type { Dictionary } from "@/lib/dictionaries";
+import { fmt } from "@/lib/i18n-format";
+import { localePath, type Locale } from "@/lib/i18n";
 
 export function ProjectCard({
   piece,
+  locale,
+  t,
+  categories,
   headingLevel = 3,
 }: {
+  /** Already in this language (data/localized.ts). */
   piece: PortfolioPiece;
+  locale: Locale;
+  t: Dictionary["card"];
+  categories: Dictionary["categories"];
   /** 2 when the cards sit right under the page's h1 (the Projects page). */
   headingLevel?: 2 | 3;
 }) {
@@ -15,21 +25,21 @@ export function ProjectCard({
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-blob border border-line bg-cream-soft shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-lift">
       <Link
-        href={`/projects/${piece.slug}`}
+        href={localePath(locale, `/projects/${piece.slug}`)}
         className="absolute inset-0 z-10"
-        aria-label={`${piece.title} — view project`}
+        aria-label={fmt(t.view, { title: piece.title })}
       />
       <div className="relative aspect-[4/5] overflow-hidden">
         <Photo photo={piece.cover} className="transition-transform duration-700 group-hover:scale-[1.04]" />
         {piece.video && (
           <span className="absolute right-3 top-3 rounded-full bg-deep/80 px-2.5 py-1 text-[0.78rem] uppercase tracking-widest text-paper/90 backdrop-blur-sm">
-            ▶ process
+            {t.process}
           </span>
         )}
       </div>
       <div className="flex flex-1 flex-col p-7 lg:p-8">
         <p className="eyebrow mb-2">
-          {categoryLabels[piece.category]} · {piece.year}
+          {categories[piece.category]} · {piece.year}
         </p>
         <Heading className="display text-2xl text-cream transition-colors group-hover:text-olive lg:text-[1.75rem]">
           {piece.title}
@@ -43,8 +53,8 @@ export function ProjectCard({
           </div>
         )}
         <span className="relative z-20 mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-olive">
-          <Link href={contactHref(piece)} className="-my-3 inline-flex min-h-11 items-center hover:underline">
-            Dream up one like this
+          <Link href={contactHref(piece, locale)} className="-my-3 inline-flex min-h-11 items-center hover:underline">
+            {t.dreamUp}
           </Link>
           <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span>
         </span>

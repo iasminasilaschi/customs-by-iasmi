@@ -8,13 +8,16 @@ import { Button } from "@/components/ui/Button";
 import { TextAreaField, TextField } from "@/components/forms/fields";
 import {
   LIMITS,
-  contactSchema,
-  paintOptions,
+  makeContactSchema,
+  paintChoices,
   type ContactValues,
   type PaintChoice,
 } from "@/lib/validation";
 import { cn } from "@/lib/utils";
 import { site } from "@/data/site";
+import type { Dictionary } from "@/lib/dictionaries";
+import { fmt } from "@/lib/i18n-format";
+import { localePath, type Locale } from "@/lib/i18n";
 
 /**
  * The short contact form: what they'd love painted, the idea, an optional
@@ -66,11 +69,18 @@ function clearDraft() {
 }
 
 export function ContactForm({
+  locale,
+  t,
+  messages,
   defaultPaint = "sneakers",
   initialIdea = "",
   refSlug,
   refTitle,
 }: {
+  locale: Locale;
+  t: Dictionary["form"];
+  /** Validation messages in the page's language. */
+  messages: Dictionary["validation"];
   defaultPaint?: PaintChoice;
   /** Prefilled idea from a project link; beats a saved draft's idea. */
   initialIdea?: string;
@@ -92,7 +102,7 @@ export function ContactForm({
     setError,
     formState: { errors },
   } = useForm<ContactValues>({
-    resolver: zodResolver(contactSchema),
+    resolver: zodResolver(makeContactSchema(messages)),
     defaultValues: defaults,
   });
 
@@ -142,7 +152,7 @@ export function ContactForm({
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, ref: refSlug ?? "", website }),
+        body: JSON.stringify({ ...values, ref: refSlug ?? "", lang: locale, website }),
         signal: AbortSignal.timeout(20_000),
       });
       if (res.ok) {
@@ -173,13 +183,11 @@ export function ContactForm({
   if (status === "sent") {
     return (
       <div className="glass grain rounded-blob p-8 text-center" role="status">
-        <p className="hand text-3xl text-lilac">got it!</p>
+        <p className="hand text-3xl text-lilac">{t.sentKicker}</p>
         <h3 ref={doneRef} tabIndex={-1} className="display mt-3 text-2xl text-cream outline-none">
-          I&apos;ll get back to you soon{sentName ? `, ${sentName}` : ""} ✿
+          {sentName ? fmt(t.sentTitleName, { name: sentName }) : t.sentTitle}
         </h3>
-        <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-muted">
-          Your message is safely in my inbox. Thank you for thinking of me!
-        </p>
+        <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-muted">{t.sentText}</p>
         <button
           type="button"
           onClick={() => {
@@ -188,7 +196,7 @@ export function ContactForm({
           }}
           className="mt-5 text-sm text-muted underline underline-offset-2 hover:text-cream"
         >
-          send another message
+          {t.sendAnother}
         </button>
       </div>
     );
@@ -207,26 +215,26 @@ export function ContactForm({
       <div className="flex items-baseline justify-end gap-4 text-sm text-muted">
         {hasContent ? (
           <span>
-            draft saved on this device ·{" "}
+            {t.draftSaved} ·{" "}
             <button type="button" onClick={clearSaved} className="underline underline-offset-2 hover:text-cream">
-              clear draft
+              {t.clearDraft}
             </button>
           </span>
         ) : (
-          <span>drafts are saved only on this device</span>
+          <span>{t.draftsLocal}</span>
         )}
       </div>
 
       {refTitle && (
         <p className="rounded-xl border border-lilac/25 bg-lilac/5 px-4 py-3 text-sm text-cream/85">
-          ✦ you came from <span className="font-medium">{refTitle}</span>, I&apos;ll see that with your message
+          {t.cameFromA} <span className="font-medium">{refTitle}</span>{t.cameFromB}
         </p>
       )}
 
       <fieldset>
-        <legend className="mb-3 text-[0.95rem] text-cream/85">What would you love painted?</legend>
+        <legend className="mb-3 text-[0.95rem] text-cream/85">{t.paintLegend}</legend>
         <div className="grid gap-3 sm:grid-cols-3">
-          {paintOptions.map((o) => (
+          {paintChoices.map((value) => ({ value, ...t.paint[value] })).map((o) => (
             <label
               key={o.value}
               className={cn(
@@ -243,18 +251,18 @@ export function ContactForm({
       </fieldset>
 
       <TextAreaField
-        label="Tell me your idea"
-        placeholder="The mood, the story, the colours, the obsession. Messy is fine, songs and films count."
+        label={t.ideaLabel}
+        placeholder={t.ideaPlaceholder}
         rows={5}
-        counter={{ value: ideaLength, max: LIMITS.idea }}
+        counter={{ value: ideaLength, max: LIMITS.idea, unit: t.characters }}
         {...register("idea")}
         error={errors.idea?.message}
       />
 
       <TextField
-        label="Inspo link"
-        optional
-        placeholder="a Pinterest board, a photo, a post…"
+        label={t.inspoLabel}
+        optional={t.optional}
+        placeholder={t.inspoPlaceholder}
         inputMode="url"
         maxLength={LIMITS.link}
         {...register("inspo")}
@@ -262,8 +270,8 @@ export function ContactForm({
       />
 
       <TextField
-        label="Your name"
-        placeholder="Your name"
+        label={t.nameLabel}
+        placeholder={t.namePlaceholder}
         autoComplete="name"
         maxLength={LIMITS.short}
         {...register("name")}
@@ -271,22 +279,22 @@ export function ContactForm({
       />
 
       <div>
-        <p className="mb-3 text-sm text-muted">How can I write back? One is enough.</p>
+        <p className="mb-3 text-sm text-muted">{t.replyHint}</p>
         <div className="grid gap-5 sm:grid-cols-2">
           <TextField
-            label="Email"
-            optional
+            label={t.emailLabel}
+            optional={t.optional}
             type="email"
-            placeholder="you@example.com"
+            placeholder={t.emailPlaceholder}
             autoComplete="email"
             maxLength={LIMITS.short}
             {...register("email")}
             error={errors.email?.message}
           />
           <TextField
-            label="Instagram"
-            optional
-            placeholder="@yourhandle"
+            label={t.instagramLabel}
+            optional={t.optional}
+            placeholder={t.instagramPlaceholder}
             maxLength={LIMITS.short}
             {...register("instagram")}
             error={errors.instagram?.message}
@@ -297,7 +305,7 @@ export function ContactForm({
       {/* Honeypot: hidden from people and screen readers; bots tend to fill it. */}
       <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <label>
-          Leave this empty
+          {t.honeypot}
           <input type="text" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
         </label>
       </div>
@@ -305,13 +313,11 @@ export function ContactForm({
       {(status === "error" || status === "limited") && (
         <div role="alert" className="rounded-2xl border border-rose/30 bg-rose/5 p-5 text-base text-cream/85">
           <p className="font-medium text-rose-ink">
-            {status === "limited" ? "Whoa, that's a lot of messages!" : "Oh no, that didn't go through."}
+            {status === "limited" ? t.limitedTitle : t.errorTitle}
           </p>
           <p className="mt-1.5 text-sm leading-relaxed">
-            {status === "limited"
-              ? "Give it a little while and try again. "
-              : "Something hiccuped on my side. Your words are still here, so try again in a minute. "}
-            Or DM me on Instagram,{" "}
+            {status === "limited" ? t.limitedText : t.errorText}
+            {t.dmA}{" "}
             <a
               href={site.instagram}
               target="_blank"
@@ -320,16 +326,16 @@ export function ContactForm({
             >
               {site.instagramHandle}
             </a>
-            , I read everything there.
+            {t.dmB}
           </p>
         </div>
       )}
 
       <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm leading-relaxed text-muted">
-          Sent through this site straight to my inbox.{" "}
-          <Link href="/privacy" className="text-olive underline underline-offset-2 hover:text-deep">
-            How I handle your data
+          {t.footnote}{" "}
+          <Link href={localePath(locale, "/privacy")} className="text-olive underline underline-offset-2 hover:text-deep">
+            {t.privacyLink}
           </Link>
         </p>
         <Button type="submit" size="lg" disabled={sending} className="shrink-0">
@@ -339,10 +345,10 @@ export function ContactForm({
                 aria-hidden
                 className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
               />
-              Sending…
+              {t.sending}
             </>
           ) : (
-            "Send it my way ✿"
+            t.send
           )}
         </Button>
       </div>

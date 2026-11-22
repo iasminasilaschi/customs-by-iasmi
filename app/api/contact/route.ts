@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-import { contactSchema } from "@/lib/validation";
+import { makeContactSchema } from "@/lib/validation";
+import { getDictionary } from "@/lib/dictionaries";
+import { hasLocale } from "@/lib/i18n";
 import { buildContactEmail } from "@/lib/contact-email";
 import { getPiece } from "@/data/portfolio";
 
@@ -10,7 +12,7 @@ import { getPiece } from "@/data/portfolio";
  * 2. rate limit (a few messages per IP per hour)
  * 3. honeypot: a hidden "website" field humans never fill. Bots that fill it
  *    get a normal-looking success and nothing is sent.
- * 4. the same zod schema the form uses
+ * 4. the same zod schema the form uses, with messages in the form's language
  * 5. send through Resend (RESEND_API_KEY) to CONTACT_TO_EMAIL, reply-to = visitor
  *
  * Nothing is stored here: the message goes straight to my inbox.
@@ -71,7 +73,9 @@ export async function POST(request: Request) {
   const honeypot = (body as Record<string, unknown>).website;
   if (typeof honeypot === "string" && honeypot.trim() !== "") return json({ ok: true });
 
-  const parsed = contactSchema.safeParse(body);
+  const bodyLang = (body as Record<string, unknown>).lang;
+  const lang = typeof bodyLang === "string" && hasLocale(bodyLang) ? bodyLang : "en";
+  const parsed = makeContactSchema(getDictionary(lang).validation).safeParse(body);
   if (!parsed.success) {
     const fields: Record<string, string> = {};
     for (const issue of parsed.error.issues) {

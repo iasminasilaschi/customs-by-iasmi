@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { localePath } from "@/lib/i18n";
+import { getI18n } from "@/lib/i18n-server";
 
-export function ContactCTA() {
+export async function ContactCTA() {
+  const { locale, t: d } = await getI18n();
+  const t = d.contactCta;
   return (
     <section className="gutter relative overflow-hidden py-28 md:py-36">
       <div
@@ -11,19 +15,18 @@ export function ContactCTA() {
       <Reveal>
         <div className="relative mx-auto max-w-2xl text-center">
           <p className="hand rotate-[-2deg] text-2xl text-sage-ink">
-            have an idea for a pair?
+            {t.kicker}
           </p>
           <h2 className="display mt-5 text-[clamp(2.5rem,1.5rem+3.4vw,4.25rem)]">
-            Send me the mood.{" "}
-            <span className="display-italic text-rose-2">I&apos;ll help shape it.</span>
+            {t.titleA}{" "}
+            <span className="display-italic text-rose-2">{t.titleEm}</span>
           </h2>
           <p className="mx-auto mt-6 max-w-md text-lg text-muted">
-            No pressure, no order forms. Tell me what refuses to leave your
-            brain, or just come say hi.
+            {t.lede}
           </p>
           <div className="mt-10 flex justify-center">
-            <Button href="/contact" size="lg">
-              Say hi
+            <Button href={localePath(locale, "/contact")} size="lg">
+              {t.button}
             </Button>
           </div>
         </div>

@@ -1,18 +1,23 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Photo } from "@/components/ui/Photo";
-import { instagramPosts } from "@/data/instagram";
+import { instagramPostsFor } from "@/data/localized";
 import { site } from "@/data/site";
+import { fmt } from "@/lib/i18n-format";
+import { getI18n } from "@/lib/i18n-server";
 
 /** Hand-picked real Instagram posts — hidden until there is at least one. */
-export function InstagramGrid() {
+export async function InstagramGrid() {
+  const { locale, t: d } = await getI18n();
+  const t = d.instagram;
+  const instagramPosts = instagramPostsFor(locale);
   if (instagramPosts.length === 0) return null;
   return (
     <section className="gutter mx-auto max-w-[90rem] py-24 md:py-32">
       <Reveal>
         <div className="flex flex-wrap items-end justify-between gap-8">
           <SectionHeading
-            eyebrow="On Instagram"
+            eyebrow={t.eyebrow}
             title={
               <a
                 href={site.instagram}
@@ -23,7 +28,7 @@ export function InstagramGrid() {
                 {site.instagramHandle}
               </a>
             }
-            lede="Finished pieces, graduation days and the whole process, from sketch to sealed."
+            lede={t.lede}
           />
           <a
             href={site.instagram}
@@ -31,7 +36,7 @@ export function InstagramGrid() {
             rel="noopener noreferrer"
             className="inline-flex min-h-11 items-center font-medium text-olive hover:underline"
           >
-            Follow along →
+            {t.follow}
           </a>
         </div>
       </Reveal>
@@ -44,7 +49,7 @@ export function InstagramGrid() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group block"
-                aria-label={`${post.kind === "reel" ? "Reel" : "Post"} on Instagram: ${post.caption}`}
+                aria-label={fmt(post.kind === "reel" ? t.reelLabel : t.postLabel, { caption: post.caption })}
               >
                 <div className="relative aspect-[4/5] overflow-hidden rounded-card border border-line shadow-soft">
                   <Photo
@@ -53,7 +58,7 @@ export function InstagramGrid() {
                     className="transition-transform duration-700 group-hover:scale-[1.04]"
                   />
                   <span className="absolute right-3 top-3 rounded-full bg-deep/80 px-2.5 py-1 text-[0.78rem] uppercase tracking-widest text-paper/90 backdrop-blur-sm">
-                    {post.kind === "reel" ? "▶ reel" : "post"}
+                    {post.kind === "reel" ? t.reel : t.post}
                   </span>
                 </div>
                 <p className="mt-3 text-sm leading-snug text-muted transition-colors group-hover:text-deep">

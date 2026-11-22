@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { localePath, type Locale } from "@/lib/i18n";
 import {
   useEffect,
   useEffectEvent,
@@ -145,11 +146,15 @@ export function SneakerStage({
   slides,
   active,
   onSelect,
+  locale,
+  labels,
   className,
 }: {
   slides: ShowcaseSlide[];
   active: number;
   onSelect: (index: number) => void;
+  locale: Locale;
+  labels: { stage: string; play: string; pause: string };
   className?: string;
 }) {
   const reduce = useReducedMotion();
@@ -200,7 +205,7 @@ export function SneakerStage({
       ref={ref}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Sneakers I've painted"
+      aria-label={labels.stage}
       className={cn("relative min-w-0", className)}
       onFocus={(e) => e.target.matches(":focus-visible") && setFocused(true)}
       onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setFocused(false)}
@@ -275,7 +280,7 @@ export function SneakerStage({
             onClick={() => setStopped(!stopped)}
             onPointerEnter={(e) => e.pointerType === "mouse" && setHovering(true)}
             onPointerLeave={(e) => e.pointerType === "mouse" && setHovering(false)}
-            aria-label={stopped ? "Play the slideshow" : "Pause the slideshow"}
+            aria-label={stopped ? labels.play : labels.pause}
             // a 44px target around a small, quiet 32px circle, centred on the caption's first line
             className="group relative z-10 -my-1.5 -ml-1.5 grid size-11 shrink-0 place-items-center rounded-full text-(--vibe-ink)/75 transition-colors hover:text-(--vibe-ink)"
           >
@@ -300,7 +305,7 @@ export function SneakerStage({
         <div aria-live={paused ? "polite" : "off"} className="min-h-[2rem] min-w-0">
           {/* its ::after stretches over the whole stage, so the shoe is clickable too */}
           <Link
-            href={`/projects/${slide.slug}`}
+            href={localePath(locale, `/projects/${slide.slug}`)}
             className="hand group text-2xl text-(--vibe-ink) after:absolute after:inset-0"
           >
             <AnimatePresence mode="wait" initial={false}>

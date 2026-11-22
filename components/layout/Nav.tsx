@@ -4,10 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { navLinks } from "@/data/site";
+import type { Dictionary } from "@/lib/dictionaries";
+import { localePath, splitLocale, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { LanguageSwitch } from "./LanguageSwitch";
 
-export function Nav() {
-  const pathname = usePathname();
+export function Nav({ locale, t }: { locale: Locale; t: Dictionary["nav"] }) {
+  // the language-neutral path: "/ro/projects" and "/projects" are both "/projects"
+  const { path: pathname } = splitLocale(usePathname() || "/");
+  const privateArea = pathname.startsWith("/design-lab");
+  const links = navLinks.map((l) => ({ href: localePath(locale, l.href), path: l.href, label: t[l.key] }));
   const [open, setOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
 
@@ -27,7 +33,7 @@ export function Nav() {
     <header className="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)]">
       <div className="gutter mx-auto flex max-w-[90rem] items-center justify-between py-5">
         <Link
-          href="/"
+          href={localePath(locale, "/")}
           className="vibe-glass group flex items-baseline gap-1.5 rounded-full px-5 py-2.5 text-(--vibe-ink) transition-colors hover:text-(--vibe-accent)"
         >
           <span className="hand text-lg leading-none text-(--vibe-muted) transition-colors group-hover:text-(--vibe-accent)">
@@ -36,10 +42,10 @@ export function Nav() {
           <span className="hand text-[1.4rem] leading-none">Iasmi</span>
         </Link>
 
-        <nav aria-label="Main" className="hidden items-center gap-2.5 lg:flex">
+        <nav aria-label={t.main} className="hidden items-center gap-2.5 lg:flex">
           <div className="vibe-glass flex items-center gap-1 rounded-full p-1.5">
-            {navLinks.map((l) => {
-              const active = pathname === l.href || (l.href !== "/" && pathname.startsWith(l.href + "/"));
+            {links.map((l) => {
+              const active = pathname === l.path || (l.path !== "/" && pathname.startsWith(l.path + "/"));
               return (
                 <Link
                   key={l.href}
@@ -55,15 +61,18 @@ export function Nav() {
               );
             })}
           </div>
+          {!privateArea && <LanguageSwitch locale={locale} label={t.language} />}
         </nav>
 
+        <div className="flex items-center gap-2 lg:hidden">
+        {!privateArea && <LanguageSwitch locale={locale} label={t.language} />}
         <button
           ref={toggle}
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="mobile-menu"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={open ? t.closeMenu : t.openMenu}
           className="vibe-glass grid size-11 place-items-center rounded-full text-(--vibe-ink) lg:hidden"
         >
           {/*
@@ -94,6 +103,7 @@ export function Nav() {
             />
           </span>
         </button>
+        </div>
       </div>
 
       {/* Mobile menu (lined up with the bar above by the same gutter) */}
@@ -107,9 +117,9 @@ export function Nav() {
             open ? "max-h-[26rem] opacity-100" : "max-h-0 opacity-0",
           )}
         >
-          <nav aria-label="Mobile" className="vibe-glass rounded-blob p-4">
+          <nav aria-label={t.mobile} className="vibe-glass rounded-blob p-4">
             <ul className="flex flex-col">
-              {navLinks.map((l) => (
+              {links.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}

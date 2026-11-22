@@ -5,6 +5,10 @@ import Image from "next/image";
 import { Photo } from "@/components/ui/Photo";
 import { cn } from "@/lib/utils";
 import type { PhotoData } from "@/data/media";
+import type { Dictionary } from "@/lib/dictionaries";
+import { fmt } from "@/lib/i18n-format";
+
+type Labels = Dictionary["photos"];
 
 /**
  * A titled grid of photos. Tapping one opens it whole (nothing cropped) in a
@@ -15,10 +19,12 @@ export function PhotoGrid({
   title,
   note,
   photos,
+  labels,
 }: {
   title: string;
   note?: string;
   photos: PhotoData[];
+  labels: Labels;
 }) {
   const [open, setOpen] = useState<number | null>(null);
 
@@ -32,7 +38,7 @@ export function PhotoGrid({
             <button
               type="button"
               onClick={() => setOpen(i)}
-              aria-label={`View full photo: ${photo.alt}`}
+              aria-label={fmt(labels.viewFull, { alt: photo.alt })}
               className="group relative block aspect-[3/4] w-full cursor-zoom-in overflow-hidden rounded-2xl border border-line bg-cream-soft"
             >
               <Photo
@@ -48,7 +54,7 @@ export function PhotoGrid({
         ))}
       </div>
       {open !== null && (
-        <Viewer photos={photos} index={open} onIndex={setOpen} onClose={() => setOpen(null)} />
+        <Viewer photos={photos} index={open} onIndex={setOpen} onClose={() => setOpen(null)} labels={labels} />
       )}
     </section>
   );
@@ -59,11 +65,13 @@ function Viewer({
   index,
   onIndex,
   onClose,
+  labels,
 }: {
   photos: PhotoData[];
   index: number;
   onIndex: (i: number) => void;
   onClose: () => void;
+  labels: Labels;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const swipeStart = useRef<{ x: number; y: number } | null>(null);
@@ -154,7 +162,7 @@ function Viewer({
 
         <div className="gutter flex items-center gap-3 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))] lg:[--gutter:1.5rem]">
           {many && (
-            <ViewerButton label="Previous photo" onClick={() => go(-1)}>
+            <ViewerButton label={labels.previous} onClick={() => go(-1)}>
               <Icon d="M15 5l-7 7 7 7" />
             </ViewerButton>
           )}
@@ -163,14 +171,14 @@ function Viewer({
             {many && <span className="ml-2 text-paper/75">{index + 1} / {photos.length}</span>}
           </p>
           {many && (
-            <ViewerButton label="Next photo" onClick={() => go(1)}>
+            <ViewerButton label={labels.next} onClick={() => go(1)}>
               <Icon d="M9 5l7 7-7 7" />
             </ViewerButton>
           )}
         </div>
       </div>
 
-      <ViewerButton label="Close" onClick={close} className="absolute top-[max(0.75rem,env(safe-area-inset-top))] right-[max(0.75rem,env(safe-area-inset-right))] sm:right-[max(1.25rem,env(safe-area-inset-right))]">
+      <ViewerButton label={labels.close} onClick={close} className="absolute top-[max(0.75rem,env(safe-area-inset-top))] right-[max(0.75rem,env(safe-area-inset-right))] sm:right-[max(1.25rem,env(safe-area-inset-right))]">
         <Icon d="M6 6l12 12M18 6L6 18" />
       </ViewerButton>
     </dialog>

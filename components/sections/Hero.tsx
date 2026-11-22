@@ -5,15 +5,25 @@ import { MotionConfig, motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { SneakerStage } from "@/components/sections/hero/SneakerStage";
 import { EASE_WASH, WASH, WASH_HOLD } from "@/components/sections/hero/wash";
-import { heroShowcase } from "@/data/media";
+import type { ShowcaseSlide } from "@/data/media";
+import type { Dictionary } from "@/lib/dictionaries";
+import { localePath, type Locale } from "@/lib/i18n";
 import { applyRootVibe, atelier, clearRootVibe, vibeVars } from "@/lib/vibe";
-import { site } from "@/data/site";
 import { cn } from "@/lib/utils";
 
 /** A pair's backdrop in the stack; the newest one fades in over the rest. */
 type Layer = { id: number; index: number };
 
-export function Hero() {
+export function Hero({
+  locale,
+  t,
+  slides: heroShowcase,
+}: {
+  locale: Locale;
+  t: Dictionary["hero"];
+  /** The pairs on stage, already in this language. */
+  slides: ShowcaseSlide[];
+}) {
   const [active, setActive] = useState(0);
   const [layers, setLayers] = useState<Layer[]>([{ id: 0, index: 0 }]);
   const nextLayer = useRef(1);
@@ -90,40 +100,38 @@ export function Hero() {
           {/* Copy */}
           <div className="relative z-10 max-w-2xl">
             <motion.p {...enter(0)} className="hand mb-4 text-3xl text-(--vibe-pop)">
-              painted by hand
+              {t.kicker}
             </motion.p>
             <motion.h1
               {...enter(0.08)}
               className="display leading-[1.02] text-[clamp(2.75rem,1.55rem+4.2vw,4.75rem)]"
             >
-              Custom sneakers,
+              {t.titleA}
               <br />
-              <span className="display-italic text-(--vibe-accent)">painted by hand.</span>
+              <span className="display-italic text-(--vibe-accent)">{t.titleEm}</span>
             </motion.h1>
             <motion.p
               {...enter(0.16)}
               className="mt-7 max-w-lg text-xl leading-relaxed text-(--vibe-muted)"
             >
-              Wearable art created from your moodboard, story, colours, and
-              obsessions. Send me the mood and I&apos;ll turn it into something you
-              can wear.
+              {t.lede}
             </motion.p>
             <motion.div
               {...enter(0.24)}
               className="mt-9 flex flex-wrap items-center gap-4"
             >
-              <Button href="/contact" variant="vibe" size="lg">
-                Tell me about your dream pair
+              <Button href={localePath(locale, "/contact")} variant="vibe" size="lg">
+                {t.cta}
               </Button>
-              <Button href="/projects" variant="vibe-outline" size="lg">
-                View my projects
+              <Button href={localePath(locale, "/projects")} variant="vibe-outline" size="lg">
+                {t.projects}
               </Button>
             </motion.div>
             <motion.div
               {...enter(0.32)}
               className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-2 text-base text-(--vibe-muted)"
             >
-              <span>{site.location}</span>
+              <span>{t.location}</span>
             </motion.div>
           </div>
 
@@ -133,6 +141,8 @@ export function Hero() {
               slides={heroShowcase}
               active={active}
               onSelect={select}
+              locale={locale}
+              labels={{ stage: t.stageLabel, play: t.play, pause: t.pause }}
               className="max-lg:order-first max-lg:mx-auto max-lg:w-full max-lg:max-w-2xl"
             />
           )}

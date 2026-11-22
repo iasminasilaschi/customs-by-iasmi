@@ -6,6 +6,7 @@
  * simply hidden on the page when left out — never invent them.
  */
 import type { PhotoData, VideoData } from "@/data/media";
+import { localePath, type Locale } from "@/lib/i18n";
 
 export type PortfolioCategory =
   | "sneakers"
@@ -450,8 +451,8 @@ export function getPiece(slug: string): PortfolioPiece | undefined {
 }
 
 /** "Want one like this?" links: the contact form, prefilled with this project (?ref=<slug>). */
-export function contactHref(piece: PortfolioPiece): string {
-  return `/contact?ref=${piece.slug}`;
+export function contactHref(piece: PortfolioPiece, locale: Locale = "en"): string {
+  return localePath(locale, `/contact?ref=${piece.slug}`);
 }
 
 export const featuredPieces = portfolio.filter((p) => p.featured);

@@ -12,9 +12,10 @@ export const site = {
   location: "Romania",
 };
 
+/** Main pages. Labels come from the dictionaries (lib/dictionaries), by `key`. */
 export const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/projects", label: "Projects" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", key: "home" },
+  { href: "/projects", key: "projects" },
+  { href: "/about", key: "about" },
+  { href: "/contact", key: "contact" },
 ] as const;

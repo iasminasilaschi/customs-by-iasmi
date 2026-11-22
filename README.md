@@ -20,6 +20,8 @@ React Hook Form + Zod. One small route handler (`/api/contact`) sends the contac
 
 ## Routes
 
+Every public page also exists in Romanian under `/ro` (e.g. `/ro/projects/sushi-cats`); see **Languages** below.
+
 | Route | What it is |
 | --- | --- |
 | `/` | Homepage: hero (rotating pairs), featured work, Instagram grid, about teaser, a gentle contact section |
@@ -40,6 +42,17 @@ React Hook Form + Zod. One small route handler (`/api/contact`) sends the contac
 - `lib/validation.ts` — Zod schema for the smart inquiry form
 - `docs/ROADMAP.md` — phases 1–5 (through AI/3D lab)
 - `docs/LEGAL-AND-CONTENT-NOTES.md` — **read before launch** (returns, IP, GDPR, placeholder checklist)
+
+## Languages (English + Romanian)
+
+- **URLs:** English stays at the plain URLs (`/projects`), Romanian lives under `/ro` (`/ro/projects`). Pages are in `app/[lang]/`; `proxy.ts` serves plain URLs from `/en/…` behind the scenes, redirects `/en/…` to the plain URL, and sends visitors who picked Romanian (the `lang` cookie) to the `/ro` page. Search engines get both, linked with hreflang tags and in the sitemap.
+- **Choosing:** first visit shows a small two-language card (`components/layout/LanguagePrompt.tsx`), the browser's preferred language first; the EN | RO switch in the header (`LanguageSwitch.tsx`) changes it any time, staying on the same page. The choice is one functional cookie (`lang=en|ro`, a year), mentioned on the privacy page.
+- **Interface text:** `lib/dictionaries/en.ts` and `ro.ts` (same shape, TypeScript checks nothing is missing).
+- **Content:** English stays the source in `data/portfolio.ts`, `data/media.ts`, `data/instagram.ts`; Romanian is in `data/i18n/ro.ts` (stories, steps, materials, lessons, photo descriptions and captions by photo path, hero and Instagram captions). Missing Romanian falls back to English. **Adding a project or photo: add its Romanian text there too.**
+- **Privacy page:** written out in full in both languages in `app/[lang]/privacy/page.tsx`; change both together.
+- The contact form answers in the page's language, and the email I get says when someone wrote from the Romanian site (subject ends in "· RO").
+- The Design Lab stays English-only (`/ro/design-lab` redirects to `/design-lab`).
+- Fonts load the `latin-ext` subset so ă, ș, ț render in the site's own fonts.
 
 ## Photo planner (`/design-lab/planner`)
 

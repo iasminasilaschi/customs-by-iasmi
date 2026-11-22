@@ -62,6 +62,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/process", destination: "/about", permanent: true },
       { source: "/faq", destination: "/contact", permanent: true },
+      { source: "/ro/process", destination: "/ro/about", permanent: true },
+      { source: "/ro/faq", destination: "/ro/contact", permanent: true },
     ];
   },
 };

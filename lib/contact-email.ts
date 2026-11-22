@@ -1,5 +1,6 @@
 import { instagramHandle, paintLabel, type ContactValues } from "@/lib/validation";
 import { SITE_URL } from "@/lib/metadata";
+import { localePath } from "@/lib/i18n";
 
 /**
  * The email I get when someone sends the contact form: a short subject, a
@@ -28,10 +29,13 @@ export function buildContactEmail(v: ContactValues, refPiece?: { slug: string; t
   const handle = v.instagram ? instagramHandle(v.instagram) : "";
   const igUrl = handle ? `https://instagram.com/${handle}` : "";
   const inspo = v.inspo ? withProtocol(v.inspo) : "";
-  const refUrl = refPiece ? `${SITE_URL}/projects/${refPiece.slug}` : "";
+  const lang = v.lang ?? "en";
+  const refUrl = refPiece ? `${SITE_URL}${localePath(lang, `/projects/${refPiece.slug}`)}` : "";
   const what = paintLabel(v.paint);
+  // they wrote from the Romanian site: worth replying in Romanian
+  const language = lang === "ro" ? "Romanian (they used the Romanian site)" : "";
 
-  const subject = `New hello from ${oneLine(v.name, 40)} · ${what}`;
+  const subject = `New hello from ${oneLine(v.name, 40)} · ${what}${lang === "ro" ? " · RO" : ""}`;
 
   const replyHint = v.email
     ? `Just hit reply to answer ${v.name} by email.`
@@ -45,6 +49,7 @@ export function buildContactEmail(v: ContactValues, refPiece?: { slug: string; t
     v.email ? `Email: ${v.email}` : null,
     handle ? `Instagram: @${handle} (${igUrl})` : null,
     `Would love painted: ${what}`,
+    language ? `Language: ${language}` : null,
     refPiece ? `Came from the project: ${refPiece.title} (${refUrl})` : null,
     inspo ? `Inspo link: ${inspo}` : null,
     ``,
@@ -70,6 +75,7 @@ export function buildContactEmail(v: ContactValues, refPiece?: { slug: string; t
     v.email ? row("Email", link(`mailto:${v.email}`, v.email)) : "",
     handle ? row("Instagram", link(igUrl, `@${handle}`)) : "",
     row("Would love", esc(what)),
+    language ? row("Language", esc(language)) : "",
     refPiece ? row("Came from", link(refUrl, refPiece.title)) : "",
     inspo ? row("Inspo", link(inspo, v.inspo ?? inspo)) : "",
   ].join("");

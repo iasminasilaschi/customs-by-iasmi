@@ -3,8 +3,12 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { MosaicTile } from "@/components/ui/MosaicTile";
 import { lifeMosaic } from "@/data/mosaic";
+import { localePath } from "@/lib/i18n";
+import { getI18n } from "@/lib/i18n-server";
 
-export function AboutTeaser() {
+export async function AboutTeaser() {
+  const { locale, t: d } = await getI18n();
+  const t = d.aboutTeaser;
   const tiles = lifeMosaic.slice(0, 4);
   return (
     <section className="gutter mx-auto max-w-[90rem] py-24 md:py-32">
@@ -26,20 +30,20 @@ export function AboutTeaser() {
         <Reveal delay={0.15}>
           <div className="max-w-xl">
             <SectionHeading
-              eyebrow="The person behind the paint"
+              eyebrow={t.eyebrow}
               title={
                 <>
-                  A studio grown from{" "}
-                  <span className="display-italic text-rose-2">a life of obsessions.</span>
+                  {t.titleA}{" "}
+                  <span className="display-italic text-rose-2">{t.titleEm}</span>
                 </>
               }
-              lede="Painting, sneakers, graduation caps, style, travel, gaming, food, a soft spot for Japan — a mosaic of the things I love, slowly turning into a studio."
+              lede={t.lede}
             />
             <Link
-              href="/about"
+              href={localePath(locale, "/about")}
               className="group mt-6 inline-flex min-h-11 items-center gap-2 font-medium text-olive"
             >
-              Meet me properly
+              {t.link}
               <span
                 aria-hidden
                 className="transition-transform duration-300 group-hover:translate-x-1"

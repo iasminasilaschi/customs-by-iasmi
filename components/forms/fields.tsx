@@ -11,7 +11,8 @@ interface BaseProps {
   label: string;
   error?: string;
   hint?: string;
-  optional?: boolean;
+  /** Shown next to the label, e.g. "optional" (in the page's language). */
+  optional?: string;
 }
 
 /** Ids of the hint / error / counter under a field, for aria-describedby. */
@@ -29,8 +30,8 @@ function FieldWrap({
   children,
 }: BaseProps & {
   htmlFor: string;
-  /** Live "used / max" counter shown under the field. */
-  counter?: { value: number; max: number };
+  /** Live "used / max" counter shown under the field; `unit` is read out ("characters"). */
+  counter?: { value: number; max: number; unit?: string };
   children: React.ReactNode;
 }) {
   const over = counter && counter.value > counter.max;
@@ -38,7 +39,7 @@ function FieldWrap({
     <div>
       <label htmlFor={htmlFor} className="mb-2 flex items-baseline justify-between text-[0.95rem] text-cream/85">
         <span>{label}</span>
-        {optional && <span className="text-sm text-muted">optional</span>}
+        {optional && <span className="text-sm text-muted">{optional}</span>}
       </label>
       {children}
       {(hint || error || counter) && (
@@ -61,7 +62,7 @@ function FieldWrap({
               className={cn("shrink-0 text-sm tabular-nums", over ? "font-medium text-rose-ink" : "text-muted")}
             >
               {counter.value} / {counter.max}
-              <span className="sr-only"> characters</span>
+              <span className="sr-only"> {counter.unit ?? "characters"}</span>
             </p>
           )}
         </div>
@@ -92,7 +93,7 @@ export const TextField = forwardRef<HTMLInputElement, InputProps>(
 
 type TextareaProps = BaseProps &
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-    counter?: { value: number; max: number };
+    counter?: { value: number; max: number; unit?: string };
   };
 
 export const TextAreaField = forwardRef<HTMLTextAreaElement, TextareaProps>(
